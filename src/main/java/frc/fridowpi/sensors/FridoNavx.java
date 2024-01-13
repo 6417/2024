@@ -139,13 +139,7 @@ public class FridoNavx extends AHRS implements INavx {
 
     @Override
     public void init() {
-        calibrate();
-        logger.info("Navx calibrating.");
-
-        while (isCalibrating()) {
-        }
-
-        logger.info("DONE calibrating Navx calibrating.");
+        logger.info("DONE Navix initialized");
         logger.info("resetting Navx.");
         reset();
 
@@ -156,7 +150,4 @@ public class FridoNavx extends AHRS implements INavx {
     public boolean isInitialized() {
         return initialized;
     }
-
-    @Override
-    public void calibrate() { }
 }
