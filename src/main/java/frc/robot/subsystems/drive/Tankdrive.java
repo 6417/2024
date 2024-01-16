@@ -5,14 +5,15 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants;
 import frc.robot.commands.DriveCommand;
 
 public class Tankdrive extends DriveBase{
 
   //TalonFX rightfront = new TalonFX(1);
   // TalonFX leftfront = new TalonFX(2);
-  TalonFX rightback = new TalonFX(11);
-  TalonFX leftback = new TalonFX(0);
+  TalonFX rightback = new TalonFX(Constants.Testchassi.idRigthback);
+  TalonFX leftback = new TalonFX(Constants.Testchassi.idLeftback);
 
   
   private final DutyCycleOut m_leftOut = new DutyCycleOut(0);
@@ -26,8 +27,8 @@ public class Tankdrive extends DriveBase{
     drive_command = new DriveCommand(this);
     
 
-    rightback.setControl(new Follower(13, true));
-    leftback.setControl(new Follower(12, false));
+    rightback.setControl(new Follower(Constants.Testchassi.idRigthfront, true));
+    leftback.setControl(new Follower(Constants.Testchassi.idLeftback, false));
 
     this.setDefaultCommand(drive_command);
   }

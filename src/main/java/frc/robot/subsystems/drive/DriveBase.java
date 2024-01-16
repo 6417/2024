@@ -7,7 +7,6 @@ public class DriveBase extends SubsystemBase implements IDrive {
 
     private static DriveBase instance;
 
-
     protected DriveBase(){
         //intialiser
     }
