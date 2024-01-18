@@ -16,15 +16,15 @@ public class Tankdrive_odometry {
 
     private Tankdrive_odometry(){
         m_odometry = new DifferentialDriveOdometry(
-        Gyro.getInstance().getRotation2d(),Tankdrive.getInstance().getLeftEndcoderPos(), Tankdrive.getInstance().getRigthEndcoderPos(),
+        Gyro.getInstance().getRotation2d(),Tankdrive.getInstance().getLeftEncoderPos(), Tankdrive.getInstance().getRigthEncoderPos(),
         new Pose2d(5,13.5, new Rotation2d(0)));
     }
 
     public void update_robot_pose(){
         var gyroAngle = Gyro.getInstance().getRotation2d();
 
-        Pose2d m_pose = m_odometry.update(gyroAngle,Tankdrive.getInstance().getLeftEndcoderPos(),
-        Tankdrive.getInstance().getRigthEndcoderPos());
+        Pose2d m_pose = m_odometry.update(gyroAngle,Tankdrive.getInstance().getLeftEncoderPos(),
+        Tankdrive.getInstance().getRigthEncoderPos());
     }
 
     public void reset_robot_pose(){

@@ -4,22 +4,23 @@
 
 package frc.robot;
 
-import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.DriveCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
 
 /**
- * This is a demo program showing the use of the DifferentialDrive class. Runs the motors with
+ * This is a demo program showing the use of the DifferentialDrive class. Runs
+ * the motors with
  * arcade steering.
  */
 public class Robot extends TimedRobot {
+
+  DriveBase drive;
+  final public static XboxController joystick = new XboxController(0);
 
   public Robot() {
   }
@@ -28,20 +29,26 @@ public class Robot extends TimedRobot {
   public void robotInit() {
   }
 
-  DriveBase drive;
+  @Override
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+  }
 
   @Override
-  public void teleopInit(){
+  public void teleopInit() {
     drive = Tankdrive.getInstance();
   }
 
   @Override
   public void teleopPeriodic() {
-    //System.out.println(CommandScheduler.getInstance().isScheduled(drive.getDefaultCommand()));
-  }
-
-  @Override
-  public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
+    if (joystick.getAButtonPressed()) {
+      drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
+    } else if(joystick.getYButtonPressed()) {
+      drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
+    } else if(joystick.getXButtonPressed()) {
+      drive.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+    } else if(joystick.getBButtonPressed()) {
+      drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
+    } 
   }
 }
