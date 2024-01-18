@@ -13,7 +13,7 @@ public class FridoJoystick {
 
     enum Typ{
         xBoxController,
-        stick,
+        Joystick,
     }
     
     private FridoJoystick(){

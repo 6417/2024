@@ -28,8 +28,8 @@ public class getAutonomousTrajectory {
             Constants.Testchassi.kvVoltSevondsPerMeter, 
             Constants.Testchassi.kaVoltSecondsSquaredPerMeter),Tankdrive.getInstance().m_kinematics, 10);
 
-    TrajectoryConfig config = new TrajectoryConfig(Constants.Testchassi.kMaxVMetersPerSecond,
-    Constants.Testchassi.kMaxAccMetersPerSecond)
+    TrajectoryConfig config = new TrajectoryConfig(Constants.Testchassi.PathWeaver.kMaxVMetersPerSecond,
+    Constants.Testchassi.PathWeaver.kMaxAccMetersPerSecond)
     .setKinematics(Tankdrive.getInstance().m_kinematics)
     .addConstraint(voltageConstraint);
 
@@ -46,7 +46,7 @@ public class getAutonomousTrajectory {
         RamseteCommand command = new RamseteCommand(
             new_trajectory,
             Tankdrive.getInstance()::getPos,
-            new RamseteController(Constants.Testchassi.kRamsetB, Constants.Testchassi.kRamseteZeta),
+            new RamseteController(Constants.Testchassi.PathWeaver.kRamsetB, Constants.Testchassi.PathWeaver.kRamseteZeta),
             new SimpleMotorFeedforward(Constants.Testchassi.ksVolts,
                 Constants.Testchassi.kvVoltSevondsPerMeter,
                 Constants.Testchassi.kaVoltSecondsSquaredPerMeter),

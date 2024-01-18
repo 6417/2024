@@ -1,8 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.SPI.Port;
-
 public class Constants {
     public static class Testchassi{
         final public static int idRigthfront = 13;
@@ -10,18 +7,43 @@ public class Constants {
         final public static int idRigthback = 11;
         final public static int idLeftback = 0;
 
-        final public static double kMaxVMetersPerSecond = 0;
-        final public static double kMaxAccMetersPerSecond = 0;
+        public static final class Odometry {
+            public static final double wheelPerimeter = 0.47;
+            // The transmission denotes how many revolution the motor makes compared to the wheel
+            public static final double transmission = 10.71;
+            public static final int encoderResolution = 2048;
+
+            public static final double encoderToMetersConversion = 1 / ((1 / wheelPerimeter) * transmission * encoderResolution);
+            public static final double trackWidthMeters = 0.5;
+        }
+
+        public static final class PathWeaver {
+            public static final double ksMeters = 0.12091;
+            public static final double kvMetersPerSecoond = 2.3501;
+            public static final double ka = 0.21997;
+
+            public static final double kMaxVMetersPerSecond = 3.3;
+            public static final double kMaxAccMetersPerSecond = 1.2;
+            public static final double kMaxCentripetalAcceleration = 0;
+
+            public static final double kRamsetB = 0;
+            public static final double kRamseteZeta = 0;
+
+            public static final double kP = 0.36205;
+            public static final double kI = 0;
+            public static final double kD = 0;
+        }
+
+
+        //final public static double kMaxVMetersPerSecond = 0;
+        //final public static double kMaxAccMetersPerSecond = 0;
         //final public static DifferentialDriveKinematics kDriveKinematics;
 
         final public static double ksVolts = 0;
         final public static double kvVoltSevondsPerMeter = 0;
         final public static double kaVoltSecondsSquaredPerMeter = 0;
         final public static double kPDriveVel = 0;
-
-        final public static double kRamsetB = 0;
-        final public static double kRamseteZeta = 0;
     }
     
-    final public static double TalonFX_endcoders_to_meters = 1;
+    //final public static double TalonFX_endcoders_to_meters = 1;
 }

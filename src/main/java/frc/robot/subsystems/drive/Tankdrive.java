@@ -8,8 +8,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.Tankdrive_poseestimator;
@@ -66,8 +64,8 @@ public class Tankdrive extends DriveBase{
     rotorv_left.refresh();
     rotorv_rigth.refresh();
     return new DifferentialDriveWheelSpeeds(
-      Double.parseDouble(rotorv_left.getValue().toString()) * 10 * Constants.TalonFX_endcoders_to_meters,
-      Double.parseDouble(rotorpos_rigth.getValue().toString()) * -10 * Constants.TalonFX_endcoders_to_meters);
+      Double.parseDouble(rotorv_left.getValue().toString()) * 10 * Constants.Testchassi.Odometry.encoderToMetersConversion,
+      Double.parseDouble(rotorpos_rigth.getValue().toString()) * -10 * Constants.Testchassi.Odometry.encoderToMetersConversion);
   }
 
   public void setVolts(double leftvolts, double rigthvolts){
