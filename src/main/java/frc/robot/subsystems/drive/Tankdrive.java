@@ -39,9 +39,9 @@ public class Tankdrive extends DriveBase {
   private StatusSignal rotorv_rigth = rightfront.getRotorVelocity();
 
   private DifferentialDrive differentialDrive = new DifferentialDrive(leftfront::set, rightfront::set);
-  public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(0.7);
+  private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(0.7);
 
-  public static Tankdrive instance;
+  private static Tankdrive instance;
 
   public Tankdrive() {
     setDefaultCommand(new DriveCommand(this));
@@ -95,8 +95,7 @@ public class Tankdrive extends DriveBase {
   }
 
   @Override
-  public void periodic() {
-  }
+  public void periodic() { }
 
   public double getLeftEncoderPos() {
     rotorpos_left.refresh();
