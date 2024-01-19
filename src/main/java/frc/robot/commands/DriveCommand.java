@@ -3,7 +3,6 @@ package frc.robot.commands;
 import frc.robot.Robot;
 import frc.robot.subsystems.drive.DriveBase;
 
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class DriveCommand extends Command {
@@ -25,8 +24,9 @@ public class DriveCommand extends Command {
   public void execute() {
 
     double y = Robot.joystick.getLeftY();
-    double x = Robot.joystick.getRightX();
-    m_subsystem.drive(y, x, x);
+    double x = Robot.joystick.getLeftX();
+    double rot = Robot.joystick.getRightX();
+    m_subsystem.drive(y, x, rot);
   }
 
   @Override
