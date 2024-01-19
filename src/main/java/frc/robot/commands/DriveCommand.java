@@ -23,16 +23,10 @@ public class DriveCommand extends Command {
 
   @Override
   public void execute() {
-<<<<<<< HEAD
-    m_subsystem.drive(
-      joystick.getLeftY(),
-      joystick.getLeftX(),
-      joystick.getRightX());
-=======
+
     double y = Robot.joystick.getLeftY();
     double x = Robot.joystick.getLeftY();
     m_subsystem.drive(y, x, x);
->>>>>>> d59e0d7f142ca8955e2e11cabaa141c8bd124b1d
   }
 
   @Override
