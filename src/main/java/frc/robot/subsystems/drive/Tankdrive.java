@@ -19,7 +19,6 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -156,7 +155,7 @@ public class Tankdrive extends DriveBase {
   public void drive(double v_x, double v_y, double rot){
     //leftback.set(v_x);
     //rightback.set(v_x);
-     differentialDrive.arcadeDrive(v_x, rot);
+    differentialDrive.arcadeDrive(v_x, v_y);
   }
 
   public static Tankdrive getInstance() {
