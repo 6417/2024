@@ -1,7 +1,7 @@
 package frc.robot;
 
 public class Constants {
-    public static class Testchassi{
+    public static final class Testchassi{
         final public static int idRigthfront = 13;
         final public static int idLeftfront = 12;
         final public static int idRigthback = 11;
@@ -44,6 +44,19 @@ public class Constants {
         final public static double kaVoltSecondsSquaredPerMeter = 0;
         final public static double kPDriveVel = 0;
     }
-    
-    //final public static double TalonFX_endcoders_to_meters = 1;
+
+    public static final class Tankdrive {
+
+    }
+
+    public static final class Swervedrive {
+        public static final class Drive {
+            public static final double kMaxSpeedMetersPerSecond = 0;
+            public static final double kMaxAccelerationMetersPerSecondSquared = 0;
+        }
+    }
+
+    public static final class Global {
+        public static final int idShooterMotor = 0;
+    }
 }
