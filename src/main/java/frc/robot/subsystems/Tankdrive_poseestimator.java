@@ -19,8 +19,8 @@ public class Tankdrive_poseestimator {
         new DifferentialDrivePoseEstimator(
             Tankdrive.getInstance().m_kinematics,
             Gyro.getInstance().getRotation2d(),
-            Tankdrive.getInstance().getLeftEndcoderPos(),
-            Tankdrive.getInstance().getRigthEndcoderPos(),
+            Tankdrive.getInstance().getLeftEncoderPos(),
+            Tankdrive.getInstance().getRigthEncoderPos(),
             new Pose2d(),
             VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
@@ -28,7 +28,7 @@ public class Tankdrive_poseestimator {
 
     private void updatePoseEstimator(){
         m_poseEstimator.update(
-        Gyro.getInstance().getRotation2d(), Tankdrive.getInstance().getLeftEndcoderPos(), Tankdrive.getInstance().getRigthEndcoderPos());
+        Gyro.getInstance().getRotation2d(), Tankdrive.getInstance().getLeftEncoderPos(), Tankdrive.getInstance().getRigthEncoderPos());
     }
 
     
