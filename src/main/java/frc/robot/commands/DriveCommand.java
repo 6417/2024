@@ -25,7 +25,7 @@ public class DriveCommand extends Command {
   public void execute() {
 
     double y = Robot.joystick.getLeftY();
-    double x = Robot.joystick.getLeftY();
+    double x = Robot.joystick.getRightX();
     m_subsystem.drive(y, x, x);
   }
 
