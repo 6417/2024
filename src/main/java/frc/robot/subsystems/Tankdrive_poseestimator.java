@@ -5,8 +5,9 @@ import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.Gyro;
 import frc.robot.subsystems.drive.Tankdrive;
 
 public class Tankdrive_poseestimator {
@@ -26,12 +27,15 @@ public class Tankdrive_poseestimator {
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
     }
 
-    private void updatePoseEstimator(){
+    public void updatePoseEstimator(){
         m_poseEstimator.update(
         Gyro.getInstance().getRotation2d(), Tankdrive.getInstance().getLeftEncoderPos(), Tankdrive.getInstance().getRigthEncoderPos());
     }
 
-    
+    // Atention not clear witch values are releveant for the pose reseting
+    private void setPos(Rotation2d rot, double weelLeftPosition, double weelRigthPosition, Pose2d pos){
+        m_poseEstimator.resetPosition(rot, weelLeftPosition,weelRigthPosition,pos);
+    }
 
     private void visionProcessing(){
         //Pose3d visionMeasurement3d =

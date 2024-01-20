@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -10,21 +14,17 @@ public class Visionprocessing extends SubsystemBase {
 
     static Visionprocessing instance;
 
-
   private Visionprocessing() {
-
   }
 
   @Override
   public void periodic() {
-
   }
 
-  private void getData(){
+  private double[] getData(){
     double[] data= NetworkTableInstance.getDefault().getTable("limelight").getEntry("targetpose_cameraspace").getDoubleArray(new double[6]);
-  }
-
-  
+    return data;
+  }  
 
   public static Visionprocessing getInstance(){
     if (instance != null){

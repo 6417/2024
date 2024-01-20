@@ -4,11 +4,15 @@
 
 package frc.robot;
 
+import com.revrobotics.AbsoluteEncoder;
+
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.Tankdrive_poseestimator;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
 
@@ -20,7 +24,7 @@ import frc.robot.subsystems.drive.Tankdrive;
 public class Robot extends TimedRobot {
 
   DriveBase drive;
-  final public static XboxController joystick = new XboxController(0);
+  final public static PS4Controller joystick = new PS4Controller(0);
 
   public Robot() {
   }
@@ -33,6 +37,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    Tankdrive_poseestimator.getInstance().updatePoseEstimator();
+
   }
 
   @Override
@@ -42,6 +48,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    /* 
     if (joystick.getAButtonPressed()) {
       drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
     } else if(joystick.getYButtonPressed()) {
@@ -51,5 +58,7 @@ public class Robot extends TimedRobot {
     } else if(joystick.getBButtonPressed()) {
       drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
     } 
+    */
+    System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
   }
 }

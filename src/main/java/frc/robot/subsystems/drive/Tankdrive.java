@@ -45,7 +45,7 @@ public class Tankdrive extends DriveBase {
 
   public Tankdrive() {
 
-    rightfront.setInverted(true);
+    leftfront.setInverted(true);
 
     rightfront.setControl(new Follower(Constants.Testchassi.idRigthback, false));
     leftfront.setControl(new Follower(Constants.Testchassi.idLeftback, false));
@@ -153,9 +153,6 @@ public class Tankdrive extends DriveBase {
   }
 
   public void drive(double v_x, double v_y, double rot){
-    //leftback.set(v_x);
-    //rightback.set(v_x);
-    System.out.println(rot);
     differentialDrive.arcadeDrive(v_x, rot);
   }
 
@@ -166,3 +163,4 @@ public class Tankdrive extends DriveBase {
     return instance;
   }
 }
+
