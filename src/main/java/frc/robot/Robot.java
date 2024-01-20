@@ -4,61 +4,60 @@
 
 package frc.robot;
 
-import com.revrobotics.AbsoluteEncoder;
-
-import edu.wpi.first.wpilibj.AnalogEncoder;
-import edu.wpi.first.wpilibj.PS4Controller;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Tankdrive_poseestimator;
+import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
 
-/**
- * This is a demo program showing the use of the DifferentialDrive class. Runs
- * the motors with
- * arcade steering.
- */
 public class Robot extends TimedRobot {
 
-  DriveBase drive;
-  final public static PS4Controller joystick = new PS4Controller(0);
+    DriveBase drive;
 
-  public Robot() {
-  }
+    @Override
+    public void robotInit() {
+        Shuffleboard.getTab("Drive").add(Tankdrive.getInstance());
+        // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
+        Shuffleboard.getTab("Debug").add(Tankdrive.getInstance().getDefaultCommand());
+        Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
+    }
 
-  @Override
-  public void robotInit() {
-    Tankdrive.getInstance();
-  }
+    @Override
+    public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
+        Tankdrive_poseestimator.getInstance().updatePoseEstimator();
 
-  @Override
-  public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
-    Tankdrive_poseestimator.getInstance().updatePoseEstimator();
+    }
 
-  }
+    @Override
+    public void teleopInit() {
+        drive = Tankdrive.getInstance();
+    }
 
-  @Override
-  public void teleopInit() {
-    drive = Tankdrive.getInstance();
-  }
+    @Override
+    public void teleopPeriodic() {
 
-  @Override
-  public void teleopPeriodic() {
-    /* 
-    if (joystick.getAButtonPressed()) {
-      drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
-    } else if(joystick.getYButtonPressed()) {
-      drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
-    } else if(joystick.getXButtonPressed()) {
-      drive.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
-    } else if(joystick.getBButtonPressed()) {
-      drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
-    } 
-    */
-    System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
-  }
+        if (Controls.joystick.getAButtonPressed()) {
+            drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
+        } else if (Controls.joystick.getYButtonPressed()) {
+            drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
+        } else if (Controls.joystick.getXButtonPressed()) {
+            drive.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+        } else if (Controls.joystick.getBButtonPressed()) {
+            drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
+        }
+        else if (
+            Controls.joystick.getAButtonReleased() ||
+            Controls.joystick.getBButtonReleased() ||
+            Controls.joystick.getXButtonReleased() ||
+            Controls.joystick.getYButtonReleased()
+        ) {
+            CommandScheduler.getInstance().cancelAll();
+        }
+
+        // System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
+    }
 }

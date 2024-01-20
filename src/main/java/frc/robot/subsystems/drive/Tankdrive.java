@@ -18,6 +18,7 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -123,7 +124,7 @@ public class Tankdrive extends DriveBase {
 
   public void setVolts(double leftvolts, double rigthvolts){
     leftfront.setVoltage(leftvolts);
-    rightfront.setVoltage(rigthvolts);
+    rightfront.setVoltage(-rigthvolts);
     //m_drive.feed();
   }
 
@@ -153,7 +154,17 @@ public class Tankdrive extends DriveBase {
   }
 
   public void drive(double v_x, double v_y, double rot){
-    differentialDrive.arcadeDrive(v_x, rot);
+    differentialDrive.arcadeDrive(
+      -rot * Controls.getTurnSensitivity(),
+      v_x * Controls.getAccelerationSensitivity(),
+      true);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.addDoubleProperty("LeftPosition", () -> leftfront.getPosition().getValueAsDouble(), null);
+    builder.addDoubleProperty("RightPosition", () -> rightfront.getPosition().getValueAsDouble(), null);
   }
 
   public static Tankdrive getInstance() {
