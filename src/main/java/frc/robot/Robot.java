@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Tankdrive_poseestimator;
 import frc.robot.subsystems.drive.Controls;
@@ -56,7 +57,12 @@ public class Robot extends TimedRobot {
             Controls.joystick.getYButtonReleased()
         ) {
             CommandScheduler.getInstance().cancelAll();
+            // drive.brake();
         }
+
+        // if (Controls.joystick.getLeftBumperPressed()) {
+        //     drive.release_brake();
+        // }
 
         // System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
     }

@@ -4,6 +4,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
@@ -28,10 +30,11 @@ import frc.robot.subsystems.Tankdrive_poseestimator;
 
 public class Tankdrive extends DriveBase {
 
-  TalonFX leftfront = new TalonFX(Constants.Testchassi.idLeftfront);
-  TalonFX rightfront = new TalonFX(Constants.Testchassi.idRigthfront);
+    TalonFX leftfront = new TalonFX(Constants.Testchassi.idLeftfront);
+    TalonFX rightfront = new TalonFX(Constants.Testchassi.idRigthfront);
+    SysIdRoutineLog log;
 
-  private final DutyCycleOut m_leftOut = new DutyCycleOut(0);
+    private final DutyCycleOut m_leftOut = new DutyCycleOut(0);
   private final DutyCycleOut m_rightOut = new DutyCycleOut(0);
 
   private StatusSignal rotorpos_left = leftfront.getRotorPosition();
@@ -65,7 +68,6 @@ public class Tankdrive extends DriveBase {
   SysIdRoutine routine = new SysIdRoutine(
       new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism(t -> setVolts(t.baseUnitMagnitude(), t.baseUnitMagnitude()),
-
           log -> {
             // Record a frame for the left motors. Since these share an encoder, we consider
             // the entire group to be one motor.
@@ -132,6 +134,17 @@ public class Tankdrive extends DriveBase {
   public Pose2d getPos() {
     return Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition();
   }
+
+  @Override
+  public void brake() {
+    leftfront.setNeutralMode(NeutralModeValue.Brake);
+    rightfront.setNeutralMode(NeutralModeValue.Brake);
+  }
+
+    @Override
+    public void release_brake() {
+      rightfront.setNeutralMode(NeutralModeValue.Coast);
+    }
 
   private double step(double number) {
     // use Math.signum()!

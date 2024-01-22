@@ -28,6 +28,9 @@ public class DriveBase extends SubsystemBase implements IDrive, Sendable {
         return null;
     }
 
+    public void brake() {
+    }
+
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return null;
     }
@@ -37,5 +40,8 @@ public class DriveBase extends SubsystemBase implements IDrive, Sendable {
     }
 
     public void initSendable(SendableBuilder builder) {
+    }
+
+    public void release_brake() {
     }
 }
