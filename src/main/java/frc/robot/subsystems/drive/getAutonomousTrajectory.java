@@ -61,14 +61,15 @@ public class getAutonomousTrajectory {
         return command;
     }
 
-    public void execute(){
+    public RamseteCommand start_command(){
         RamseteCommand command = getTrajectory();
-        command.schedule();
+        //command.schedule();
+        return command;
     }
 
     public static getAutonomousTrajectory getInstance(){
         if (instance == null){
-            instance = null;
+            instance = new getAutonomousTrajectory();
         }
         return instance;
     }

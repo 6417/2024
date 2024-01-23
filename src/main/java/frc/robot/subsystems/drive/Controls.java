@@ -10,8 +10,8 @@ public class Controls implements Sendable {
     private static Controls instance = new Controls();
     
     final public static XboxController joystick = new XboxController(0);
-    private static double turnSensitivity = 1.0;
-    private static double accelerationSensitivity = 1.0;
+    private static double turnSensitivity = 0.6;
+    private static double accelerationSensitivity = 0.6;
 
     // Initialization
     private Controls() {}

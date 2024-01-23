@@ -39,10 +39,10 @@ public class Constants {
         //final public static double kMaxAccMetersPerSecond = 0;
         //final public static DifferentialDriveKinematics kDriveKinematics;
 
-        final public static double ksVolts = 0;
-        final public static double kvVoltSevondsPerMeter = 0;
-        final public static double kaVoltSecondsSquaredPerMeter = 0;
-        final public static double kPDriveVel = 0;
+        final public static double ksVolts = 0.20; //random value
+        final public static double kvVoltSevondsPerMeter = 1.98; //random value
+        final public static double kaVoltSecondsSquaredPerMeter = 0.2; //random value
+        final public static double kPDriveVel = 5; //random value
     }
 
     public static final class Tankdrive {
