@@ -38,9 +38,19 @@ public class Robot extends TimedRobot {
         drive = Tankdrive.getInstance();
     }
 
+    //RamseteCommand command = null;
     @Override
     public void teleopPeriodic() {
-
+        /* 
+        if(Controls.joystick.getYButtonPressed()){
+            System.out.println("start command");
+            command = getAutonomousTrajectory.getInstance().start_command();
+        }
+        if (command != null){
+            System.out.println(CommandScheduler.getInstance().isScheduled(command));
+        }
+        */
+         
         if (Controls.joystick.getAButtonPressed()) {
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
         } else if (Controls.joystick.getYButtonPressed()) {
@@ -59,9 +69,11 @@ public class Robot extends TimedRobot {
             CommandScheduler.getInstance().cancelAll();
             drive.brake();
         }
-
         if (Controls.joystick.getLeftBumperPressed()) {
             drive.release_brake();
+        }
+        if (Controls.joystick.getRightBumperPressed()){
+            drive.brake();
         }
 
         // System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());

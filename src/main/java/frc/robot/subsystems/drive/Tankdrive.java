@@ -144,6 +144,7 @@ public class Tankdrive extends DriveBase {
     @Override
     public void release_brake() {
       rightfront.setNeutralMode(NeutralModeValue.Coast);
+      leftfront.setNeutralMode(NeutralModeValue.Coast);
     }
 
   private double step(double number) {
