@@ -44,6 +44,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         drive = Tankdrive.getInstance();
+        SignalLogger.setPath("test");
     }
 
     //RamseteCommand command = null;
@@ -62,15 +63,19 @@ public class Robot extends TimedRobot {
         if (Controls.joystick.getAButtonPressed()) {
             SignalLogger.start();
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
+            SignalLogger.start();
         } else if (Controls.joystick.getYButtonPressed()) {
             SignalLogger.start();
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
+            SignalLogger.start();
         } else if (Controls.joystick.getXButtonPressed()) {
             SignalLogger.start();
             drive.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+            SignalLogger.start();
         } else if (Controls.joystick.getBButtonPressed()) {
             SignalLogger.start();
             drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
+            SignalLogger.start();
         }
         else if (
             Controls.joystick.getAButtonReleased() ||
@@ -81,6 +86,7 @@ public class Robot extends TimedRobot {
             SignalLogger.stop();
             CommandScheduler.getInstance().cancelAll();
             drive.brake();
+            SignalLogger.stop();
         }
         if (Controls.joystick.getLeftBumperPressed()) {
             drive.release_brake();
