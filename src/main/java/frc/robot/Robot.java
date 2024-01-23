@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import com.ctre.phoenix6.SignalLogger;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,6 +27,7 @@ public class Robot extends TimedRobot {
         // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
         Shuffleboard.getTab("Debug").add(Tankdrive.getInstance().getDefaultCommand());
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
+        SignalLogger.setPath("/media/sda1");
     }
 
     @Override
@@ -52,12 +56,16 @@ public class Robot extends TimedRobot {
         */
          
         if (Controls.joystick.getAButtonPressed()) {
+            SignalLogger.start();
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
         } else if (Controls.joystick.getYButtonPressed()) {
+            SignalLogger.start();
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
         } else if (Controls.joystick.getXButtonPressed()) {
+            SignalLogger.start();
             drive.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
         } else if (Controls.joystick.getBButtonPressed()) {
+            SignalLogger.start();
             drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
         }
         else if (

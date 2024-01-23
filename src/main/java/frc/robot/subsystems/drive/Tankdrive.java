@@ -79,8 +79,7 @@ public class Tankdrive extends DriveBase {
                 .linearVelocity(
                     m_velocity.mut_replace(getWeelSpeeds().leftMetersPerSecond, MetersPerSecond));
             // Record a frame for the right motors. Since these share an encoder, we
-            // consider
-            // the entire group to be one motor.
+            // consider the entire group to be one motor.
             log.motor("drive-right")
                 .voltage(
                     m_appliedVoltage.mut_replace(
