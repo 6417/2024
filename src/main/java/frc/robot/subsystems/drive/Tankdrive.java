@@ -65,9 +65,9 @@ public class Tankdrive extends DriveBase {
   final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
   final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
-  SysIdRoutine routine = new SysIdRoutine(
+  private final SysIdRoutine routine = new SysIdRoutine(
       new SysIdRoutine.Config(),
-      new SysIdRoutine.Mechanism(t -> setVolts(t.baseUnitMagnitude(), t.baseUnitMagnitude()),
+      new SysIdRoutine.Mechanism(volts -> setVolts(volts.in(Volts), volts.in(Volts)),
           log -> {
             // Record a frame for the left motors. Since these share an encoder, we consider
             // the entire group to be one motor.

@@ -9,12 +9,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.subsystems.Tankdrive_poseestimator;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
-import frc.robot.subsystems.drive.getAutonomousTrajectory;
 
 public class Robot extends TimedRobot {
 
@@ -39,17 +37,10 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         drive = Tankdrive.getInstance();
     }
-    RamseteCommand command = null;
+
     @Override
     public void teleopPeriodic() {
-        if(Controls.joystick.getYButtonPressed()){
-            System.out.println("start command");
-            command = getAutonomousTrajectory.getInstance().start_command();
-        }
-        if (command != null){
-            System.out.println(CommandScheduler.getInstance().isScheduled(command));
-        }
-        /* 
+
         if (Controls.joystick.getAButtonPressed()) {
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
         } else if (Controls.joystick.getYButtonPressed()) {
@@ -66,13 +57,12 @@ public class Robot extends TimedRobot {
             Controls.joystick.getYButtonReleased()
         ) {
             CommandScheduler.getInstance().cancelAll();
-            // drive.brake();
+            drive.brake();
         }
-        */
 
-        // if (Controls.joystick.getLeftBumperPressed()) {
-        //     drive.release_brake();
-        // }
+        if (Controls.joystick.getLeftBumperPressed()) {
+            drive.release_brake();
+        }
 
         // System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
     }
