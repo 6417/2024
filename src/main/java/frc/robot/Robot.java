@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.fridowpi.joystick.JoystickHandler;
+import frc.fridowpi.joystick.joysticks.Logitech;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Tankdrive_poseestimator;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
@@ -20,6 +23,7 @@ import frc.robot.subsystems.drive.Tankdrive;
 public class Robot extends TimedRobot {
 
     DriveBase drive;
+    private ShooterSubsystem shooter;
 
     @Override
     public void robotInit() {
@@ -74,6 +78,7 @@ public class Robot extends TimedRobot {
             Controls.joystick.getXButtonReleased() ||
             Controls.joystick.getYButtonReleased()
         ) {
+            SignalLogger.stop();
             CommandScheduler.getInstance().cancelAll();
             drive.brake();
         }
@@ -82,6 +87,13 @@ public class Robot extends TimedRobot {
         }
         if (Controls.joystick.getRightBumperPressed()){
             drive.brake();
+        }
+
+        // Shooter
+        if (Controls.joystick.getPOV() == 0) {
+            shooter.changeMotorSpeed(10);
+        } else if (Controls.joystick.getPOV() == 180) {
+            shooter.changeMotorSpeed(-10);
         }
 
         // System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
