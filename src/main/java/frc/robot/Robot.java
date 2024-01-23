@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import com.ctre.phoenix6.SignalLogger;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,6 +41,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         drive = Tankdrive.getInstance();
+        SignalLogger.setPath("test");
     }
     //RamseteCommand command = null;
     @Override
@@ -55,12 +59,16 @@ public class Robot extends TimedRobot {
          
         if (Controls.joystick.getAButtonPressed()) {
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
+            SignalLogger.start();
         } else if (Controls.joystick.getYButtonPressed()) {
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
+            SignalLogger.start();
         } else if (Controls.joystick.getXButtonPressed()) {
             drive.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+            SignalLogger.start();
         } else if (Controls.joystick.getBButtonPressed()) {
             drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
+            SignalLogger.start();
         }
         else if (
             Controls.joystick.getAButtonReleased() ||
@@ -70,6 +78,7 @@ public class Robot extends TimedRobot {
         ) {
             CommandScheduler.getInstance().cancelAll();
             drive.brake();
+            SignalLogger.stop();
         }
         
 
