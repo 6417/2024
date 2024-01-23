@@ -65,9 +65,9 @@ public class Tankdrive extends DriveBase {
   final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
   final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
-  SysIdRoutine routine = new SysIdRoutine(
+  private final SysIdRoutine routine = new SysIdRoutine(
       new SysIdRoutine.Config(),
-      new SysIdRoutine.Mechanism(t -> setVolts(t.baseUnitMagnitude(), t.baseUnitMagnitude()),
+      new SysIdRoutine.Mechanism(volts -> setVolts(volts.in(Volts), volts.in(Volts)),
           log -> {
             // Record a frame for the left motors. Since these share an encoder, we consider
             // the entire group to be one motor.
@@ -79,8 +79,7 @@ public class Tankdrive extends DriveBase {
                 .linearVelocity(
                     m_velocity.mut_replace(getWeelSpeeds().leftMetersPerSecond, MetersPerSecond));
             // Record a frame for the right motors. Since these share an encoder, we
-            // consider
-            // the entire group to be one motor.
+            // consider the entire group to be one motor.
             log.motor("drive-right")
                 .voltage(
                     m_appliedVoltage.mut_replace(

@@ -12,12 +12,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.subsystems.Tankdrive_poseestimator;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
-import frc.robot.subsystems.drive.getAutonomousTrajectory;
 
 public class Robot extends TimedRobot {
 
@@ -29,6 +27,7 @@ public class Robot extends TimedRobot {
         // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
         Shuffleboard.getTab("Debug").add(Tankdrive.getInstance().getDefaultCommand());
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
+        SignalLogger.setPath("/media/sda1");
     }
 
     @Override
@@ -43,9 +42,9 @@ public class Robot extends TimedRobot {
         drive = Tankdrive.getInstance();
         SignalLogger.setPath("test");
     }
+
     //RamseteCommand command = null;
     @Override
-    
     public void teleopPeriodic() {
         /* 
         if(Controls.joystick.getYButtonPressed()){
@@ -58,15 +57,19 @@ public class Robot extends TimedRobot {
         */
          
         if (Controls.joystick.getAButtonPressed()) {
+            SignalLogger.start();
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
             SignalLogger.start();
         } else if (Controls.joystick.getYButtonPressed()) {
+            SignalLogger.start();
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
             SignalLogger.start();
         } else if (Controls.joystick.getXButtonPressed()) {
+            SignalLogger.start();
             drive.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
             SignalLogger.start();
         } else if (Controls.joystick.getBButtonPressed()) {
+            SignalLogger.start();
             drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
             SignalLogger.start();
         }
@@ -80,8 +83,6 @@ public class Robot extends TimedRobot {
             drive.brake();
             SignalLogger.stop();
         }
-        
-
         if (Controls.joystick.getLeftBumperPressed()) {
             drive.release_brake();
         }
