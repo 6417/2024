@@ -7,8 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -37,11 +40,11 @@ public class Robot extends TimedRobot {
         SignalLogger.setPath("/media/sda1");
     }
 
+    CANSparkMax spark = new CANSparkMax(1, MotorType.kBrushless);
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         Tankdrive_poseestimator.getInstance().updatePoseEstimator();
-
     }
 
     @Override
@@ -53,6 +56,7 @@ public class Robot extends TimedRobot {
     // RamseteCommand command = null;
     @Override
     public void teleopPeriodic() {
+        spark.set(0.1);
         /*
          * if(Controls.joystick.getYButtonPressed()){
          * System.out.println("start command");
