@@ -59,4 +59,14 @@ public class Constants {
     public static final class Global {
         public static final int idShooterMotor = 0;
     }
+
+    public static final class Shooter {
+        public static final double OptimalAmpSpeed = 0.3;
+        public static final double OptimalSpeakerSpeed = 0.9;
+        public static final double OptimalIntakeSpeed = -0.6;
+    }
+
+    public static final class Sysid {
+        public static final boolean isTuning = false;
+    }
 }
