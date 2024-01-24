@@ -6,6 +6,7 @@ import java.util.List;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -40,9 +41,12 @@ public class getAutonomousTrajectory {
         TrajectoryConfig conf = getTrajectoryConfig();
         List<Translation2d> list_translationd2 = new ArrayList<Translation2d>();
 
-        Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition(),
-        list_translationd2, Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition().plus(new Transform2d(new Translation2d(1,0),new Rotation2d(0))),conf);
-
+        //Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition(),
+        //list_translationd2, Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition().plus(new Transform2d(new Translation2d(1,0),new Rotation2d(0))),conf);
+        Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(new Translation2d(0,0),new Rotation2d(0)), 
+        list_translationd2, 
+        new Pose2d(new Translation2d(1,0), new Rotation2d(0)), conf);
+        
         RamseteCommand command = new RamseteCommand(
             new_trajectory,
             Tankdrive.getInstance()::getPos,

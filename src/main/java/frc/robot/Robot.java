@@ -27,7 +27,8 @@ public class Robot extends TimedRobot {
         // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
         Shuffleboard.getTab("Debug").add(Tankdrive.getInstance().getDefaultCommand());
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
-        SignalLogger.setPath("/media/sda1");
+        // SignalLogger.setPath("/media/sda1");
+        SignalLogger.setPath("/home/lvuser/logs");
     }
 
     @Override
