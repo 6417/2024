@@ -53,6 +53,8 @@ public class Constants {
         public static final class Drive {
             public static final double kMaxSpeedMetersPerSecond = 0;
             public static final double kMaxAccelerationMetersPerSecondSquared = 0;
+
+            public static final double gearRatio = 1.0 / 5.192308;
         }
     }
 
