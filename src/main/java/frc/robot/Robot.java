@@ -10,8 +10,8 @@ import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Tankdrive_poseestimator;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
@@ -19,14 +19,20 @@ import frc.robot.subsystems.drive.Tankdrive;
 
 public class Robot extends TimedRobot {
 
-    DriveBase drive;
+    // Aliases for often used singleton instances
+    DriveBase drive = Tankdrive.getInstance();
+    ShooterSubsystem shooter = ShooterSubsystem.getInstance();
 
     @Override
     public void robotInit() {
-        Shuffleboard.getTab("Drive").add(Tankdrive.getInstance());
+        // Add subsystems
+        Shuffleboard.getTab("Drive").add(drive);
+        Shuffleboard.getTab("Shooter").add(shooter);
+
         // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
-        Shuffleboard.getTab("Debug").add(Tankdrive.getInstance().getDefaultCommand());
+        Shuffleboard.getTab("Debug").add(drive.getDefaultCommand());
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
+
         // SignalLogger.setPath("/media/sda1");
         SignalLogger.setPath("/home/lvuser/logs");
     }
@@ -40,23 +46,58 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        drive = Tankdrive.getInstance();
         SignalLogger.setPath("test");
+        shooter.setMotorSpeed(0);
     }
 
-    //RamseteCommand command = null;
+    // RamseteCommand command = null;
     @Override
     public void teleopPeriodic() {
-        /* 
-        if(Controls.joystick.getYButtonPressed()){
-            System.out.println("start command");
-            command = getAutonomousTrajectory.getInstance().start_command();
+        /*
+         * if(Controls.joystick.getYButtonPressed()){
+         * System.out.println("start command");
+         * command = getAutonomousTrajectory.getInstance().start_command();
+         * }
+         * if (command != null){
+         * System.out.println(CommandScheduler.getInstance().isScheduled(command));
+         * }
+         */
+
+        if (Constants.Sysid.isTuning) {
+            bindButtonsForSysid();
+        } else {
+            bindButtonsDefault();
+            shooter.run(true);
         }
-        if (command != null){
-            System.out.println(CommandScheduler.getInstance().isScheduled(command));
+
+        // Brake mode
+        if (Controls.joystick.getLeftBumperPressed()) {
+            drive.release_brake();
         }
-        */
-         
+        if (Controls.joystick.getRightBumperPressed()) {
+            drive.brake();
+        }
+
+        // System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
+    }
+
+    private void bindButtonsDefault() {
+        // Shooter
+        if (Controls.joystick.getPOV() == 0) {
+            shooter.changeMotorSpeed(1);
+        } else if (Controls.joystick.getPOV() == 180) {
+            shooter.changeMotorSpeed(-1);
+        }
+        if (Controls.joystick.getYButtonPressed()) {
+            shooter.setMotorSpeed(Constants.Shooter.OptimalSpeakerSpeed);
+        } else if (Controls.joystick.getXButtonPressed()) {
+            shooter.setMotorSpeed(Constants.Shooter.OptimalAmpSpeed);
+        } else if (Controls.joystick.getBButtonPressed()) {
+            shooter.setMotorSpeed(0.0);
+        }
+    }
+
+    private void bindButtonsForSysid() {
         if (Controls.joystick.getAButtonPressed()) {
             SignalLogger.start();
             drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
@@ -73,24 +114,14 @@ public class Robot extends TimedRobot {
             SignalLogger.start();
             drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
             SignalLogger.start();
-        }
-        else if (
-            Controls.joystick.getAButtonReleased() ||
-            Controls.joystick.getBButtonReleased() ||
-            Controls.joystick.getXButtonReleased() ||
-            Controls.joystick.getYButtonReleased()
-        ) {
+        } else if (Controls.joystick.getAButtonReleased() ||
+                Controls.joystick.getBButtonReleased() ||
+                Controls.joystick.getXButtonReleased() ||
+                Controls.joystick.getYButtonReleased()) {
+            SignalLogger.stop();
             CommandScheduler.getInstance().cancelAll();
             drive.brake();
             SignalLogger.stop();
         }
-        if (Controls.joystick.getLeftBumperPressed()) {
-            drive.release_brake();
-        }
-        if (Controls.joystick.getRightBumperPressed()){
-            drive.brake();
-        }
-
-        // System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
     }
 }
