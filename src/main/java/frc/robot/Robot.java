@@ -41,6 +41,7 @@ public class Robot extends TimedRobot {
     }
 
     CANSparkMax spark = new CANSparkMax(1, MotorType.kBrushless);
+
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
