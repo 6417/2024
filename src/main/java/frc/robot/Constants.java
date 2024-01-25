@@ -18,12 +18,12 @@ public class Constants {
         }
 
         public static final class PathWeaver {
-            public static final double ksMeters = 0.12091;
-            public static final double kvMetersPerSecoond = 2.3501;
-            public static final double ka = 0.21997;
+            //public static final double ksMeters = 0.12091;
+            //public static final double kvMetersPerSecoond = 2.3501;
+            //public static final double ka = 0.21997;
 
-            public static final double kMaxVMetersPerSecond = 3.3;
-            public static final double kMaxAccMetersPerSecond = 1.2;
+            public static final double kMaxVMetersPerSecond = 1;
+            public static final double kMaxAccMetersPerSecond = 0.9;
             public static final double kMaxCentripetalAcceleration = 0;
 
             public static final double kRamsetB = 0;
@@ -39,10 +39,10 @@ public class Constants {
         //final public static double kMaxAccMetersPerSecond = 0;
         //final public static DifferentialDriveKinematics kDriveKinematics;
 
-        final public static double ksVolts = 0.20; //random value
+        final public static double ksVolts = 0.40; //random value
         final public static double kvVoltSevondsPerMeter = 1.98; //random value
-        final public static double kaVoltSecondsSquaredPerMeter = 0.2; //random value
-        final public static double kPDriveVel = 5; //random value
+        final public static double kaVoltSecondsSquaredPerMeter = 0.4; //random value
+        final public static double kPDriveVel = 2; //random value
     }
 
     public static final class Tankdrive {
@@ -56,10 +56,6 @@ public class Constants {
 
             public static final double gearRatio = 1.0 / 5.192308;
         }
-    }
-
-    public static final class Global {
-        public static final int idShooterMotor = 0;
     }
 
     public static final class Shooter {

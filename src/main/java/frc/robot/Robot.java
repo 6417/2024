@@ -14,11 +14,14 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import frc.robot.commands.AutoCommand;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.Tankdrive_poseestimator;
+import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
+import frc.robot.subsystems.drive.getAutonomousTrajectory;
 
 public class Robot extends TimedRobot {
 
@@ -54,20 +57,30 @@ public class Robot extends TimedRobot {
         shooter.setMotorSpeed(0);
     }
 
-    // RamseteCommand command = null;
+    RamseteCommand aCommand = null;
     @Override
     public void teleopPeriodic() {
-        spark.set(0.1);
-        /*
-         * if(Controls.joystick.getYButtonPressed()){
-         * System.out.println("start command");
-         * command = getAutonomousTrajectory.getInstance().start_command();
-         * }
-         * if (command != null){
-         * System.out.println(CommandScheduler.getInstance().isScheduled(command));
-         * }
-         */
-
+        //spark.set(0.1);
+        Tankdrive.getInstance().differentialDrive.feed();
+        if(Controls.joystick.getYButtonPressed()){
+            System.out.println("start command");
+            //AutoCommand aComand = new AutoCommand(getAutonomousTrajectory.getInstance());
+            //aComand.schedule();
+            getAutonomousTrajectory.getInstance().get_comand().schedule();
+            //command = getAutonomousTrajectory.getInstance().start_command();
+            //getAutonomousTrajectory.getInstance();
+        }
+        if (aCommand != null){
+            System.out.println(CommandScheduler.getInstance().isScheduled(aCommand));
+        }
+        if(Controls.joystick.getLeftBumperPressed()){
+            Tankdrive.getInstance().brake();
+        }
+        if (Controls.joystick.getRightBumperPressed()){
+            Tankdrive.getInstance().release_brake();
+        }
+        
+        /* 
         if (Constants.Sysid.isTuning) {
             bindButtonsForSysid();
         } else {
@@ -128,5 +141,6 @@ public class Robot extends TimedRobot {
             drive.brake();
             SignalLogger.stop();
         }
+        */
     }
 }

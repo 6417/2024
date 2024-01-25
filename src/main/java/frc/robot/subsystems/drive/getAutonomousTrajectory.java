@@ -15,10 +15,11 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Tankdrive_poseestimator;
+import frc.robot.commands.AutoCommand;
 
-public class getAutonomousTrajectory {
+public class getAutonomousTrajectory extends SubsystemBase{
 
     public static getAutonomousTrajectory instance;
 
@@ -40,6 +41,8 @@ public class getAutonomousTrajectory {
     private RamseteCommand getTrajectory(){
         TrajectoryConfig conf = getTrajectoryConfig();
         List<Translation2d> list_translationd2 = new ArrayList<Translation2d>();
+        list_translationd2.add(new Translation2d(1,-1));
+        list_translationd2.add(new Translation2d(2,1));
 
         //Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition(),
         //list_translationd2, Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition().plus(new Transform2d(new Translation2d(1,0),new Rotation2d(0))),conf);
@@ -65,10 +68,15 @@ public class getAutonomousTrajectory {
         return command;
     }
 
-    public RamseteCommand start_command(){
+    public RamseteCommand get_comand(){
+        return getTrajectory();
+    }
+
+    public void start_command(){
         RamseteCommand command = getTrajectory();
         //command.schedule();
-        return command;
+        this.setDefaultCommand(new AutoCommand(this));
+        //return command;
     }
 
     public static getAutonomousTrajectory getInstance(){

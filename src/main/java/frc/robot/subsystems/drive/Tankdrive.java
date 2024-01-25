@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.Tankdrive_poseestimator;
+import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 
 public class Tankdrive extends DriveBase {
 
@@ -43,7 +43,7 @@ public class Tankdrive extends DriveBase {
     private StatusSignal rotorv_left = leftfront.getRotorVelocity();
     private StatusSignal rotorv_rigth = rightfront.getRotorVelocity();
 
-    private DifferentialDrive differentialDrive = new DifferentialDrive(leftfront::set, rightfront::set);
+    public DifferentialDrive differentialDrive = new DifferentialDrive(leftfront::set, rightfront::set);
     public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(0.7);
 
     private static Tankdrive instance = new Tankdrive();
