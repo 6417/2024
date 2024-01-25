@@ -10,21 +10,23 @@ import com.ctre.phoenix6.SignalLogger;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.Tankdrive_poseestimator;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
+import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 
 public class Robot extends TimedRobot {
 
     // Aliases for often used singleton instances
     DriveBase drive = Tankdrive.getInstance();
     ShooterSubsystem shooter = ShooterSubsystem.getInstance();
+    AnalogEncoder absEncoder = new AnalogEncoder(0);
+    // CANSparkMax spark = new CANSparkMax(3, MotorType.kBrushless);
 
     @Override
     public void robotInit() {
@@ -35,13 +37,12 @@ public class Robot extends TimedRobot {
         // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
         Shuffleboard.getTab("Debug").add(drive.getDefaultCommand());
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
+        Shuffleboard.getTab("Debug").addDouble("absEncoder", absEncoder::getAbsolutePosition);
 
         // Logger path for '.wpilog's
         SignalLogger.setPath("/media/sda1");
     }
-
-    CANSparkMax spark = new CANSparkMax(1, MotorType.kBrushless);
-
+    
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
@@ -52,22 +53,12 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         SignalLogger.setPath("test");
         shooter.setMotorSpeed(0);
+        // spark.set(0.07);
     }
 
-    // RamseteCommand command = null;
     @Override
     public void teleopPeriodic() {
-        spark.set(0.1);
-        /*
-         * if(Controls.joystick.getYButtonPressed()){
-         * System.out.println("start command");
-         * command = getAutonomousTrajectory.getInstance().start_command();
-         * }
-         * if (command != null){
-         * System.out.println(CommandScheduler.getInstance().isScheduled(command));
-         * }
-         */
-
+        // Button inputs
         if (Constants.Sysid.isTuning) {
             bindButtonsForSysid();
         } else {
@@ -75,15 +66,13 @@ public class Robot extends TimedRobot {
             shooter.run(true);
         }
 
-        // Brake mode
+        // Set brake mode
         if (Controls.joystick.getLeftBumperPressed()) {
             drive.release_brake();
         }
         if (Controls.joystick.getRightBumperPressed()) {
             drive.brake();
         }
-
-        // System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
     }
 
     private void bindButtonsDefault() {
