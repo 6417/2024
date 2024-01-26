@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.drive.Controls;
+import frc.robot.Controls;
 import frc.robot.subsystems.drive.DriveBase;
 import edu.wpi.first.wpilibj2.command.Command;
 

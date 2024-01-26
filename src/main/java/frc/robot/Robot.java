@@ -7,15 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
@@ -26,7 +23,6 @@ public class Robot extends TimedRobot {
     DriveBase drive = Tankdrive.getInstance();
     ShooterSubsystem shooter = ShooterSubsystem.getInstance();
     AnalogEncoder absEncoder = new AnalogEncoder(0);
-    // CANSparkMax spark = new CANSparkMax(3, MotorType.kBrushless);
 
     @Override
     public void robotInit() {
@@ -53,7 +49,6 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         SignalLogger.setPath("test");
         shooter.setMotorSpeed(0);
-        // spark.set(0.07);
     }
 
     @Override

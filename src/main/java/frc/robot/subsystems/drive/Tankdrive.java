@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Controls;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 
@@ -161,8 +162,8 @@ public class Tankdrive extends DriveBase {
     public void drive2(double v_x, double v_y, double rot) {
         m_rightOut.Output = step(v_x) * (v_x * v_x + rot) / 2;
         m_leftOut.Output = step(v_x) * (v_x * v_x - rot) / 2;
-        System.out.println((v_x * v_x - rot) / 2);
-        System.out.println(v_x * v_y + rot);
+        // System.out.println((v_x * v_x - rot) / 2);
+        // System.out.println(v_x * v_y + rot);
 
         rightfront.setControl(m_rightOut);
         leftfront.setControl(m_leftOut);
