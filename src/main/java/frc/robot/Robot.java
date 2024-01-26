@@ -15,22 +15,26 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.Tankdrive_poseestimator;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
+import frc.robot.subsystems.drive.swerve.SwerveModule;
+import frc.robot.subsystems.drive.swerve.SwerveSubsystem;
+import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 
 public class Robot extends TimedRobot {
 
     // Aliases for often used singleton instances
     DriveBase drive = Tankdrive.getInstance();
-    ShooterSubsystem shooter = ShooterSubsystem.getInstance();
+    // ShooterSubsystem shooter = ShooterSubsystem.getInstance();
+    SwerveModule swerve = SwerveModule.getInstance();
 
     @Override
     public void robotInit() {
         // Add subsystems
         Shuffleboard.getTab("Drive").add(drive);
-        Shuffleboard.getTab("Shooter").add(shooter);
+        Shuffleboard.getTab("Drive/swerve").add(swerve);
+        // Shuffleboard.getTab("Shooter").add(shooter);
 
         // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
         Shuffleboard.getTab("Debug").add(drive.getDefaultCommand());
@@ -40,7 +44,6 @@ public class Robot extends TimedRobot {
         SignalLogger.setPath("/media/sda1");
     }
 
-    CANSparkMax spark = new CANSparkMax(1, MotorType.kBrushless);
 
     @Override
     public void robotPeriodic() {
@@ -51,13 +54,12 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         SignalLogger.setPath("test");
-        shooter.setMotorSpeed(0);
+        // shooter.setMotorSpeed(0);
     }
 
     // RamseteCommand command = null;
     @Override
     public void teleopPeriodic() {
-        spark.set(0.1);
         /*
          * if(Controls.joystick.getYButtonPressed()){
          * System.out.println("start command");
@@ -72,7 +74,7 @@ public class Robot extends TimedRobot {
             bindButtonsForSysid();
         } else {
             bindButtonsDefault();
-            shooter.run(true);
+            // shooter.run(true);
         }
 
         // Brake mode
@@ -89,16 +91,16 @@ public class Robot extends TimedRobot {
     private void bindButtonsDefault() {
         // Shooter
         if (Controls.joystick.getPOV() == 0) {
-            shooter.changeMotorSpeed(1);
+            // shooter.changeMotorSpeed(1);
         } else if (Controls.joystick.getPOV() == 180) {
-            shooter.changeMotorSpeed(-1);
+            // shooter.changeMotorSpeed(-1);
         }
         if (Controls.joystick.getYButtonPressed()) {
-            shooter.setMotorSpeed(Constants.Shooter.OptimalSpeakerSpeed);
+            // shooter.setMotorSpeed(Constants.Shooter.OptimalSpeakerSpeed);
         } else if (Controls.joystick.getXButtonPressed()) {
-            shooter.setMotorSpeed(Constants.Shooter.OptimalAmpSpeed);
+            // shooter.setMotorSpeed(Constants.Shooter.OptimalAmpSpeed);
         } else if (Controls.joystick.getBButtonPressed()) {
-            shooter.setMotorSpeed(0.0);
+            // shooter.setMotorSpeed(0.0);
         }
     }
 
