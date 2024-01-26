@@ -42,7 +42,7 @@ public class Constants {
         final public static double ksVolts = 0.40; //random value
         final public static double kvVoltSevondsPerMeter = 1.98; //random value
         final public static double kaVoltSecondsSquaredPerMeter = 0.4; //random value
-        final public static double kPDriveVel = 2; //random value
+        final public static double kPDriveVel = 0.1; //random value
     }
 
     public static final class Tankdrive {

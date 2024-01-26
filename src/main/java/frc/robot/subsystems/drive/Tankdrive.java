@@ -14,6 +14,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
@@ -31,20 +32,21 @@ import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 
 public class Tankdrive extends DriveBase {
 
-    TalonFX leftfront = new TalonFX(Constants.Testchassi.idLeftfront);
-    TalonFX rightfront = new TalonFX(Constants.Testchassi.idRigthfront);
+    public TalonFX leftfront = new TalonFX(Constants.Testchassi.idLeftfront);
+    public TalonFX rightfront = new TalonFX(Constants.Testchassi.idRigthfront);
     SysIdRoutineLog log;
 
-    private final DutyCycleOut m_leftOut = new DutyCycleOut(0);
-    private final DutyCycleOut m_rightOut = new DutyCycleOut(0);
+    public final DutyCycleOut m_leftOut = new DutyCycleOut(0);
+    public final DutyCycleOut m_rightOut = new DutyCycleOut(0);
 
-    private StatusSignal rotorpos_left = leftfront.getRotorPosition();
-    private StatusSignal rotorpos_rigth = rightfront.getRotorPosition();
-    private StatusSignal rotorv_left = leftfront.getRotorVelocity();
-    private StatusSignal rotorv_rigth = rightfront.getRotorVelocity();
+    private StatusSignal rotorpos_left = leftfront.getPosition();
+    private StatusSignal rotorpos_rigth = rightfront.getPosition();
+    private StatusSignal rotorv_left = leftfront.getVelocity();
+    private StatusSignal rotorv_rigth = rightfront.getVelocity();
 
     public DifferentialDrive differentialDrive = new DifferentialDrive(leftfront::set, rightfront::set);
     public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(0.7);
+    //public DifferentialDriveWheelPositions wheelPositions = new DifferentialDriveWheelPositions(null, null)
 
     private static Tankdrive instance = new Tankdrive();
 
@@ -134,6 +136,10 @@ public class Tankdrive extends DriveBase {
     @Override
     public Pose2d getPos() {
         return Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition();
+    }
+
+    public DifferentialDriveWheelPositions getWeelPosition(){
+        return new DifferentialDriveWheelPositions(getRigthEncoderPos(), getLeftEncoderPos());
     }
 
     @Override

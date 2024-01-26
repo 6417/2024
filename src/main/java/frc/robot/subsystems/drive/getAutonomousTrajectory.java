@@ -41,14 +41,14 @@ public class getAutonomousTrajectory extends SubsystemBase{
     private RamseteCommand getTrajectory(){
         TrajectoryConfig conf = getTrajectoryConfig();
         List<Translation2d> list_translationd2 = new ArrayList<Translation2d>();
-        list_translationd2.add(new Translation2d(1,-1));
-        list_translationd2.add(new Translation2d(2,1));
+        list_translationd2.add(new Translation2d(1,0.5));
+        //list_translationd2.add(new Translation2d(2,1));
 
         //Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition(),
         //list_translationd2, Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition().plus(new Transform2d(new Translation2d(1,0),new Rotation2d(0))),conf);
         Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(new Translation2d(0,0),new Rotation2d(0)), 
         list_translationd2, 
-        new Pose2d(new Translation2d(1,0), new Rotation2d(0)), conf);
+        new Pose2d(new Translation2d(2,0), new Rotation2d(0)), conf);
         
         RamseteCommand command = new RamseteCommand(
             new_trajectory,
