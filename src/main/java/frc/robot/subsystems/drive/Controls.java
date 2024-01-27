@@ -1,12 +1,12 @@
 package frc.robot.subsystems.drive;
 
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Holds the data concerning input, which should be available
  * either to the entire program or get exported to the suffleboard */
-public class Controls implements Sendable {
+public class Controls extends SubsystemBase {
     private static Controls instance = new Controls();
     
     final public static XboxController joystick = new XboxController(0);
@@ -42,6 +42,11 @@ public class Controls implements Sendable {
         builder.addDoubleProperty("joystickLeftY", Controls.joystick::getLeftY, null);
         builder.addDoubleProperty("joystickRightX", Controls.joystick::getRightX, null);
         builder.addDoubleProperty("joystickRightY", Controls.joystick::getRightY, null); // Not working: wtf?!?
-    }
 
+        // Joystick buttons
+        builder.addDoubleProperty("buttonX", Controls.joystick::getLeftX, null);
+        builder.addDoubleProperty("button", Controls.joystick::getLeftY, null);
+        builder.addDoubleProperty("joystickRightX", Controls.joystick::getRightX, null);
+        builder.addDoubleProperty("joystickRightY", Controls.joystick::getRightY, null); // Not working: wtf?!?
+    }
 }
