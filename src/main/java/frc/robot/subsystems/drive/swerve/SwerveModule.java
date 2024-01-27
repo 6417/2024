@@ -20,6 +20,7 @@ public class SwerveModule extends SubsystemBase {
 
     private SwerveModule() {
         pidController.setSetpoint(0.0);
+        pidController.enableContinuousInput(0, 1);
     }
 
     public void periodic() {

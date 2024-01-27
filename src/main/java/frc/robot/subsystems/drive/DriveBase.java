@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
-public class DriveBase extends SubsystemBase implements IDrive, Sendable {
+public class DriveBase extends SubsystemBase implements IDrive {
 
     private static DriveBase instance;
 

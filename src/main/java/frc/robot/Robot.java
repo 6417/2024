@@ -10,8 +10,8 @@ import com.ctre.phoenix6.SignalLogger;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -27,7 +27,9 @@ public class Robot extends TimedRobot {
     // Aliases for often used singleton instances
     DriveBase drive = Tankdrive.getInstance();
     // ShooterSubsystem shooter = ShooterSubsystem.getInstance();
-    SwerveModule swerve = SwerveModule.getInstance();
+    SwerveModule swerve=SwerveModule.getInstance();
+    ShooterSubsystem shooter = ShooterSubsystem.getInstance();
+    // CANSparkMax spark = new CANSparkMax(3, MotorType.kBrushless);
 
     @Override
     public void robotInit() {
@@ -44,7 +46,6 @@ public class Robot extends TimedRobot {
         SignalLogger.setPath("/media/sda1");
     }
 
-
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
@@ -54,21 +55,13 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         SignalLogger.setPath("test");
-        // shooter.setMotorSpeed(0);
+        shooter.setMotorSpeed(0);
+        // spark.set(0.07);
     }
 
-    // RamseteCommand command = null;
     @Override
     public void teleopPeriodic() {
-        /*
-         * if(Controls.joystick.getYButtonPressed()){
-         * System.out.println("start command");
-         * command = getAutonomousTrajectory.getInstance().start_command();
-         * }
-         * if (command != null){
-         * System.out.println(CommandScheduler.getInstance().isScheduled(command));
-         * }
-         */
+
 
         if (Constants.Sysid.isTuning) {
             bindButtonsForSysid();
@@ -77,15 +70,13 @@ public class Robot extends TimedRobot {
             // shooter.run(true);
         }
 
-        // Brake mode
+        // Set brake mode
         if (Controls.joystick.getLeftBumperPressed()) {
             drive.release_brake();
         }
         if (Controls.joystick.getRightBumperPressed()) {
             drive.brake();
         }
-
-        // System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
     }
 
     private void bindButtonsDefault() {
