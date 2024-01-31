@@ -4,115 +4,120 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
-import com.ctre.phoenix6.SignalLogger;
-
-import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.drive.Controls;
-import frc.robot.subsystems.drive.DriveBase;
-import frc.robot.subsystems.drive.Tankdrive;
-import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.CalibrateSwerve;
+import frc.robot.commands.CalibrateSwerveMotorsToSensor;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.commands.SetWheelsStraight;
 
+/**
+ * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the name of this class or
+ * the package after creating this project, you must also update the build.gradle file in the
+ * project.
+ */
 public class Robot extends TimedRobot {
+  private Command m_autonomousCommand;
 
-    // Aliases for often used singleton instances
-    DriveBase drive = Tankdrive.getInstance();
-    ShooterSubsystem shooter = ShooterSubsystem.getInstance();
-    AnalogEncoder absEncoder = new AnalogEncoder(0);
+  private RobotContainer m_robotContainer;
 
-    @Override
-    public void robotInit() {
-        // Add subsystems
-        Shuffleboard.getTab("Drive").add(drive);
-        Shuffleboard.getTab("Shooter").add(shooter);
+  private DriveSubsystem driveSubsystem;
+  public Joystick joystick = new Joystick(0);
+  public JoystickButton calibrateSwerveButton = new JoystickButton(joystick, 11);
 
-        // Debugging and runtime configuration
-        Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
-        Shuffleboard.getTab("Debug").add(drive.getDefaultCommand());
-        Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
-        Shuffleboard.getTab("Debug").addDouble("absEncoder", absEncoder::getAbsolutePosition);
+  /**
+   * This function is run when the robot is first started up and should be used for any
+   * initialization code.
+   */
+  @Override
+  public void robotInit() {
+    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // autonomous chooser on the dashboard.
+    m_robotContainer = new RobotContainer();
+    driveSubsystem = new DriveSubsystem();
 
-        // Logger path for '.wpilog's
-        SignalLogger.setPath("/media/sda1");
-    }
+    calibrateSwerveButton.onTrue(new CalibrateSwerve());
+    SmartDashboard.putData(CommandScheduler.getInstance());
+
     
-    @Override
-    public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
-        Tankdrive_poseestimator.getInstance().updatePoseEstimator();
-    }
+    System.out.println("Robot initialized");
+  }
 
-    @Override
-    public void teleopInit() {
-        SignalLogger.setPath("test");
-        shooter.setMotorSpeed(0);
-    }
+  /**
+   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
+   * that you want ran during disabled, autonomous, teleoperated and test.
+   *
+   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+   * SmartDashboard integrated updating.
+   */
+  @Override
+  public void robotPeriodic() {
+    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+    // commands, running already-scheduled commands, removing finished or interrupted commands,
+    // and running subsystem periodic() methods.  This must be called from the robot's periodic
+    // block in order for anything in the Command-based framework to work.
+    CommandScheduler.getInstance().run();
+  }
 
-    @Override
-    public void teleopPeriodic() {
-        // Button inputs
-        if (Constants.Sysid.isTuning) {
-            bindButtonsForSysid();
-        } else {
-            bindButtonsDefault();
-            shooter.run(true);
-        }
+  /** This function is called once each time the robot enters Disabled mode. */
+  @Override
+  public void disabledInit() {}
 
-        // Set brake mode
-        if (Controls.joystick.getLeftBumperPressed()) {
-            drive.release_brake();
-        }
-        if (Controls.joystick.getRightBumperPressed()) {
-            drive.brake();
-        }
-    }
+  @Override
+  public void disabledPeriodic() {}
 
-    private void bindButtonsDefault() {
-        // Shooter
-        if (Controls.joystick.getPOV() == 0) {
-            shooter.changeMotorSpeed(1);
-        } else if (Controls.joystick.getPOV() == 180) {
-            shooter.changeMotorSpeed(-1);
-        }
-        if (Controls.joystick.getYButtonPressed()) {
-            shooter.setMotorSpeed(Constants.Shooter.OptimalSpeakerSpeed);
-        } else if (Controls.joystick.getXButtonPressed()) {
-            shooter.setMotorSpeed(Constants.Shooter.OptimalAmpSpeed);
-        } else if (Controls.joystick.getBButtonPressed()) {
-            shooter.setMotorSpeed(0.0);
-        }
-    }
+  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  @Override
+  public void autonomousInit() {
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    private void bindButtonsForSysid() {
-        if (Controls.joystick.getAButtonPressed()) {
-            SignalLogger.start();
-            drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
-            SignalLogger.start();
-        } else if (Controls.joystick.getYButtonPressed()) {
-            SignalLogger.start();
-            drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
-            SignalLogger.start();
-        } else if (Controls.joystick.getXButtonPressed()) {
-            SignalLogger.start();
-            drive.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
-            SignalLogger.start();
-        } else if (Controls.joystick.getBButtonPressed()) {
-            SignalLogger.start();
-            drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
-            SignalLogger.start();
-        } else if (Controls.joystick.getAButtonReleased() ||
-                Controls.joystick.getBButtonReleased() ||
-                Controls.joystick.getXButtonReleased() ||
-                Controls.joystick.getYButtonReleased()) {
-            SignalLogger.stop();
-            CommandScheduler.getInstance().cancelAll();
-            drive.brake();
-            SignalLogger.stop();
-        }
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
     }
+  }
+
+  /** This function is called periodically during autonomous. */
+  @Override
+  public void autonomousPeriodic() {}
+
+  @Override
+  public void teleopInit() {
+    // This makes sure that the autonomous stops running when
+    // teleop starts running. If you want the autonomous to
+    // continue until interrupted by another command, remove
+    // this line or comment it out.
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+    }
+  }
+
+  /** This function is called periodically during operator control. */
+  @Override
+  public void teleopPeriodic() {
+  }
+
+  @Override
+  public void testInit() {
+    // Cancels all running commands at the start of test mode.
+    CommandScheduler.getInstance().cancelAll();
+  }
+
+  /** This function is called periodically during test mode. */
+  @Override
+  public void testPeriodic() {}
+
+  /** This function is called once when the robot is first started up. */
+  @Override
+  public void simulationInit() {}
+
+  /** This function is called periodically whilst in simulation. */
+  @Override
+  public void simulationPeriodic() {}
 }

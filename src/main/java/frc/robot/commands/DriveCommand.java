@@ -1,35 +1,39 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.drive.Controls;
-import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.subsystems.DriveSubsystem;
+
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
+/** An example command that uses an example subsystem. */
 public class DriveCommand extends Command {
 
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
-  private final DriveBase m_subsystem;
-
-  public DriveCommand(DriveBase subsystem) {
-    m_subsystem = subsystem;
-    addRequirements(subsystem);
+  public DriveCommand() {
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
+  // Called when the command is initially scheduled.
   @Override
-  public void initialize() { }
+  public void initialize() {
+  }
 
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double x = Controls.joystick.getLeftX();
-    double y = Controls.joystick.getLeftY();
-    double rot = Controls.joystick.getRightX();
-    // getRightY() somehow is always 0: Don't use
-    m_subsystem.drive(y, x, x);
+    DriveSubsystem.getInstance().setModuleAngle(0, 0, 0, 0);
+    
   }
 
+  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+
   }
+
+  // Returns true when the command should end.
 
   @Override
   public boolean isFinished() {
