@@ -1,7 +1,8 @@
 package frc.robot;
 
-import frc.fridolib.RobotPreset;
+import frc.fridolib.RobotPresets;
+import frc.fridolib.RobotPresets.RobotPreset;
 
 public class Config {
-    RobotPreset activeRobot = Robots.Demogrogon;
+    public static RobotPreset activePreset = new RobotPresets.TestChassisDrive();
 }

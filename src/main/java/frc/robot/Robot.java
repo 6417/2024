@@ -14,13 +14,13 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.DriveBase;
-import frc.robot.subsystems.drive.Tankdrive;
+import frc.robot.subsystems.drive.tankdrive.FourFalcons;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 
 public class Robot extends TimedRobot {
 
     // Aliases for often used singleton instances
-    DriveBase drive = Tankdrive.getInstance();
+    DriveBase drive = FourFalcons.getInstance();
     ShooterSubsystem shooter = ShooterSubsystem.getInstance();
     AnalogEncoder absEncoder = new AnalogEncoder(0);
 

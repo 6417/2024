@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive;
+package frc.robot.subsystems.drive.tankdrive;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -12,9 +12,12 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.units.Distance;
@@ -30,7 +33,7 @@ import frc.robot.Controls;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 
-public class Tankdrive extends DriveBase {
+public class FourFalcons extends FourMotorTankdrive {
 
     TalonFX leftfront = new TalonFX(Constants.Testchassi.idLeftfront);
     TalonFX rightfront = new TalonFX(Constants.Testchassi.idRigthfront);
@@ -47,17 +50,17 @@ public class Tankdrive extends DriveBase {
     private DifferentialDrive differentialDrive = new DifferentialDrive(leftfront::set, rightfront::set);
     public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(0.7);
 
-    private static Tankdrive instance = new Tankdrive();
+    public FourFalcons(
+            int leftMaster,
+            int rightMaster,
+            int leftFollower,
+            int rightFollower) {
+        super(leftMaster, rightMaster, leftFollower, rightFollower);
 
-    public Tankdrive() {
-
-        leftfront.setInverted(true);
+        motors.invert(MotorRole.LeftMaster);
 
         rightfront.setControl(new Follower(Constants.Testchassi.idRigthback, false));
         leftfront.setControl(new Follower(Constants.Testchassi.idLeftback, false));
-
-        // this.setDefaultCommand(drive_command);
-        // drive_command.scedule;
 
         setDefaultCommand(new DriveCommand(this));
     }
@@ -138,6 +141,11 @@ public class Tankdrive extends DriveBase {
     }
 
     @Override
+    public final boolean isSwerve() {
+        return false;
+    }
+
+    @Override
     public void brake() {
         leftfront.setNeutralMode(NeutralModeValue.Brake);
         rightfront.setNeutralMode(NeutralModeValue.Brake);
@@ -149,19 +157,10 @@ public class Tankdrive extends DriveBase {
         leftfront.setNeutralMode(NeutralModeValue.Coast);
     }
 
-    private double step(double number) {
-        // use Math.signum()!
-        if (number >= 0) {
-            return 1;
-        } else {
-            return -1;
-        }
-    }
-
     // second method to drive robot but does not work
     public void drive2(double v_x, double v_y, double rot) {
-        m_rightOut.Output = step(v_x) * (v_x * v_x + rot) / 2;
-        m_leftOut.Output = step(v_x) * (v_x * v_x - rot) / 2;
+        m_rightOut.Output = Math.signum(v_x) * (v_x * v_x + rot) / 2;
+        m_leftOut.Output = Math.signum(v_x) * (v_x * v_x - rot) / 2;
         // System.out.println((v_x * v_x - rot) / 2);
         // System.out.println(v_x * v_y + rot);
 
@@ -169,6 +168,7 @@ public class Tankdrive extends DriveBase {
         leftfront.setControl(m_leftOut);
     }
 
+    @Override
     public void drive(double v_x, double v_y, double rot) {
         differentialDrive.arcadeDrive(
                 -rot * Controls.getTurnSensitivity(),
@@ -183,12 +183,29 @@ public class Tankdrive extends DriveBase {
         builder.addDoubleProperty("RightPosition", () -> rightfront.getPosition().getValueAsDouble(), null);
         builder.addBooleanProperty("CoastMode",
                 () -> rightfront.getControlMode().getValue() == ControlModeValue.CoastOut,
-                val -> 
-                    rightfront.setNeutralMode(val? NeutralModeValue.Coast: NeutralModeValue.Brake));
+                val -> rightfront.setNeutralMode(val ? NeutralModeValue.Coast : NeutralModeValue.Brake));
     }
 
-    public static Tankdrive getInstance() {
-        // Instance is instantiated on variable declaration
-        return instance;
+    // TODO: need to be implemented correctly!
+    @Override
+    public void driveToPos(Pose2d pos) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'driveToPos'");
+    }
+
+    @Override
+    public double getRightEncoderPos() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRightEncoderPos'");
+    }
+
+    @Override
+    public Optional<DifferentialDriveKinematics> getDifferentialKinematics() {
+        return null;
+    }
+
+    @Override
+    public Optional<SwerveDriveKinematics> getSwerveKinematics() {
+        return null;
     }
 }

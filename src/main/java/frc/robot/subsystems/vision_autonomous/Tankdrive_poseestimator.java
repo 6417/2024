@@ -5,7 +5,7 @@ import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.drive.Tankdrive;
+import frc.robot.subsystems.drive.tankdrive.FourFalcons;
 
 public class Tankdrive_poseestimator {
     public DifferentialDrivePoseEstimator m_poseEstimator;
@@ -15,10 +15,10 @@ public class Tankdrive_poseestimator {
     private Tankdrive_poseestimator(){
         m_poseEstimator =
         new DifferentialDrivePoseEstimator(
-            Tankdrive.getInstance().m_kinematics,
+            FourFalcons.getInstance().m_kinematics,
             Gyro.getInstance().getRotation2d(),
-            Tankdrive.getInstance().getLeftEncoderPos(),
-            Tankdrive.getInstance().getRigthEncoderPos(),
+            FourFalcons.getInstance().getLeftEncoderPos(),
+            FourFalcons.getInstance().getRigthEncoderPos(),
             new Pose2d(),
             VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
@@ -26,7 +26,7 @@ public class Tankdrive_poseestimator {
 
     public void updatePoseEstimator(){
         m_poseEstimator.update(
-        Gyro.getInstance().getRotation2d(), Tankdrive.getInstance().getLeftEncoderPos(), Tankdrive.getInstance().getRigthEncoderPos());
+        Gyro.getInstance().getRotation2d(), FourFalcons.getInstance().getLeftEncoderPos(), FourFalcons.getInstance().getRigthEncoderPos());
     }
 
     // Atention not clear witch values are releveant for the pose reseting
