@@ -12,7 +12,7 @@ public class AutoCommand extends Command {
 
   public AutoCommand(getAutonomousTrajectory subsystem) {
     m_subsystem = subsystem;
-    command = m_subsystem.get_comand();
+    //command = m_subsystem.get_comand();
     addRequirements(subsystem);
   }
 

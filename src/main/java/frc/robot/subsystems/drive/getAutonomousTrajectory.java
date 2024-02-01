@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -38,40 +39,49 @@ public class getAutonomousTrajectory extends SubsystemBase {
         return config;
     }
 
-    public Trajectory get_raw_trajectory() {
+    public Trajectory get_abs_trajectory(Pose2d endPose){
         TrajectoryConfig conf = getTrajectoryConfig();
-        List<Translation2d> list_translationd2 = new ArrayList<Translation2d>();
-        // list_translationd2.add(new Translation2d(1,0.5));
-        // list_translationd2.add(new Translation2d(2,1));
+        List<Translation2d> list_Translation2d = new ArrayList<Translation2d>();
 
-        Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-                list_translationd2,
-                new Pose2d(new Translation2d(1, 0), new Rotation2d(0)), conf);
+        Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_odometry.getInstance().m_odometry.getPoseMeters(),
+        list_Translation2d,
+        endPose,
+        conf);
+
         return new_trajectory;
     }
 
-    private RamseteCommand getTrajectory() {
+    public Trajectory get_rel_Trajectory(Pose2d endPose){
         TrajectoryConfig conf = getTrajectoryConfig();
+        List<Translation2d> list_Translation2d = new ArrayList<Translation2d>();
 
-        List<Translation2d> list_translationd2 = new ArrayList<Translation2d>();
-        //list_translationd2.add(new Translation2d(1, 0.5));
-        // list_translationd2.add(new Translation2d(2,1));
+        Translation2d endtranslation = Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getTranslation().plus(endPose.getTranslation());
+        endPose = new Pose2d(endtranslation, endPose.getRotation());
 
-        Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-                list_translationd2,
-                new Pose2d(new Translation2d(2, 0), new Rotation2d(0)), conf);
+        Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_odometry.getInstance().m_odometry.getPoseMeters(),
+        list_Translation2d,
+        endPose,
+        conf);
 
-        Trajectory drive_to_apriltag = TrajectoryGenerator.generateTrajectory(Tankdrive_odometry.getInstance().m_odometry.getPoseMeters(),
-        list_translationd2,
-        new Pose2d(15.5
-        ,5.5, new Rotation2d(0)),conf);
+        return new_trajectory;
+    }
 
-        //16.579342, 5.547868 pose of tag 4
+    private RamseteCommand getTrajectory(Pose2d endPose, int type) {
+
+        Trajectory trajectory;
+
+        if (type == 1){
+            trajectory = get_abs_trajectory(endPose);
+        }else if (type == 2){
+            trajectory = get_rel_Trajectory(endPose);
+        } else{
+            trajectory = get_abs_trajectory(endPose); //shit default
+        }
+
+        //Trajectory drive_to_apriltag = get_abs_trajectory(new Pose2d(15.5,5.5, new Rotation2d(0)));
 
         RamseteCommand command = new RamseteCommand(
-                drive_to_apriltag,
+                trajectory,
                 Tankdrive.getInstance()::getPos,
                 new RamseteController(Constants.Testchassi.PathWeaver.kRamsetB,
                         Constants.Testchassi.PathWeaver.kRamseteZeta),
@@ -88,13 +98,16 @@ public class getAutonomousTrajectory extends SubsystemBase {
         return command;
     }
 
-    public RamseteCommand get_comand() {
-        return getTrajectory();
-    }
-
     public RamseteCommand start_command() {
-        RamseteCommand command = getTrajectory();
-        command.schedule();
+        Pose2d firstApriltag = new Pose2d(15,5.5,new Rotation2d(0));
+        Pose2d backward = new Pose2d(-2,0, new Rotation2d(0));
+        Pose2d secondApriltag = new Pose2d(14.7,7.2,new Rotation2d(90));
+
+        RamseteCommand command = getTrajectory(firstApriltag,1);
+        RamseteCommand command2 = getTrajectory(backward, 2);
+        RamseteCommand command3 = getTrajectory(secondApriltag,1);
+        //command.andThen(command2).andThen(command3).schedule();
+        command3.schedule();
 
         // this.setDefaultCommand(new AutoCommand(this));
         return command;
@@ -104,6 +117,7 @@ public class getAutonomousTrajectory extends SubsystemBase {
         if (instance == null) {
             instance = new getAutonomousTrajectory();
         }
+
         return instance;
     }
 }
