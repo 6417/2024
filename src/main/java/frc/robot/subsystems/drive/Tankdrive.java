@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.commands.DriveCommand;
+import frc.robot.subsystems.vision_autonomous.Gyro;
+import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 
 public class Tankdrive extends DriveBase {
@@ -87,7 +89,7 @@ public class Tankdrive extends DriveBase {
                                 .voltage(
                                         m_appliedVoltage.mut_replace(
                                                 rightfront.get() * RobotController.getBatteryVoltage(), Volts))
-                                .linearPosition(m_distance.mut_replace(getRigthEncoderPos(), Meters))
+                                .linearPosition(m_distance.mut_replace(getRightEndocderPos(), Meters))
                                 .linearVelocity(
                                         m_velocity.mut_replace(getWeelSpeeds().rightMetersPerSecond, MetersPerSecond));
                     },
@@ -107,14 +109,22 @@ public class Tankdrive extends DriveBase {
     public void periodic() {
     }
 
-    public double getLeftEncoderPos() {
+    public double getLeftEncoderTics() {
         rotorpos_left.refresh();
         return rotorpos_left.getValueAsDouble();
     }
 
-    public double getRigthEncoderPos() {
+    public double getLeftEncoderPos(){
+        return getLeftEncoderTics() * Constants.Testchassi.ticsToMeter;
+    }
+
+    public double getRigthEncoderTics() {
         rotorpos_rigth.refresh();
-        return rotorpos_rigth.getValueAsDouble();
+        return -rotorpos_rigth.getValueAsDouble();
+    }
+
+    public double getRightEndocderPos(){
+        return getRigthEncoderTics() * Constants.Testchassi.ticsToMeter;
     }
 
     public DifferentialDriveWheelSpeeds getWeelSpeeds() {
@@ -127,9 +137,11 @@ public class Tankdrive extends DriveBase {
                         * Constants.Testchassi.Odometry.encoderToMetersConversion);
     }
 
-    public void setVolts(double leftvolts, double rigthvolts) {
+    public void setVolts(double rigthvolts, double leftvolts) {
         leftfront.setVoltage(leftvolts);
         rightfront.setVoltage(-rigthvolts);
+        //leftfront.feed();
+        //rightfront.feed();
         // m_drive.feed();
     }
 
@@ -139,7 +151,7 @@ public class Tankdrive extends DriveBase {
     }
 
     public DifferentialDriveWheelPositions getWeelPosition(){
-        return new DifferentialDriveWheelPositions(getRigthEncoderPos(), getLeftEncoderPos());
+        return new DifferentialDriveWheelPositions(getRightEndocderPos(), getLeftEncoderPos());
     }
 
     @Override
@@ -190,6 +202,10 @@ public class Tankdrive extends DriveBase {
                 () -> rightfront.getControlMode().getValue() == ControlModeValue.CoastOut,
                 val -> 
                     rightfront.setNeutralMode(val? NeutralModeValue.Coast: NeutralModeValue.Brake));
+        builder.addDoubleProperty("odometry_x", () -> Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getX(), null);
+        builder.addDoubleProperty("odometry_y", () -> Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getY(), null);
+        builder.addDoubleProperty("odometry_rot", () -> Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getRotation().getDegrees(), null);
+        builder.addDoubleProperty("gyro_angle", () -> Gyro.getInstance().getRotation2d().getDegrees(), null);
     }
 
     public static Tankdrive getInstance() {

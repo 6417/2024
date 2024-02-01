@@ -4,22 +4,21 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.commands.AutoCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.fridowpi.joystick.joysticks.Logitech;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.vision_autonomous.Gyro;
+import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
@@ -31,7 +30,8 @@ public class Robot extends TimedRobot {
     // Aliases for often used singleton instances
     DriveBase drive = Tankdrive.getInstance();
     ShooterSubsystem shooter = ShooterSubsystem.getInstance();
-
+    ShuffleboardTab tab;
+    
     @Override
     public void robotInit() {
         // Add subsystems
@@ -44,6 +44,12 @@ public class Robot extends TimedRobot {
 
         // SignalLogger.setPath("/media/sda1");
         SignalLogger.setPath("/home/lvuser/logs");
+
+        tab = Shuffleboard.getTab("robotpos");
+
+        JoystickButton resetButton = new JoystickButton(Controls.joystick,Logitech.b.getButtonId());
+        resetButton.onTrue(new InstantCommand(()->{Gyro.getInstance().reset();
+        Tankdrive_odometry.getInstance().reset_odometry();}));
     }
 
     CANSparkMax spark = new CANSparkMax(1, MotorType.kBrushless);
@@ -52,6 +58,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         Tankdrive_poseestimator.getInstance().updatePoseEstimator();
+        Tankdrive_odometry.getInstance().update_robot_pose();
     }
 
     @Override
@@ -60,7 +67,8 @@ public class Robot extends TimedRobot {
         shooter.setMotorSpeed(0);
     }
 
-    RamseteCommand aCommand = null;
+    //AutoCommand aComand = null;
+    Command auto_command = null;
 
     @Override
     public void teleopPeriodic() {
@@ -68,9 +76,12 @@ public class Robot extends TimedRobot {
         Tankdrive.getInstance().differentialDrive.feed();
         if (Controls.joystick.getYButtonPressed()) {
             System.out.println("start command");
-            AutoCommand aComand = new AutoCommand(getAutonomousTrajectory.getInstance());
-            aComand.schedule();
-            
+            //aComand = new AutoCommand(getAutonomousTrajectory.getInstance());
+            //aComand.schedule();
+            auto_command = getAutonomousTrajectory.getInstance().start_command();
+            //Trajectory path = getAutonomousTrajectory.getInstance().get_raw_trajectory();
+            //oBCommand command = new oBCommand(Own_trajectory_generytor.getInstance());
+            //command.schedule();
             //Tankdrive_poseestimator.getInstance().m_poseEstimator.resetPosition(new Rotation2d(0, 0),
                     //Tankdrive.getInstance().getWeelPosition(), new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
             //getAutonomousTrajectory.getInstance().get_comand().schedule();
@@ -78,12 +89,11 @@ public class Robot extends TimedRobot {
             // getAutonomousTrajectory.getInstance();
             //Tankdrive.getInstance().setVolts(2,2);
         }
-
         //System.out.println(Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition());
-
-        if (aCommand != null) {
-            System.out.println(CommandScheduler.getInstance().isScheduled(aCommand));
+        if (auto_command != null){
+            //System.out.println(CommandScheduler.getInstance().isScheduled(auto_command));
         }
+        
         if (Controls.joystick.getLeftBumperPressed()) {
             Tankdrive.getInstance().brake();
         }
