@@ -69,4 +69,9 @@ public class Constants {
     public static final class Sysid {
         public static final boolean isTuning = false;
     }
+
+    public static final class Climber {
+        public static final int seilZiehMotorLinks = 1;
+        public static final int seilZiehMotorRechts = 2;
+    }
 }
