@@ -1,14 +1,12 @@
 package frc.robot.commands;
 
-import java.text.spi.DecimalFormatSymbolsProvider;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.interfaces.abstract_base_classes.BDrive;
 
 public class BreakCommand extends Command {
-    DriveBase m_drive_subsystem;
+    BDrive m_drive_subsystem;
 
-    public BreakCommand(DriveBase drive_subsystem) {
+    public BreakCommand(BDrive drive_subsystem) {
         m_drive_subsystem = drive_subsystem;
     }
 

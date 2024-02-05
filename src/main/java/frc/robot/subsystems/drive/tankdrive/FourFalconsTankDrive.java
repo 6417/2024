@@ -1,12 +1,5 @@
 package frc.robot.subsystems.drive.tankdrive;
 
-import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ControlModeValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -14,26 +7,33 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Optional;
 
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Controls;
 import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
+import frc.robot.subsystems.visionAutonomous.TankDrivePoseEstimator;
 
-public class FourFalcons extends FourMotorTankdrive {
+public class FourFalconsTankDrive extends FourMotorTankdrive {
 
     TalonFX leftfront = new TalonFX(Constants.Testchassi.idLeftfront);
     TalonFX rightfront = new TalonFX(Constants.Testchassi.idRigthfront);
@@ -50,7 +50,7 @@ public class FourFalcons extends FourMotorTankdrive {
     private DifferentialDrive differentialDrive = new DifferentialDrive(leftfront::set, rightfront::set);
     public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(0.7);
 
-    public FourFalcons(
+    public FourFalconsTankDrive(
             int leftMaster,
             int rightMaster,
             int leftFollower,
@@ -137,7 +137,7 @@ public class FourFalcons extends FourMotorTankdrive {
 
     @Override
     public Pose2d getPos() {
-        return Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition();
+        return TankDrivePoseEstimator.getInstance().m_poseEstimator.getEstimatedPosition();
     }
 
     @Override
@@ -208,4 +208,10 @@ public class FourFalcons extends FourMotorTankdrive {
     public Optional<SwerveDriveKinematics> getSwerveKinematics() {
         return null;
     }
+
+	@Override
+	public Optional<DifferentialDriveWheelSpeeds> getDifferentialWheelSpeeds() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getDifferentialWheelSpeeds'");
+	}
 }

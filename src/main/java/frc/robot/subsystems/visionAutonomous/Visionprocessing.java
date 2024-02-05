@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision_autonomous;
+package frc.robot.subsystems.visionAutonomous;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 

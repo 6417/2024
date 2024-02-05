@@ -1,16 +1,16 @@
 package frc.robot.commands;
 
 import frc.robot.Controls;
-import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.interfaces.abstract_base_classes.BDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class DriveCommand extends Command {
 
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
-  private final DriveBase m_subsystem;
+  private final BDrive m_subsystem;
 
-  public DriveCommand(DriveBase subsystem) {
+  public DriveCommand(BDrive subsystem) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
   }

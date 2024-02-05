@@ -12,15 +12,14 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.interfaces.abstract_base_classes.BDrive;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.drive.DriveBase;
-import frc.robot.subsystems.drive.tankdrive.FourFalcons;
-import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
+import frc.robot.subsystems.visionAutonomous.TankDrivePoseEstimator;
 
 public class Robot extends TimedRobot {
 
     // Aliases for often used singleton instances
-    DriveBase drive = FourFalcons.getInstance();
+	BDrive drive = Config.drive();
     ShooterSubsystem shooter = ShooterSubsystem.getInstance();
     AnalogEncoder absEncoder = new AnalogEncoder(0);
 
@@ -42,7 +41,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        Tankdrive_poseestimator.getInstance().updatePoseEstimator();
+        TankDrivePoseEstimator.getInstance().updatePoseEstimator();
     }
 
     @Override

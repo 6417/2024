@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision_autonomous;
+package frc.robot.subsystems.visionAutonomous;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;

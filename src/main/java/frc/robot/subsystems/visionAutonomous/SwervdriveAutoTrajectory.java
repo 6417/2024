@@ -1,12 +1,11 @@
-package frc.robot.subsystems.vision_autonomous;
+package frc.robot.subsystems.visionAutonomous;
 
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import frc.robot.Constants;
 
-public class Swervdrive_auto_trajectory {
+public class SwervdriveAutoTrajectory {
 
-    private Swervdrive_auto_trajectory(){
+    private SwervdriveAutoTrajectory(){
 
     }
     

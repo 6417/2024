@@ -1,24 +1,26 @@
-package frc.robot.subsystems.vision_autonomous;
+package frc.robot.subsystems.visionAutonomous;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.drive.tankdrive.FourFalcons;
+import frc.robot.Config;
 
-public class Tankdrive_poseestimator {
+public class TankDrivePoseEstimator {
     public DifferentialDrivePoseEstimator m_poseEstimator;
 
-    public static Tankdrive_poseestimator instance;
+    public static TankDrivePoseEstimator instance;
 
-    private Tankdrive_poseestimator(){
+    private TankDrivePoseEstimator(){
+		assert Config.drive().isSwerve();
+
         m_poseEstimator =
         new DifferentialDrivePoseEstimator(
-            FourFalcons.getInstance().m_kinematics,
+            Config.drive().getDifferentialKinematics().get(),
             Gyro.getInstance().getRotation2d(),
-            FourFalcons.getInstance().getLeftEncoderPos(),
-            FourFalcons.getInstance().getRigthEncoderPos(),
+            Config.drive().getLeftEncoderPos(),
+            Config.drive().getRightEncoderPos(),
             new Pose2d(),
             VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
@@ -26,7 +28,7 @@ public class Tankdrive_poseestimator {
 
     public void updatePoseEstimator(){
         m_poseEstimator.update(
-        Gyro.getInstance().getRotation2d(), FourFalcons.getInstance().getLeftEncoderPos(), FourFalcons.getInstance().getRigthEncoderPos());
+        Gyro.getInstance().getRotation2d(), Config.drive().getLeftEncoderPos(), Config.drive().getRightEncoderPos());
     }
 
     // Atention not clear witch values are releveant for the pose reseting
@@ -42,9 +44,9 @@ public class Tankdrive_poseestimator {
         //Pose2d visionMeasurement2d = visionMeasurement3d.toPose2d();
     }
 
-    public static Tankdrive_poseestimator getInstance(){
+    public static TankDrivePoseEstimator getInstance(){
         if (instance == null){
-            instance = new Tankdrive_poseestimator();
+            instance = new TankDrivePoseEstimator();
         }
         return instance;
     }
