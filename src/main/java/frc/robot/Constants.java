@@ -1,5 +1,7 @@
 package frc.robot;
 
+import frc.fridowpi.motors.utils.PidValues;
+
 public class Constants {
     public static final class Testchassi{
         final public static int idRigthfront = 13;
@@ -73,5 +75,13 @@ public class Constants {
     public static final class Climber {
         public static final int seilZiehMotorLinks = 1;
         public static final int seilZiehMotorRechts = 2;
+        public static final int federLoslassMotorLinks = 3;
+        public static final int federLoslassMotorRechts = 4;
+
+        public static final PidValues pidValuesSlot0 = new PidValues(0, 0, 0);
+        public static final double toleranzDerHoheDerMotoren = 0.1;
+        public static final double raufZiehSpeed = 0.2;
+        public static final int anzFahrAbschnitte = 12;
+        public static final double ausfahrBereich = 24;
     }
 }
