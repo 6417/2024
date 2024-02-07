@@ -6,110 +6,123 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.interfaces.abstract_base_classes.BDrive;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.subsystems.visionAutonomous.TankDrivePoseEstimator;
 
 public class Robot extends TimedRobot {
 
-    // Aliases for often used singleton instances
-	BDrive drive = Config.drive();
-    ShooterSubsystem shooter = ShooterSubsystem.getInstance();
-    AnalogEncoder absEncoder = new AnalogEncoder(0);
+	// Aliases for often used singleton instances
+	AnalogEncoder absEncoder = new AnalogEncoder(0);
+	Optional<BShooter> shooter = Config.active.getShooter();
 
-    @Override
-    public void robotInit() {
-        // Add subsystems
-        Shuffleboard.getTab("Drive").add(drive);
-        Shuffleboard.getTab("Shooter").add(shooter);
+	@Override
+	public void robotInit() {
+		// Add subsystems
+		Shuffleboard.getTab("Drive").add(Config.drive());
+		if (shooter.isPresent()) {
+			Shuffleboard.getTab("Shooter").add(shooter.get());
+		}
 
-        // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
-        Shuffleboard.getTab("Debug").add(drive.getDefaultCommand());
-        Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
-        Shuffleboard.getTab("Debug").addDouble("absEncoder", absEncoder::getAbsolutePosition);
+		// Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
+		Shuffleboard.getTab("Debug").add(Config.drive().getDefaultCommand());
+		Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
+		Shuffleboard.getTab("Debug").addDouble("absEncoder", absEncoder::getAbsolutePosition);
 
-        // Logger path for '.wpilog's
-        SignalLogger.setPath("/media/sda1");
-    }
-    
-    @Override
-    public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
-        TankDrivePoseEstimator.getInstance().updatePoseEstimator();
-    }
+		// Logger path for '.wpilog's
+		SignalLogger.setPath("/media/sda1");
+	}
 
-    @Override
-    public void teleopInit() {
-        SignalLogger.setPath("test");
-        shooter.setMotorSpeed(0);
-    }
+	@Override
+	public void robotPeriodic() {
+		CommandScheduler.getInstance().run();
+		TankDrivePoseEstimator.getInstance().updatePoseEstimator();
+	}
 
-    @Override
-    public void teleopPeriodic() {
-        // Button inputs
-        if (Constants.Sysid.isTuning) {
-            bindButtonsForSysid();
-        } else {
-            bindButtonsDefault();
-            shooter.run(true);
-        }
+	@Override
+	public void teleopInit() {
+		SignalLogger.setPath("test");
+		if (shooter.isPresent()) {
+			shooter.get().setSpeedPercent(0);
+		}
+	}
 
-        // Set brake mode
-        if (Controls.joystick.getLeftBumperPressed()) {
-            drive.release_brake();
-        }
-        if (Controls.joystick.getRightBumperPressed()) {
-            drive.brake();
-        }
-    }
+	@Override
+	public void teleopPeriodic() {
+		// Button inputs
+		if (Constants.Sysid.isTuning) {
+			bindButtonsForSysid();
+		} else {
+			bindButtonsDefault();
+			if (shooter.isPresent()) {
+				shooter.get().run(true);
+			}
+		}
 
-    private void bindButtonsDefault() {
-        // Shooter
-        if (Controls.joystick.getPOV() == 0) {
-            shooter.changeMotorSpeed(1);
-        } else if (Controls.joystick.getPOV() == 180) {
-            shooter.changeMotorSpeed(-1);
-        }
-        if (Controls.joystick.getYButtonPressed()) {
-            shooter.setMotorSpeed(Constants.Shooter.OptimalSpeakerSpeed);
-        } else if (Controls.joystick.getXButtonPressed()) {
-            shooter.setMotorSpeed(Constants.Shooter.OptimalAmpSpeed);
-        } else if (Controls.joystick.getBButtonPressed()) {
-            shooter.setMotorSpeed(0.0);
-        }
-    }
+		// Set brake mode
+		if (Controls.joystick.getLeftBumperPressed()) {
+			Config.drive().release_brake();
+		}
+		if (Controls.joystick.getRightBumperPressed()) {
+			Config.drive().brake();
+		}
+	}
 
-    private void bindButtonsForSysid() {
-        if (Controls.joystick.getAButtonPressed()) {
-            SignalLogger.start();
-            drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
-            SignalLogger.start();
-        } else if (Controls.joystick.getYButtonPressed()) {
-            SignalLogger.start();
-            drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
-            SignalLogger.start();
-        } else if (Controls.joystick.getXButtonPressed()) {
-            SignalLogger.start();
-            drive.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
-            SignalLogger.start();
-        } else if (Controls.joystick.getBButtonPressed()) {
-            SignalLogger.start();
-            drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
-            SignalLogger.start();
-        } else if (Controls.joystick.getAButtonReleased() ||
-                Controls.joystick.getBButtonReleased() ||
-                Controls.joystick.getXButtonReleased() ||
-                Controls.joystick.getYButtonReleased()) {
-            SignalLogger.stop();
-            CommandScheduler.getInstance().cancelAll();
-            drive.brake();
-            SignalLogger.stop();
-        }
-    }
+	private void bindButtonsDefault() {
+		// Shooter
+		if (shooter.isPresent()) {
+			var s = shooter.get();
+			if (Controls.joystick.getPOV() == 0) {
+				s.setSpeedPercent(
+						s.getSpeedPercent() + 0.1);
+			} else if (Controls.joystick.getPOV() == 180) {
+				s.setSpeedPercent(
+						s.getSpeedPercent() - 0.1);
+			}
+			if (Controls.joystick.getYButtonPressed()) {
+				s.setSpeedPercent(Constants.Shooter.OptimalSpeakerSpeed);
+			} else if (Controls.joystick.getXButtonPressed()) {
+				s.setSpeedPercent(Constants.Shooter.OptimalAmpSpeed);
+			} else if (Controls.joystick.getBButtonPressed()) {
+				s.setSpeedPercent(0.0);
+			} else if (Controls.joystick.getAButtonPressed()) {
+				s.setSpeedPercent(1.0);
+			}
+		}
+	}
+
+	private void bindButtonsForSysid() {
+		if (Controls.joystick.getAButtonPressed()) {
+			SignalLogger.start();
+			Config.drive().sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
+			SignalLogger.start();
+		} else if (Controls.joystick.getYButtonPressed()) {
+			SignalLogger.start();
+			Config.drive().sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
+			SignalLogger.start();
+		} else if (Controls.joystick.getXButtonPressed()) {
+			SignalLogger.start();
+			Config.drive().sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+			SignalLogger.start();
+		} else if (Controls.joystick.getBButtonPressed()) {
+			SignalLogger.start();
+			Config.drive().sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
+			SignalLogger.start();
+		} else if (Controls.joystick.getAButtonReleased() ||
+				Controls.joystick.getBButtonReleased() ||
+				Controls.joystick.getXButtonReleased() ||
+				Controls.joystick.getYButtonReleased()) {
+			SignalLogger.stop();
+			CommandScheduler.getInstance().cancelAll();
+			Config.drive().brake();
+			SignalLogger.stop();
+		}
+	}
 }

@@ -3,11 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShooterSubsystem extends SubsystemBase implements Sendable {
+public class ShooterSubsystem extends SubsystemBase {
     /* Ideal values:
      *  - Intake        : -0.5
      *  - Shoot AMP     : 0.3
@@ -18,7 +17,6 @@ public class ShooterSubsystem extends SubsystemBase implements Sendable {
     final TalonSRX motor_left = new TalonSRX(22);
     final TalonSRX motor_right = new TalonSRX(23);
     double speeds = 0.0;
-    double speedChange = 0.01;
 
     private ShooterSubsystem() {
         motor_right.setInverted(true);
@@ -27,10 +25,6 @@ public class ShooterSubsystem extends SubsystemBase implements Sendable {
 
     public static ShooterSubsystem getInstance() {
         return instance;
-    }
-
-    public void changeMotorSpeed(int direction) {
-        speeds += direction * speedChange;
     }
 
     public void setMotorSpeed(double speed) {
@@ -48,6 +42,5 @@ public class ShooterSubsystem extends SubsystemBase implements Sendable {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("shooterSpeeds", () -> speeds, (val) -> speeds = val);
-        builder.addDoubleProperty("speedChange", () -> speedChange, (val) -> speedChange = val);
     }
 }

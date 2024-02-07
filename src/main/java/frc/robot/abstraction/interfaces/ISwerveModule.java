@@ -1,5 +1,4 @@
-
-package frc.robot.interfaces;
+package frc.robot.abstraction.interfaces;
 
 /**
  * ISwerveModule

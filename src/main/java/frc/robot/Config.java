@@ -1,21 +1,18 @@
 package frc.robot;
 
-import frc.fridolib.RobotPresets.RobotPreset;
-import frc.robot.interfaces.IShooter;
-import frc.robot.interfaces.abstract_base_classes.BDrive;
+import edu.wpi.first.wpilibj.XboxController;
+import frc.fridolib.RobotPreset;
+import frc.robot.abstraction.baseClasses.BDrive;
 
 public class Config {
-	public static final RobotPreset activePreset = RobotPreset.TestChassisDrive;
+	public static final RobotPreset active = RobotPreset.TestChassisDrive;
+	public static final XboxController joystick = Controls.joystick; // Temporarily
 	
+	// Drive should always exist
 	public static BDrive drive() {
-		assert activePreset.getDrive().isPresent():
-			"No drive found for preset " + activePreset.getClass().getSimpleName();
-		return activePreset.getDrive().get();
-	}
+		assert active.getDrive().isPresent():
+			"No drive found for preset " + active.getClass().getSimpleName();
 
-	public static IShooter shooter() {
-		assert activePreset.getShooter() != null:
-			"No shooter found for preset " + activePreset.getClass().getSimpleName();
-		return activePreset.getShooter().get();
+		return active.getDrive().get();
 	}
 }

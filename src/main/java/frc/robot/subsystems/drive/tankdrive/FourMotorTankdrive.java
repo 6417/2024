@@ -3,7 +3,7 @@ package frc.robot.subsystems.drive.tankdrive;
 import frc.fridowpi.motors.FridoFalcon500;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
-import frc.robot.interfaces.abstract_base_classes.BDrive;
+import frc.robot.abstraction.baseClasses.BDrive;
 
 /* Base class for tankdrives with four motors */
 public abstract class FourMotorTankdrive extends BDrive {
