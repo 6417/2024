@@ -15,9 +15,13 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.fridowpi.command.ParallelRaceGroup;
 import frc.robot.Constants;
+import frc.robot.autonomous_tools.PathviewerLoader;
+import frc.robot.commands.CSVLoggerCommand;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 
 public class getAutonomousTrajectory extends SubsystemBase {
@@ -57,8 +61,9 @@ public class getAutonomousTrajectory extends SubsystemBase {
 
         Translation2d endtranslation = Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getTranslation().plus(endPose.getTranslation());
         endPose = new Pose2d(endtranslation, endPose.getRotation());
+        Trajectory new_trajectory = null;
 
-        Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_odometry.getInstance().m_odometry.getPoseMeters(),
+        new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_odometry.getInstance().m_odometry.getPoseMeters(),
         list_Translation2d,
         endPose,
         conf);
@@ -78,7 +83,9 @@ public class getAutonomousTrajectory extends SubsystemBase {
             trajectory = get_abs_trajectory(endPose); //shit default
         }
 
-        //Trajectory drive_to_apriltag = get_abs_trajectory(new Pose2d(15.5,5.5, new Rotation2d(0)));
+        //Trajectory drive_to_apriltag = get_abs_trajectory(new Pose2d(15.5,5.5, new Rotation2d(0)));¨
+        
+        //Trajectory own_trajectory_from_pathviewer = PathviewerLoader.loadTrajectory("C:/Users/l.hefti/Desktop/2024/PathWeaver/pathweaver.json");
 
         RamseteCommand command = new RamseteCommand(
                 trajectory,
@@ -99,15 +106,21 @@ public class getAutonomousTrajectory extends SubsystemBase {
     }
 
     public RamseteCommand start_command() {
-        Pose2d firstApriltag = new Pose2d(15,5.5,new Rotation2d(0));
+        Pose2d firstApriltag = new Pose2d(16,5.5,new Rotation2d(0));
         Pose2d backward = new Pose2d(-2,0, new Rotation2d(0));
-        Pose2d secondApriltag = new Pose2d(14.7,7.2,new Rotation2d(90));
+        Pose2d secondApriltag = new Pose2d(14.7,7,new Rotation2d(Math.PI/2));
+        Pose2d test_back = new Pose2d(1, 0, new Rotation2d(0));
 
         RamseteCommand command = getTrajectory(firstApriltag,1);
         RamseteCommand command2 = getTrajectory(backward, 2);
         RamseteCommand command3 = getTrajectory(secondApriltag,1);
+        RamseteCommand command4 = getTrajectory(test_back, 2);
+        Command logComand = new ParallelRaceGroup(new CSVLoggerCommand("/tmp/logger.csv"),command4);
         //command.andThen(command2).andThen(command3).schedule();
-        command3.schedule();
+        
+        //command4.schedule();
+        logComand.schedule();
+
 
         // this.setDefaultCommand(new AutoCommand(this));
         return command;

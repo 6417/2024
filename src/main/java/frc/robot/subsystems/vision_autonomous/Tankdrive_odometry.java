@@ -30,7 +30,7 @@ public class Tankdrive_odometry {
 
         int t = Visionprocessing.getInstance().validTarget();
 
-        if (true && t == 1){
+        if (t == 1 && false){
             double[] visionPosition = Visionprocessing.getInstance().getFieldPos();
             //double[] visionPosition = Visionprocessing.getInstance().get_abs_pose_on_field();
             //System.out.println(visionPosition[1]);
@@ -40,7 +40,7 @@ public class Tankdrive_odometry {
             m_odometry.resetPosition(gyroAngle, Tankdrive.getInstance().getWeelPosition(), pos);
             Gyro.getInstance().reset();
             if (visionPosition[5] < 0){
-                visionPosition[5] = 360+visionPosition[5];
+                visionPosition[5] = visionPosition[5]; //360-
             }
             Gyro.getInstance().setAngle(-visionPosition[5]);
             //System.out.println(m_odometry.getPoseMeters().getRotation().getDegrees());

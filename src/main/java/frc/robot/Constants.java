@@ -39,23 +39,24 @@ public class Constants {
             public static final double transmission = 10.71;
             public static final int encoderResolution = 2048;
 
-            public static final double encoderToMetersConversion = 1 / ((1 / wheelPerimeter) * transmission * encoderResolution);
+            public static final double shaftRotationsToMeters = wheelPerimeter / transmission;
+            public static final double encoderToMeters = shaftRotationsToMeters / encoderResolution;
             public static final double trackWidthMeters = 0.5;
         }
 
         public static final class PathWeaver {
-            //public static final double ksMeters = 0.12091;
-            //public static final double kvMetersPerSecoond = 2.3501;
-            //public static final double ka = 0.21997;
+            public static final double ksMeters = 0.10289;
+            public static final double kvMetersPerSecoond = 2.679/2;
+            public static final double ka = 0.40922;
 
-            public static final double kMaxVMetersPerSecond = 1;
-            public static final double kMaxAccMetersPerSecond = 0.9;
+            public static final double kMaxVMetersPerSecond = 1;            //own constraints
+            public static final double kMaxAccMetersPerSecond = 0.8; //0.9
             public static final double kMaxCentripetalAcceleration = 0;
 
             public static final double kRamsetB = 0;
             public static final double kRamseteZeta = 0;
 
-            public static final double kP = 0.36205;
+            public static final double kP = 0.62585;// old value 0.36205;
             public static final double kI = 0;
             public static final double kD = 0;
         }
@@ -65,12 +66,12 @@ public class Constants {
         //final public static double kMaxAccMetersPerSecond = 0;
         //final public static DifferentialDriveKinematics kDriveKinematics;
 
-        final public static double ksVolts = 0.40; //random value
-        final public static double kvVoltSevondsPerMeter = 1.98; //random value
-        final public static double kaVoltSecondsSquaredPerMeter = 0.4; //random value
-        final public static double kPDriveVel = 0.1; //random value
+        final public static double ksVolts = 0.102; //old value 0.4
+        final public static double kvVoltSevondsPerMeter = 2.679/2; //old value 1.98
+        final public static double kaVoltSecondsSquaredPerMeter = 0.409; //old value 0.6
+        final public static double kPDriveVel = 1.72585; //old value 0.1 from sysid 0.62585
 
-        final public static double ticsToMeter = 0.046;
+        final public static double ticsToMeter = 0.042;
     }
 
     public static final class Tankdrive {

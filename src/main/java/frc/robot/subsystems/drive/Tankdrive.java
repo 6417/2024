@@ -41,13 +41,13 @@ public class Tankdrive extends DriveBase {
     public final DutyCycleOut m_leftOut = new DutyCycleOut(0);
     public final DutyCycleOut m_rightOut = new DutyCycleOut(0);
 
-    private StatusSignal rotorpos_left = leftfront.getPosition();
-    private StatusSignal rotorpos_rigth = rightfront.getPosition();
+    private StatusSignal rotorpos_left = leftfront.getRotorPosition(); // was ist das
+    private StatusSignal rotorpos_rigth = rightfront.getRotorPosition();
     private StatusSignal rotorv_left = leftfront.getVelocity();
     private StatusSignal rotorv_rigth = rightfront.getVelocity();
 
     public DifferentialDrive differentialDrive = new DifferentialDrive(leftfront::set, rightfront::set);
-    public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(0.7);
+    public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(0.5);
     //public DifferentialDriveWheelPositions wheelPositions = new DifferentialDriveWheelPositions(null, null)
 
     private static Tankdrive instance = null;
@@ -115,7 +115,7 @@ public class Tankdrive extends DriveBase {
     }
 
     public double getLeftEncoderPos(){
-        return getLeftEncoderTics() * Constants.Testchassi.ticsToMeter;
+        return getLeftEncoderTics() * Constants.Testchassi.ticsToMeter;//Constants.Testchassi.Odometry.shaftRotationsToMeters;
     }
 
     public double getRigthEncoderTics() {
@@ -124,17 +124,18 @@ public class Tankdrive extends DriveBase {
     }
 
     public double getRightEndocderPos(){
-        return getRigthEncoderTics() * Constants.Testchassi.ticsToMeter;
+        return getRigthEncoderTics() * Constants.Testchassi.ticsToMeter;//Constants.Testchassi.Odometry.shaftRotationsToMeters;
     }
 
     public DifferentialDriveWheelSpeeds getWeelSpeeds() {
+        //System.out.println(leftfront.getPosition().getUnits());
         rotorv_left.refresh();
         rotorv_rigth.refresh();
         return new DifferentialDriveWheelSpeeds(
-                rotorv_left.getValueAsDouble() * 10
-                        * Constants.Testchassi.Odometry.encoderToMetersConversion,
-                rotorpos_rigth.getValueAsDouble() * -10
-                        * Constants.Testchassi.Odometry.encoderToMetersConversion);
+                rotorv_left.getValueAsDouble() / 10
+                        * Constants.Testchassi.Odometry.shaftRotationsToMeters,
+                rotorpos_rigth.getValueAsDouble() / -10
+                        * Constants.Testchassi.Odometry.shaftRotationsToMeters);
     }
 
     public void setVolts(double rigthvolts, double leftvolts) {
@@ -206,6 +207,7 @@ public class Tankdrive extends DriveBase {
         builder.addDoubleProperty("odometry_y", () -> Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getY(), null);
         builder.addDoubleProperty("odometry_rot", () -> Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getRotation().getDegrees(), null);
         builder.addDoubleProperty("gyro_angle", () -> Gyro.getInstance().getRotation2d().getDegrees(), null);
+        builder.addDoubleProperty("whee_speed_lef", ()-> getWeelSpeeds().leftMetersPerSecond,null);
     }
 
     public static Tankdrive getInstance() {
