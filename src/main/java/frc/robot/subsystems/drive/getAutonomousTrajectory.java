@@ -73,15 +73,7 @@ public class getAutonomousTrajectory extends SubsystemBase {
 
     private RamseteCommand getTrajectory(Pose2d endPose, int type) {
 
-        Trajectory trajectory;
-
-        if (type == 1){
-            trajectory = get_abs_trajectory(endPose);
-        }else if (type == 2){
-            trajectory = get_rel_Trajectory(endPose);
-        } else{
-            trajectory = get_abs_trajectory(endPose); //shit default
-        }
+        Trajectory trajectory = createTrajectory(endPose, type);
 
         //Trajectory drive_to_apriltag = get_abs_trajectory(new Pose2d(15.5,5.5, new Rotation2d(0)));¨
         
@@ -105,6 +97,19 @@ public class getAutonomousTrajectory extends SubsystemBase {
         return command;
     }
 
+    private Trajectory createTrajectory(Pose2d endPose, int type) {
+        Trajectory trajectory;
+
+        if (type == 1){
+            trajectory = get_abs_trajectory(endPose);
+        }else if (type == 2){
+            trajectory = get_rel_Trajectory(endPose);
+        } else{
+            trajectory = get_abs_trajectory(endPose); //shit default
+        }
+        return trajectory;
+    }
+
     public RamseteCommand start_command() {
         Pose2d firstApriltag = new Pose2d(16,5.5,new Rotation2d(0));
         Pose2d backward = new Pose2d(-2,0, new Rotation2d(0));
@@ -115,7 +120,7 @@ public class getAutonomousTrajectory extends SubsystemBase {
         RamseteCommand command2 = getTrajectory(backward, 2);
         RamseteCommand command3 = getTrajectory(secondApriltag,1);
         RamseteCommand command4 = getTrajectory(test_back, 2);
-        Command logComand = new ParallelRaceGroup(new CSVLoggerCommand("/tmp/logger.csv"),command4);
+        Command logComand = new ParallelRaceGroup(new CSVLoggerCommand("/tmp/logger.csv", createTrajectory(test_back, 2)),command4);
         //command.andThen(command2).andThen(command3).schedule();
         
         //command4.schedule();
