@@ -67,9 +67,9 @@ public class Constants {
         //final public static DifferentialDriveKinematics kDriveKinematics;
 
         final public static double ksVolts = 0.102; //old value 0.4
-        final public static double kvVoltSevondsPerMeter = 2.679/2; //old value 1.98
+        final public static double kvVoltSevondsPerMeter = 2.679; //old value 1.98
         final public static double kaVoltSecondsSquaredPerMeter = 0.409; //old value 0.6
-        final public static double kPDriveVel = 1.72585; //old value 0.1 from sysid 0.62585
+        final public static double kPDriveVel = 0.62585; //old value 1.72585 from sysid 0.62585
 
         final public static double ticsToMeter = 0.042;
     }

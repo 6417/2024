@@ -38,7 +38,8 @@ public class getAutonomousTrajectory extends SubsystemBase {
         TrajectoryConfig config = new TrajectoryConfig(Constants.Testchassi.PathWeaver.kMaxVMetersPerSecond,
                 Constants.Testchassi.PathWeaver.kMaxAccMetersPerSecond)
                 .setKinematics(Tankdrive.getInstance().m_kinematics)
-                .addConstraint(voltageConstraint);
+                .addConstraint(voltageConstraint).setStartVelocity(0);
+
 
         return config;
     }
