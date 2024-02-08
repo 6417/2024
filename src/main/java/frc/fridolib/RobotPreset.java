@@ -2,10 +2,11 @@ package frc.fridolib;
 
 import java.util.Optional;
 
+import frc.robot.abstraction.RobotData;
 import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.abstraction.interfaces.ISwerveModule;
-import frc.robot.subsystems.drive.swerve.SwerveModulePhoenixSparkMax;
+import frc.robot.subsystems.drive.swerve_2024.SwerveModulePhoenixSparkMax;
 import frc.robot.subsystems.drive.tankdrive.FourFalconsTankDrive;
 
 /** Preset robot configurations
@@ -46,6 +47,7 @@ public enum RobotPreset {
 	// public final Optional<IArm> ARM = null;
 	public Optional<BShooter> SHOOTER = null;
 	public Optional<ISwerveModule> SINGLE_SWERVE_MODULE = null;
+	public RobotData ROBOT_DATA = null;
 
 
 	// Getters / Accessors //
@@ -58,6 +60,9 @@ public enum RobotPreset {
 		return SHOOTER;
 	}
 
+	public RobotData getData() {
+		return ROBOT_DATA;
+	}
 
 	// Constructors //
 
