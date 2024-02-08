@@ -6,8 +6,6 @@ import frc.robot.abstraction.baseClasses.BDrive;
 
 public class DriveCommand extends Command {
 
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-
   private final BDrive m_subsystem;
 
   public DriveCommand(BDrive subsystem) {

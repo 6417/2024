@@ -13,6 +13,6 @@ public class SwervdriveAutoTrajectory {
     }
 
     TrajectoryConfig trajectoryconfig = new TrajectoryConfig(
-        Constants.Swervedrive.Drive.kMaxSpeedMetersPerSecond, 
-        Constants.Swervedrive.Drive.kMaxAccelerationMetersPerSecondSquared);
+        Constants.Swervedrive.Drive.kMaxSpeed,
+        Constants.Swervedrive.Drive.kMaxAcceleration);
 }
