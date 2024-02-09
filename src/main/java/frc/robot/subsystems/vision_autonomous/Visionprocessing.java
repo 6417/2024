@@ -1,12 +1,19 @@
 package frc.robot.subsystems.vision_autonomous;
 
+import javax.print.attribute.standard.Media;
+
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.drive.Tankdrive;
 
 public class Visionprocessing extends SubsystemBase {
 
     static Visionprocessing instance;
+
+    private MedianFilter filter_x;
+    private MedianFilter filter_y;
 
     double[] apriltag_position = { 15.079472, 0.245872, 1.355852,
             16.185134, 0.883666, 1.355852,
@@ -29,6 +36,8 @@ public class Visionprocessing extends SubsystemBase {
             180, 0, 120, 240 };
 
     private Visionprocessing() {
+        filter_x = new MedianFilter(20);
+        filter_y = new MedianFilter(20);
     }
 
     @Override
@@ -50,9 +59,26 @@ public class Visionprocessing extends SubsystemBase {
         return (int) t;
     }
 
-    public double[] getFieldPos(){
+    public double[] getFieldPos_raw(){
         double[] data = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose_wpiblue").getDoubleArray(new double[6]); //default botpose
         return data;
+    }
+
+    public double[] getFieldPos(){
+        if (Tankdrive.getInstance().getWeelSpeeds().leftMetersPerSecond != 0 && Tankdrive.getInstance().getWeelSpeeds().rightMetersPerSecond != 0){
+            resetFilter();
+            double [] data = getFieldPos_raw();
+            double x = filter_x.calculate(data[0]);
+            double y = filter_y.calculate(data[1]);
+            return new double[] {x,y,data[2], data[3], data[4], data[5]};
+        } else{
+            return getFieldPos_raw();
+        }
+    }
+
+    public void resetFilter(){
+        filter_x.reset();
+        filter_y.reset();
     }
 
     private double[] get_relativ_robotPose(double[] pose){

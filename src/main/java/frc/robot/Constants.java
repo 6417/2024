@@ -45,9 +45,9 @@ public class Constants {
         }
 
         public static final class PathWeaver {
-            public static final double ksMeters = 0.10289;
-            public static final double kvMetersPerSecoond = 2.679/2;
-            public static final double ka = 0.40922;
+            //public static final double ksMeters = 0.10289;
+            //public static final double kvMetersPerSecoond = 2.679/2;
+            //public static final double ka = 0.40922;
 
             public static final double kMaxVMetersPerSecond = 1;            //own constraints
             public static final double kMaxAccMetersPerSecond = 0.8; //0.9

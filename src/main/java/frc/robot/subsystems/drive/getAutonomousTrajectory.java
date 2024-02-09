@@ -6,10 +6,8 @@ import java.util.List;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -38,7 +36,7 @@ public class getAutonomousTrajectory extends SubsystemBase {
         TrajectoryConfig config = new TrajectoryConfig(Constants.Testchassi.PathWeaver.kMaxVMetersPerSecond,
                 Constants.Testchassi.PathWeaver.kMaxAccMetersPerSecond)
                 .setKinematics(Tankdrive.getInstance().m_kinematics)
-                .addConstraint(voltageConstraint).setStartVelocity(0);
+                .addConstraint(voltageConstraint);
 
 
         return config;
@@ -112,7 +110,7 @@ public class getAutonomousTrajectory extends SubsystemBase {
     }
 
     public RamseteCommand start_command() {
-        Pose2d firstApriltag = new Pose2d(16,5.5,new Rotation2d(0));
+        Pose2d firstApriltag = new Pose2d(15,5.5,new Rotation2d(0));
         Pose2d backward = new Pose2d(-2,0, new Rotation2d(0));
         Pose2d secondApriltag = new Pose2d(14.7,7,new Rotation2d(Math.PI/2));
         Pose2d test_back = new Pose2d(1, 0, new Rotation2d(0));
@@ -121,10 +119,10 @@ public class getAutonomousTrajectory extends SubsystemBase {
         RamseteCommand command2 = getTrajectory(backward, 2);
         RamseteCommand command3 = getTrajectory(secondApriltag,1);
         RamseteCommand command4 = getTrajectory(test_back, 2);
-        Command logComand = new ParallelRaceGroup(new CSVLoggerCommand("/tmp/logger.csv", createTrajectory(test_back, 2)),command4);
+        Command logComand = new ParallelRaceGroup(new CSVLoggerCommand("/tmp/logger.csv", createTrajectory(firstApriltag, 1)),command);
         //command.andThen(command2).andThen(command3).schedule();
         
-        //command4.schedule();
+        //command.schedule();
         logComand.schedule();
 
 
