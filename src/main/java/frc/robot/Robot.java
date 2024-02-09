@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
     DriveBase drive = Tankdrive.getInstance();
     ShooterSubsystem shooter = ShooterSubsystem.getInstance();
     ShuffleboardTab tab;
+    private boolean 
     
     @Override
     public void robotInit() {
@@ -74,7 +75,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         // spark.set(0.1);
         Tankdrive.getInstance().differentialDrive.feed();
-        if (Controls.joystick.getYButtonPressed()) {
+        if (Controls.joystick.getRawButtonPressed(0)) {
             System.out.println("start command");
             //aComand = new AutoCommand(getAutonomousTrajectory.getInstance());
             //aComand.schedule();
@@ -94,11 +95,16 @@ public class Robot extends TimedRobot {
             //System.out.println(CommandScheduler.getInstance().isScheduled(auto_command));
         }
         
-        if (Controls.joystick.getLeftBumperPressed()) {
+        if (Controls.joystick.getRawButtonPressed(4)) {
             Tankdrive.getInstance().brake();
         }
-        if (Controls.joystick.getRightBumperPressed()) {
+        if (Controls.joystick.getRawButtonPressed(5)) {
             Tankdrive.getInstance().release_brake();
+        }
+
+        if(Controls.joystick.trigger(null))
+        if (Constants.Climber.climberButtonsEnabled){
+
         }
 
         /*
