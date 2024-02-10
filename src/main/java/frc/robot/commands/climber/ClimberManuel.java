@@ -16,7 +16,7 @@ public class ClimberManuel extends Command {
     public ClimberManuel(boolean directionIsUp) {
         this.directionIsUp = directionIsUp;
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(ClimberSubsystem.getInstance());
+        // addRequirements(ClimberSubsystem.getInstance());
     }
 
     // Called when the command is initially scheduled.

@@ -2,10 +2,10 @@ package frc.fridowpi.joystick;
 
 import org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup;
 
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public interface IJoystick {
-    JoystickButton getButton(IJoystickButtonId id);
+    Trigger getButton(IJoystickButtonId id);
 
     double getX();
 

@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.function.Supplier;
+
+import frc.fridowpi.joystick.IJoystickId;
 import frc.fridowpi.motors.utils.PidValues;
 
 public class Constants {
@@ -81,7 +84,15 @@ public class Constants {
         public static final PidValues pidValuesSlot0 = new PidValues(0, 0, 0);
         public static final double toleranzDerHoheDerMotoren = 0.1;
         public static final double runterZiehSpeed = 0.2;
-        public static final int anzFahrAbschnitte = 12;
         public static final double ausfahrBereich = 24;
+        public static final double zielPosition = 2;
+
+        public static final double manualClimberMovementSpeed = 0.5;
+
+    }
+
+    public static final class Joystick {
+        public static final IJoystickId primaryJoystickId = () -> 0;
+        public static int idCounterStart = 1000;
     }
 }

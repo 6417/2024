@@ -6,13 +6,17 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.hal.MatchInfoData;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.robot.Constants;
+import frc.robot.Controls;
 
 public class ClimberSubsystem extends SubsystemBase {
     private static ClimberSubsystem instance;
@@ -23,7 +27,7 @@ public class ClimberSubsystem extends SubsystemBase {
             MotorType.kBrushless);
     private Servo federLoslassMotorLinks = new Servo(Constants.Climber.federLoslassMotorLinks);
     private Servo federLoslassMotorRechts = new Servo(Constants.Climber.federLoslassMotorRechts);
-
+    
     /** Creates a new ClimberSubsystem. */
     private ClimberSubsystem() {
         seilZiehMotorRechts.follow(seilZiehMotorLinks, DirectionType.followMaster);
@@ -32,7 +36,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
         // This method will be called once per scheduler run
     }
 
