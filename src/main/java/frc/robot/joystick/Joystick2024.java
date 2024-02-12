@@ -64,19 +64,25 @@ public class Joystick2024 {
         IdsWithState.state = State.SYSID_TUNING;
         JoystickHandler.getInstance().bind(new Binding(
                 Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadUp,
+                Xbox360Extended.DPadDownLeft,
                 Trigger::onTrue,
-                new SimplePrintCommand("DPadUp pressed")));
+                new SimplePrintCommand("DPadDownLeft pressed")));
         JoystickHandler.getInstance().bind(new Binding(
                 Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadLeft,
+                Xbox360Extended.DPadDown,
                 Trigger::onTrue,
-                new SimplePrintCommand("DPadLeft pressed")));
+                new SimplePrintCommand("DPadDown pressed")));
         JoystickHandler.getInstance().bind(new Binding(
                 Constants.Joystick.primaryJoystickId,
-                Xbox360.back,
+                Xbox360Extended.DPadRight,
                 Trigger::onTrue,
-                new SimplePrintCommand("back pressed")));
+                new SimplePrintCommand("DPadRight pressed")));
+        JoystickHandler.getInstance().bind(new Binding(
+                Constants.Joystick.primaryJoystickId,
+                Xbox360Extended.DPadDownRight,
+                Trigger::onTrue,
+                new SimplePrintCommand("DPadDownRight pressed")));
+        ;
 
         // if (Controls.joystick.getAButtonPressed()) {
         // SignalLogger.start();

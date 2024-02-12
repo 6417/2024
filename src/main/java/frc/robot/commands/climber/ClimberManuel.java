@@ -27,12 +27,12 @@ public class ClimberManuel extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (ClimberSubsystem.seilZiehMotorLinks.pidAtTarget()) {
+        if (ClimberSubsystem.getInstance().seilZiehMotorLinks.pidAtTarget()) {
             if (directionIsUp) {
-                ClimberSubsystem.seilZiehMotorLinks.setPidTarget(ClimberSubsystem.seilZiehMotorLinks.getPidTarget()
+                ClimberSubsystem.getInstance().seilZiehMotorLinks.setPidTarget(ClimberSubsystem.getInstance().seilZiehMotorLinks.getPidTarget()
                         + Constants.Climber.manualClimberMovementSpeed, PidType.position);
             } else {
-                ClimberSubsystem.seilZiehMotorLinks.setPidTarget(ClimberSubsystem.seilZiehMotorLinks.getPidTarget()
+                ClimberSubsystem.getInstance().seilZiehMotorLinks.setPidTarget(ClimberSubsystem.getInstance().seilZiehMotorLinks.getPidTarget()
                         - Constants.Climber.manualClimberMovementSpeed, PidType.position);
             }
         }

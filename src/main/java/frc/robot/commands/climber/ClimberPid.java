@@ -32,7 +32,7 @@ public class ClimberPid extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ClimberSubsystem.seilZiehMotorLinks.setPidTarget(target, PidType.position);
+    ClimberSubsystem.getInstance().seilZiehMotorLinks.setPidTarget(target, PidType.position);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

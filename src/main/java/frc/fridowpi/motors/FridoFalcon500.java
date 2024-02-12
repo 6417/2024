@@ -167,7 +167,7 @@ public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 
     @Override
     public void setPID(PidValues pidValues) {
-        if (!pidSlotIdx.isPresent()) {
+        if (pidSlotIdx == null || !pidSlotIdx.isPresent()) {
             pidSlotIdx = Optional.of(0);
         }
         super.config_kP(pidSlotIdx.get(), pidValues.kP);

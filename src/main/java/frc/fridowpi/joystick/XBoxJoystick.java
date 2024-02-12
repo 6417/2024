@@ -12,8 +12,12 @@ public class XBoxJoystick extends Joystick implements IJoystick {
 
     @Override
     public Trigger getButton(IJoystickButtonId id) {
+        
         if (id instanceof Xbox360Extended && id.getButtonId() >= 100) {
-            return new Trigger(() -> ((Xbox360Extended) id).pov.getDegrees() == getDirectionDegrees());
+            return new Trigger(() -> ((Xbox360Extended) id).pov.getDegrees() == getPOV());
+        }
+        if (id instanceof Xbox360Extended && id.getButtonId() >= 200) {
+            return new Trigger(() -> ((Xbox360Extended) id).pov.getDegrees() >= getX());
         }
         return new JoystickButton(this, id.getButtonId());
     }
