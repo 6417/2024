@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.joystick.joysticks.Logitech;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.vision_autonomous.Gyro;
@@ -24,6 +27,7 @@ import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
 import frc.robot.subsystems.drive.getAutonomousTrajectory;
+import frc.robot.subsystems.drive.swerve.SwerveDrive;
 
 public class Robot extends TimedRobot {
 
@@ -50,6 +54,12 @@ public class Robot extends TimedRobot {
         JoystickButton resetButton = new JoystickButton(Controls.joystick,Logitech.b.getButtonId());
         resetButton.onTrue(new InstantCommand(()->{Gyro.getInstance().reset();
         Tankdrive_odometry.getInstance().reset_odometry();}));
+
+        SwerveDrive.getInstance();
+
+        JoystickHandler.getInstance().bind(SwerveDrive.getInstance());
+        JoystickHandler.getInstance().setupJoysticks(List.of(Constants.Joystick.id));
+        JoystickHandler.getInstance().init();
     }
 
     CANSparkMax spark = new CANSparkMax(1, MotorType.kBrushless);

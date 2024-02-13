@@ -10,7 +10,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.fridowpi.joystick.IJoystickButtonId;
+import frc.fridowpi.joystick.IJoystickId;
 import frc.fridowpi.motors.FridoCanSparkMax;
+import frc.fridowpi.motors.FridoTalonSRX;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.LimitSwitchPolarity;
@@ -21,6 +23,9 @@ import frc.robot.subsystems.drive.swerve.SwerveModule;
 public class Constants {
 
     public static final boolean driveEnabled = true;
+    public static final class Joystick {
+        public static final IJoystickId id = () -> 0;
+    }
 
     public static final class Testchassi{
         final public static int idRigthfront = 13;
@@ -101,7 +106,7 @@ public class Constants {
         public static final class ButtounIds {
             public static final IJoystickButtonId zeroEncoders = () -> -1;
             public static final IJoystickButtonId fullSpeed = () -> -1;
-            public static IJoystickButtonId slowSpeed = null;
+            public static final IJoystickButtonId slowSpeed = () -> -1;
             public static IJoystickButtonId fieldOriented;
             public static IJoystickButtonId shooterFrontOriented;
             public static IJoystickButtonId shooterBackOriented;
@@ -109,9 +114,9 @@ public class Constants {
         }
 
         private static void setSwerveDriveConstants() {
-            zeroingSpeed = 0.1;
-            maxFineTuneOffsetForZeroEncodersCommand = 1.0;
-            maxSpeedOfDrive = 0.6981;
+            zeroingSpeed = 500;
+            maxFineTuneOffsetForZeroEncodersCommand = 196608 / 100;
+            maxSpeedOfDrive = 0.8531;
         }
 
         @SuppressWarnings("all")
@@ -142,73 +147,72 @@ public class Constants {
         }
 
         private static void addCommonModuleConfigurarions() {
-            commonConfigurations.driveMotorTicksPerRotation = 5800 / 3;
-            commonConfigurations.rotationMotorTicksPerRotation = 36.0;
-            commonConfigurations.drivePID = new PidValues(0.00001, 0.0, 0.0, 0.0002);
+            commonConfigurations.driveMotorTicksPerRotation = 11564.0;
+            commonConfigurations.rotationMotorTicksPerRotation = 196608.0;
+            commonConfigurations.drivePID = new PidValues(0.015, 0.0, 0.0, 0.03375);
             commonConfigurations.drivePID.slotIdX = Optional.of(0);
-            commonConfigurations.drivePID.setAcceleration(0.0000001);
-            commonConfigurations.rotationPID = new PidValues(0.3959, 0.0, 0.2);
-            commonConfigurations.wheelCircumference = 0.09767 * Math.PI;
+            // commonConfigurations.drivePID.setAcceleration(0.0000001);
+            commonConfigurations.rotationPID = new PidValues(0.6, 0.16, 4.0);
+            commonConfigurations.wheelCircumference = 0.1 * Math.PI;
             commonConfigurations.maxVelocity = maxSpeedOfDrive;
-            commonConfigurations.driveEncoderType = FridoFeedBackDevice.kBuildin;
-            commonConfigurations.rotationEncoderType = FridoFeedBackDevice.kAbsolute;
-            commonConfigurations.limitModuleStates = false;
+            commonConfigurations.driveEncoderType = FridoFeedBackDevice.kRelative;
+            commonConfigurations.rotationEncoderType = FridoFeedBackDevice.kRelative;
             commonConfigurations.limitSwitchPolarity = LimitSwitchPolarity.kNormallyOpen;
-            commonConfigurations.driveAccelerationForward = 2000;
-            commonConfigurations.driveAccelerationSideWays = 500;
-            commonConfigurations.problemDirectionsWhileBreaking = new Vector2[] {
-                    new Vector2(-1 / Math.sqrt(2), -1 / Math.sqrt(2)),
-                    new Vector2(-1 / Math.sqrt(2), 1 / Math.sqrt(2)) };
-            commonConfigurations.problemDirectionsBreakModeGauseStrechingFactor = 1.0;
+            // commonConfigurations.driveAccelerationForward = 2000;
+            // commonConfigurations.driveAccelerationSideWays = 500;
+            // commonConfigurations.problemDirectionsWhileBreaking = new Vector2[] {
+            //         new Vector2(-1 / Math.sqrt(2), -1 / Math.sqrt(2)),
+            //         new Vector2(-1 / Math.sqrt(2), 1 / Math.sqrt(2)) };
+            // commonConfigurations.problemDirectionsBreakModeGauseStrechingFactor = 1.0;
         }
 
-        private static FridoCanSparkMax angleMotorInitializer(int id, MotorType motorType) {
-            FridoCanSparkMax motor = new FridoCanSparkMax(id, motorType);
+        private static FridoTalonSRX angleMotorInitializer(int id, MotorType motorType) {
+            FridoTalonSRX motor = new FridoTalonSRX(id);
             motor.factoryDefault();
-            motor.enableVoltageCompensation(10.4);
+            // motor.enableVoltageCompensation(10.4);
             return motor;
         }
 
         private static FridolinsMotor driveMotorInitializer(int id, MotorType motorType) {
-            FridoCanSparkMax motor = angleMotorInitializer(id, motorType);
+            FridoTalonSRX motor = angleMotorInitializer(id, motorType);
             motor.enableForwardLimitSwitch(LimitSwitchPolarity.kDisabled, false);
             motor.enableReverseLimitSwitch(LimitSwitchPolarity.kDisabled, false);
-            motor.enableSoftLimit(SoftLimitDirection.kForward, false);
-            motor.enableSoftLimit(SoftLimitDirection.kReverse, false);
+            // motor.enableSoftLimit(SoftLimitDirection.kForward, false);
+            // motor.enableSoftLimit(SoftLimitDirection.kReverse, false);
             return motor;
         }
 
         private static void addModuleSpecificConfigurarions() {
             SwerveModule.Config frontLeftConfig = commonConfigurations.clone();
-            frontLeftConfig.mountingPoint = new Translation2d(0.139, 0.2725);
+            frontLeftConfig.mountingPoint = new Translation2d(0.32, 0.305);
             frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(32, MotorType.kBrushless);
             frontLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(33, MotorType.kBrushless);
-            frontLeftConfig.driveMotorInverted = false;
-            frontLeftConfig.halSensorPosition = 8.952413559 + 9.0;
+            frontLeftConfig.driveMotorInverted = true;
+            frontLeftConfig.halSensorPosition = 196608;
             swerveModuleConfigs.put(MountingLocations.FrontLeft, frontLeftConfig);
 
             SwerveModule.Config frontRightConfig = commonConfigurations.clone();
-            frontRightConfig.mountingPoint = new Translation2d(-0.139, 0.2725);
-            frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(30, MotorType.kBrushless);
-            frontRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(31, MotorType.kBrushless);
-            frontRightConfig.driveMotorInverted = false;
-            frontRightConfig.halSensorPosition = 8.785744667 + 9.0;
+            frontRightConfig.mountingPoint = new Translation2d(-0.32, 0.305);
+            frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(38, MotorType.kBrushless);
+            frontRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(39, MotorType.kBrushless);
+            frontRightConfig.driveMotorInverted = true;
+            frontRightConfig.halSensorPosition = 196608.0;
             swerveModuleConfigs.put(MountingLocations.FrontRight, frontRightConfig);
 
             SwerveModule.Config backLeftConfig = commonConfigurations.clone();
-            backLeftConfig.mountingPoint = new Translation2d(0.139, -0.2725);
-            backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(36, MotorType.kBrushless);
-            backLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(37, MotorType.kBrushless);
-            backLeftConfig.driveMotorInverted = false;
-            backLeftConfig.halSensorPosition = 8.904793739 + 9.0;
+            backLeftConfig.mountingPoint = new Translation2d(0.32, -0.305);
+            backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(34, MotorType.kBrushless);
+            backLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(35, MotorType.kBrushless);
+            backLeftConfig.driveMotorInverted = true;
+            backLeftConfig.halSensorPosition = 196608.0;
             swerveModuleConfigs.put(MountingLocations.BackLeft, backLeftConfig);
 
             SwerveModule.Config backRightConfig = commonConfigurations.clone();
-            backRightConfig.mountingPoint = new Translation2d(-0.139, -0.2725);
-            backRightConfig.driveMotorInitializer = () -> driveMotorInitializer(34, MotorType.kBrushless);
-            backRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(35, MotorType.kBrushless);
+            backRightConfig.mountingPoint = new Translation2d(-0.32, -0.305);
+            backRightConfig.driveMotorInitializer = () -> driveMotorInitializer(36, MotorType.kBrushless);
+            backRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(37, MotorType.kBrushless);
             backRightConfig.driveMotorInverted = false;
-            backRightConfig.halSensorPosition = 8.952413559 + 9.0;
+            backRightConfig.halSensorPosition = 196608.0;
             swerveModuleConfigs.put(MountingLocations.BackRight, backRightConfig);
         }
 

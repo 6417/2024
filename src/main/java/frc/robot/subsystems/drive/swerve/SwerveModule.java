@@ -39,11 +39,11 @@ public class SwerveModule implements Sendable {
         public double halSensorPosition;
         public boolean limitModuleStates;
         public LimitSwitchPolarity limitSwitchPolarity;
-        public double driveAccelerationForward;
-        public double driveAccelerationSideWays;
-        public double maxRotationVelocity;
-        public Vector2[] problemDirectionsWhileBreaking;
-        public double problemDirectionsBreakModeGauseStrechingFactor;
+        // public double driveAccelerationForward;
+        // public double driveAccelerationSideWays;
+        // public double maxRotationVelocity;
+        // public Vector2[] problemDirectionsWhileBreaking;
+        // public double problemDirectionsBreakModeGauseStrechingFactor;
 
         @Override
         public Config clone() {
@@ -64,11 +64,11 @@ public class SwerveModule implements Sendable {
                 copy.halSensorPosition = halSensorPosition;
                 copy.limitModuleStates = limitModuleStates;
                 copy.limitSwitchPolarity = limitSwitchPolarity;
-                copy.driveAccelerationForward = driveAccelerationForward;
-                copy.driveAccelerationSideWays = driveAccelerationSideWays;
-                copy.maxRotationVelocity = maxRotationVelocity;
-                copy.problemDirectionsWhileBreaking = problemDirectionsWhileBreaking;
-                copy.problemDirectionsBreakModeGauseStrechingFactor = problemDirectionsBreakModeGauseStrechingFactor;
+                // copy.driveAccelerationForward = driveAccelerationForward;
+                // copy.driveAccelerationSideWays = driveAccelerationSideWays;
+                // copy.maxRotationVelocity = maxRotationVelocity;
+                // copy.problemDirectionsWhileBreaking = problemDirectionsWhileBreaking;
+                // copy.problemDirectionsBreakModeGauseStrechingFactor = problemDirectionsBreakModeGauseStrechingFactor;
                 return copy;
             }
         }
@@ -81,8 +81,8 @@ public class SwerveModule implements Sendable {
         public double driveMotorTicksPerRotation;
         public double wheelCircumference;
         public double maxVelocity;
-        public double maxDriveAccelerationFroward;
-        public double maxDriveAccelerationSideWays;
+        // public double maxDriveAccelerationFroward;
+        // public double maxDriveAccelerationSideWays;
 
         public Motors(FridolinsMotor drive, FridoFeedBackDevice driveEncoderType, boolean driveMotorInverted,
                 Optional<Boolean> driveSensorInverted, FridolinsMotor rotation,
@@ -121,10 +121,10 @@ public class SwerveModule implements Sendable {
         motors.maxVelocity = config.maxVelocity;
         halSensorPosition = config.halSensorPosition;
         limitedModuleStates = config.limitModuleStates;
-        motors.maxDriveAccelerationFroward = config.driveAccelerationForward;
-        motors.maxDriveAccelerationSideWays = config.driveAccelerationSideWays;
-        problemDirectionsWhileBreaking = config.problemDirectionsWhileBreaking;
-        problemDirectionsBreakModeGasueStrechingFactor = config.problemDirectionsBreakModeGauseStrechingFactor;
+        // motors.maxDriveAccelerationFroward = config.driveAccelerationForward;
+        // motors.maxDriveAccelerationSideWays = config.driveAccelerationSideWays;
+        // problemDirectionsWhileBreaking = config.problemDirectionsWhileBreaking;
+        // problemDirectionsBreakModeGasueStrechingFactor = config.problemDirectionsBreakModeGauseStrechingFactor;
     }
 
     public Vector2 getModuleRotation() {
@@ -192,34 +192,33 @@ public class SwerveModule implements Sendable {
         motors.rotation.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen, false);
     }
 
-    private double getMaxDriveAccelerationBasedOnCurrentRotation(double desiredVelocity) {
-        return MathUtilities.map(Math.abs(new Vector2(0.0, 1.0).dot(getModuleRotation())), 0.0, 1.0,
-                motors.maxDriveAccelerationSideWays, motors.maxDriveAccelerationFroward)
-                * getBatterySideAccelerationFactor(desiredVelocity);
-    }
+    // private double getMaxDriveAccelerationBasedOnCurrentRotation(double desiredVelocity) {
+    //     return MathUtilities.map(Math.abs(new Vector2(0.0, 1.0).dot(getModuleRotation())), 0.0, 1.0,
+    //             motors.maxDriveAccelerationSideWays, motors.maxDriveAccelerationFroward)
+    //             * getBatterySideAccelerationFactor(desiredVelocity);
+    // }
 
-    private double getBatterySideAccelerationFactor(double desiredVelocity) {
-        if (desiredVelocity > getSpeed())
-            return 1.0;
-        return Arrays.stream(problemDirectionsWhileBreaking)
-                .map((direction) -> Math.exp(-Math.pow(Math.max(
-                        getModuleRotation().dot(direction) * problemDirectionsBreakModeGasueStrechingFactor, 0), 2)))
-                .min(Comparator.naturalOrder()).get();
-    }
+    // private double getBatterySideAccelerationFactor(double desiredVelocity) {
+    //     if (desiredVelocity > getSpeed())
+    //         return 1.0;
+    //     return Arrays.stream(problemDirectionsWhileBreaking)
+    //             .map((direction) -> Math.exp(-Math.pow(Math.max(
+    //                     getModuleRotation().dot(direction) * problemDirectionsBreakModeGasueStrechingFactor, 0), 2)))
+    //             .min(Comparator.naturalOrder()).get();
+    // }
 
-    private double applyMaxAccelerationToDriveMotorVelocity(double desiredVelocity) {
-        if (Math.abs(motors.drive.getEncoderVelocity()
-                - desiredVelocity) > getMaxDriveAccelerationBasedOnCurrentRotation(desiredVelocity)) {
-            return motors.drive.getEncoderVelocity() + Math.signum(desiredVelocity - motors.drive.getEncoderVelocity())
-                    * getMaxDriveAccelerationBasedOnCurrentRotation(desiredVelocity);
-        }
-        return desiredVelocity;
-    }
+    // private double applyMaxAccelerationToDriveMotorVelocity(double desiredVelocity) {
+    //     if (Math.abs(motors.drive.getEncoderVelocity()
+    //             - desiredVelocity) > getMaxDriveAccelerationBasedOnCurrentRotation(desiredVelocity)) {
+    //         return motors.drive.getEncoderVelocity() + Math.signum(desiredVelocity - motors.drive.getEncoderVelocity())
+    //                 * getMaxDriveAccelerationBasedOnCurrentRotation(desiredVelocity);
+    //     }
+    //     return desiredVelocity;
+    // }
 
     public void drive(double speedFactor) {
         motors.rotation.setPosition(angleToRotationMotorEncoderTicks(desiredState.angle.getRadians()));
-        motors.drive.setVelocity(applyMaxAccelerationToDriveMotorVelocity(
-                meterPerSecondToDriveMotorEncoderVelocityUnits(desiredState.speedMetersPerSecond * speedFactor)));
+        motors.drive.setVelocity(desiredState.speedMetersPerSecond * speedFactor);
     }
 
     public boolean isHalSensorTriggered() {
@@ -227,7 +226,7 @@ public class SwerveModule implements Sendable {
     }
 
     public void setDriveMotorSpeed(double velocity) {
-        motors.drive.setVelocity(applyMaxAccelerationToDriveMotorVelocity(velocity));
+        motors.drive.setVelocity(velocity);
     }
 
     public void rotateModule(double speed) {
@@ -279,15 +278,7 @@ public class SwerveModule implements Sendable {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Desired state speed", () -> desiredState.speedMetersPerSecond, null);
-        builder.addDoubleProperty("Desired state speed encoder velocity units",
-                () -> applyMaxAccelerationToDriveMotorVelocity(
-                        meterPerSecondToDriveMotorEncoderVelocityUnits(desiredState.speedMetersPerSecond)),
-                null);
         builder.addDoubleProperty("Desired state angle", () -> desiredState.angle.getDegrees(), null);
-        builder.addDoubleProperty("Desired state rotation encoder ticks",
-                () -> applyMaxAccelerationToDriveMotorVelocity(
-                        angleToRotationMotorEncoderTicks(desiredState.angle.getRadians())),
-                null);
         builder.addDoubleProperty("Module angel", () -> getModuleRotationAngle() * 360 / (Math.PI * 2), null);
         builder.addDoubleProperty("Moudle speed", () -> getSpeed(), null);
         builder.addDoubleProperty("Module Rotation Encoder Ticks", motors.rotation::getEncoderTicks, null);

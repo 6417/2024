@@ -1,15 +1,18 @@
 package frc.robot.subsystems.drive.swerve;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.fridowpi.joystick.Binding;
+import frc.fridowpi.joystick.JoystickBindable;
 import frc.robot.Constants;
 
-public class SwerveDriveBase extends SubsystemBase {
+public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
     public enum DriveOrientation {
         FieldOriented, ShooterFront, ShooterBack
     }
@@ -75,5 +78,11 @@ public class SwerveDriveBase extends SubsystemBase {
 
     public void configureButtonBindings(Joystick joystick) {
 
+    }
+
+    @Override
+    public List<Binding> getMappings() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getMappings'");
     }
 }

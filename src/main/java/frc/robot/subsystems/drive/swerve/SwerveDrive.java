@@ -24,13 +24,11 @@ import frc.fridowpi.sensors.FridoNavx;
 import frc.fridowpi.utils.Algorithms;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveDrive.MountingLocations;
-import frc.robot.commands.BreakCommand;
-import frc.robot.commands.DriveCommand;
 import frc.robot.commands.drive.DefaultDriveCommand;
 import frc.robot.commands.drive.SetSpeedFactor;
 import frc.robot.commands.drive.ZeroEncoders;
 
-public class SwerveDrive extends SwerveDriveBase implements JoystickBindable {
+public class SwerveDrive extends SwerveDriveBase {
     private DriveOrientation driveMode = DriveOrientation.ShooterBack;
     private static SwerveDriveBase instance = null;
     private SwerveKinematics<Constants.SwerveDrive.MountingLocations> kinematics;

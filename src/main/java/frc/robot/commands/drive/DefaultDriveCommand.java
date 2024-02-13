@@ -9,11 +9,10 @@ import frc.fridowpi.sensors.FridoNavx;
 import frc.fridowpi.utils.MathUtilities;
 import frc.fridowpi.utils.Vector2;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.subsystems.drive.swerve.SwerveDrive;
 
 public class DefaultDriveCommand extends Command {
-    IJoystick driveJoystick = JoystickHandler.getInstance().getJoystick(null);
+    IJoystick driveJoystick = JoystickHandler.getInstance().getJoystick(Constants.Joystick.id);
 
     
     public DefaultDriveCommand() {
