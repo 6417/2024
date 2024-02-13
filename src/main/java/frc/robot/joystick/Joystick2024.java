@@ -2,9 +2,13 @@ package frc.robot.joystick;
 
 import java.util.List;
 
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.fridowpi.joystick.Binding;
+import frc.fridowpi.joystick.IJoystick;
 import frc.fridowpi.joystick.IJoystickButtonId;
+import frc.fridowpi.joystick.IJoystickHandler;
 import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.joystick.XBoxJoystick;
 import frc.fridowpi.joystick.joysticks.Xbox360;
@@ -16,7 +20,7 @@ import frc.robot.joystick.IdsWithState.State;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.Tankdrive;
 
-public class Joystick2024 {
+public class Joystick2024 implements Sendable{
     private static Joystick2024 instance = new Joystick2024();
 
     IJoystickButtonId btnId = Xbox360.a;
@@ -64,14 +68,14 @@ public class Joystick2024 {
         IdsWithState.state = State.SYSID_TUNING;
         JoystickHandler.getInstance().bind(new Binding(
                 Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadDownLeft,
+                Xbox360Extended.DPadUp,
                 Trigger::onTrue,
-                new SimplePrintCommand("DPadDownLeft pressed")));
+                new SimplePrintCommand("DPadUp pressed")));
         JoystickHandler.getInstance().bind(new Binding(
                 Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadDown,
+                Xbox360Extended.DPadUpRight,
                 Trigger::onTrue,
-                new SimplePrintCommand("DPadDown pressed")));
+                new SimplePrintCommand("DPadUpRight pressed")));
         JoystickHandler.getInstance().bind(new Binding(
                 Constants.Joystick.primaryJoystickId,
                 Xbox360Extended.DPadRight,
@@ -82,32 +86,30 @@ public class Joystick2024 {
                 Xbox360Extended.DPadDownRight,
                 Trigger::onTrue,
                 new SimplePrintCommand("DPadDownRight pressed")));
-        ;
+        JoystickHandler.getInstance().bind(new Binding(
+                Constants.Joystick.primaryJoystickId,
+                Xbox360Extended.DPadDown,
+                Trigger::onTrue,
+                new SimplePrintCommand("DPadDown pressed")));
+        JoystickHandler.getInstance().bind(new Binding(
+                Constants.Joystick.primaryJoystickId,
+                Xbox360Extended.DPadDownLeft,
+                Trigger::onTrue,
+                new SimplePrintCommand("DPadDownLeft pressed")));
+        JoystickHandler.getInstance().bind(new Binding(
+                Constants.Joystick.primaryJoystickId,
+                Xbox360Extended.DPadLeft,
+                Trigger::onTrue,
+                new SimplePrintCommand("DPadLeft pressed")));
+        JoystickHandler.getInstance().bind(new Binding(
+                Constants.Joystick.primaryJoystickId,
+                Xbox360Extended.DPadUpLeft,
+                Trigger::onTrue,
+                new SimplePrintCommand("DPadUpLeft pressed")));
+    }
 
-        // if (Controls.joystick.getAButtonPressed()) {
-        // SignalLogger.start();
-        // drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
-        // SignalLogger.start();
-        // } else if (Controls.joystick.getYButtonPressed()) {
-        // SignalLogger.start();
-        // drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
-        // SignalLogger.start();
-        // } else if (Controls.joystick.getXButtonPressed()) {
-        // SignalLogger.start();
-        // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
-        // SignalLogger.start();
-        // } else if (Controls.joystick.getBButtonPressed()) {
-        // SignalLogger.start();
-        // drive.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
-        // gnalLogger.start();
-        // } else if (Controls.joystick.getAButtonReleased() ||
-        // Controls.joystick.getBButtonReleased() ||
-        // Controls.joystick.getXButtonReleased() ||
-        // Controls.joystick.getYButtonReleased()) {
-        // SignalLogger.stop();
-        // CommandScheduler.getInstance().cancelAll();
-        // drive.brake();
-        // SignalLogger.stop();
-        // }
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("XleftJoystick", () -> JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getX(), null);
     }
 }

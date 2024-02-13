@@ -41,21 +41,4 @@ public class Directions {
         }
     }
 
-    public static enum JoystickLeft {
-        RIGHT(90);
-
-        private final int angle;
-
-        private JoystickLeft(int angle) {
-            this.angle = angle;
-        }
-
-        public int getDegrees() {
-            return angle;
-        }
-
-        public double getRadians() {
-            return Math.toRadians(angle);
-        }
-    }
 }
