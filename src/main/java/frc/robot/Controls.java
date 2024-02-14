@@ -1,12 +1,14 @@
 package frc.robot;
 
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-/** Holds the data concerning input, which should be available
- * either to the entire program or get exported to the suffleboard */
-public class Controls implements Sendable {
+/** 
+ * Holds the data concerning input, which should be available
+ * either to the entire program or get exported to the suffleboard
+ **/
+public class Controls extends SubsystemBase {
     private static Controls instance = new Controls();
     
     final public static XboxController joystick = new XboxController(0);

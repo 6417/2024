@@ -31,13 +31,13 @@ public class Robot extends TimedRobot {
 			Shuffleboard.getTab("Shooter").add(shooter.get());
 		}
 
-		// Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
+		Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
 		Shuffleboard.getTab("Debug").add(Config.drive().getDefaultCommand());
 		Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
 		Shuffleboard.getTab("Debug").addDouble("absEncoder", absEncoder::getAbsolutePosition);
 
 		// Logger path for '.wpilog's
-		SignalLogger.setPath("/media/sda1");
+		SignalLogger.setPath("/media/sda1"); // USB drive
 	}
 
 	@Override
