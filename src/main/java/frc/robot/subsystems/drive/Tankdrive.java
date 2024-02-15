@@ -50,7 +50,7 @@ public class Tankdrive extends DriveBase {
     public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(0.7);
     //public DifferentialDriveWheelPositions wheelPositions = new DifferentialDriveWheelPositions(null, null)
 
-    private static Tankdrive instance = new Tankdrive();
+    private static Tankdrive instance = null;
 
     public Tankdrive() {
 
@@ -209,7 +209,13 @@ public class Tankdrive extends DriveBase {
     }
 
     public static Tankdrive getInstance() {
-        // Instance is instantiated on variable declaration
+		if (instance == null) {
+			if (Constants.Testchassi.driveEnabled) {
+				instance = new Tankdrive();
+			} else {
+				instance = (Tankdrive)new DriveBase();
+			}
+		}
         return instance;
     }
 }

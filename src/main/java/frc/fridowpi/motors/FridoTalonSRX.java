@@ -19,6 +19,7 @@ import frc.fridowpi.motors.utils.PidValues;
 public class FridoTalonSRX extends WPI_TalonSRX implements FridolinsMotor {
 
     private Optional<PidValues> pidValues = Optional.empty();
+    private double target = 0.0;
 
     public FridoTalonSRX(int deviceID) {
         super(deviceID);
@@ -36,6 +37,7 @@ public class FridoTalonSRX extends WPI_TalonSRX implements FridolinsMotor {
     @Override
     public void setPosition(double position) {
         super.set(ControlMode.Position, position);
+		target = position;
     }
 
     @Override
@@ -214,6 +216,7 @@ public class FridoTalonSRX extends WPI_TalonSRX implements FridolinsMotor {
         switch (type) {
             case position:
                 super.set(ControlMode.Position, value);
+				target = value;
                 break;
             case smartMotion:
                 super.set(ControlMode.MotionMagic, value);
@@ -236,7 +239,7 @@ public class FridoTalonSRX extends WPI_TalonSRX implements FridolinsMotor {
 
     @Override
     public double getPidTarget() {
-        return 0;
+        return target;
     }
 
     @Override

@@ -4,30 +4,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Joystick;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.IJoystickId;
-import frc.fridowpi.motors.FridoCanSparkMax;
+import frc.fridowpi.joystick.joysticks.Logitech;
 import frc.fridowpi.motors.FridoTalonSRX;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.LimitSwitchPolarity;
 import frc.fridowpi.motors.utils.PidValues;
-import frc.fridowpi.utils.Vector2;
 import frc.robot.subsystems.drive.swerve.SwerveModule;
 
 public class Constants {
 
     public static final boolean driveEnabled = true;
+
     public static final class Joystick {
         public static final IJoystickId id = () -> 0;
     }
 
     public static final class Testchassi{
+		public static final boolean driveEnabled = false;
+
         final public static int idRigthfront = 13;
         final public static int idLeftfront = 12;
         final public static int idRigthback = 11;
@@ -104,28 +104,28 @@ public class Constants {
         }
 
         public static final class ButtounIds {
-            public static final IJoystickButtonId zeroEncoders = () -> -1;
-            public static final IJoystickButtonId fullSpeed = () -> -1;
-            public static final IJoystickButtonId slowSpeed = () -> -1;
-            public static IJoystickButtonId fieldOriented;
-            public static IJoystickButtonId shooterFrontOriented;
-            public static IJoystickButtonId shooterBackOriented;
-            public static IJoystickButtonId zeroNavx;
+            public static final IJoystickButtonId zeroEncoders = Logitech.back;
+            public static final IJoystickButtonId fullSpeed = Logitech.x;
+            public static final IJoystickButtonId slowSpeed = Logitech.y;
+            public static IJoystickButtonId fieldOriented = Logitech.b;
+            public static IJoystickButtonId shooterFrontOriented = Logitech.a;
+            public static IJoystickButtonId shooterBackOriented = Logitech.a;
+            public static IJoystickButtonId zeroNavx = Logitech.start;
         }
 
         private static void setSwerveDriveConstants() {
             zeroingSpeed = 500;
             maxFineTuneOffsetForZeroEncodersCommand = 196608 / 100;
-            maxSpeedOfDrive = 0.8531;
+            maxSpeedOfDrive = 1;
         }
 
         @SuppressWarnings("all")
-        public static final boolean enabled = false && driveEnabled;
+        public static final boolean enabled = driveEnabled;
         public static final boolean rotateAllModulesInSameDirection = false;
         public static final boolean joystickYinverted = true;
         public static final boolean joystickXinverted = true;
         public static double zeroingSpeed;
-        public static final double deadBand = 0.075;
+        public static final double deadBand = 0.015;
         public static final double yOffsetMapperMaxVoltage = 12.5;
         public static final double yOffsetMapperMinVoltage = 9;
         public static final double finetuningZeroFactor = 0.1;
@@ -147,12 +147,13 @@ public class Constants {
         }
 
         private static void addCommonModuleConfigurarions() {
-            commonConfigurations.driveMotorTicksPerRotation = 11564.0;
-            commonConfigurations.rotationMotorTicksPerRotation = 196608.0;
+            commonConfigurations.driveMotorTicksPerRotation = 11_564.0;
+            commonConfigurations.rotationMotorTicksPerRotation = 196_608.0;
             commonConfigurations.drivePID = new PidValues(0.015, 0.0, 0.0, 0.03375);
             commonConfigurations.drivePID.slotIdX = Optional.of(0);
             // commonConfigurations.drivePID.setAcceleration(0.0000001);
-            commonConfigurations.rotationPID = new PidValues(0.6, 0.16, 4.0);
+            commonConfigurations.rotationPID = new PidValues(0.04, 0.0, 0.5);
+            commonConfigurations.rotationPID.slotIdX = Optional.of(0);
             commonConfigurations.wheelCircumference = 0.1 * Math.PI;
             commonConfigurations.maxVelocity = maxSpeedOfDrive;
             commonConfigurations.driveEncoderType = FridoFeedBackDevice.kRelative;
@@ -188,15 +189,15 @@ public class Constants {
             frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(32, MotorType.kBrushless);
             frontLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(33, MotorType.kBrushless);
             frontLeftConfig.driveMotorInverted = true;
-            frontLeftConfig.halSensorPosition = 196608;
+            frontLeftConfig.halSensorPosition = -187_149.0 - 10_431;
             swerveModuleConfigs.put(MountingLocations.FrontLeft, frontLeftConfig);
 
             SwerveModule.Config frontRightConfig = commonConfigurations.clone();
             frontRightConfig.mountingPoint = new Translation2d(-0.32, 0.305);
             frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(38, MotorType.kBrushless);
             frontRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(39, MotorType.kBrushless);
-            frontRightConfig.driveMotorInverted = true;
-            frontRightConfig.halSensorPosition = 196608.0;
+            frontRightConfig.driveMotorInverted = false;
+            frontRightConfig.halSensorPosition = 195_605.0;
             swerveModuleConfigs.put(MountingLocations.FrontRight, frontRightConfig);
 
             SwerveModule.Config backLeftConfig = commonConfigurations.clone();
@@ -204,7 +205,7 @@ public class Constants {
             backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(34, MotorType.kBrushless);
             backLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(35, MotorType.kBrushless);
             backLeftConfig.driveMotorInverted = true;
-            backLeftConfig.halSensorPosition = 196608.0;
+            backLeftConfig.halSensorPosition = 187_701.0;
             swerveModuleConfigs.put(MountingLocations.BackLeft, backLeftConfig);
 
             SwerveModule.Config backRightConfig = commonConfigurations.clone();
@@ -212,7 +213,7 @@ public class Constants {
             backRightConfig.driveMotorInitializer = () -> driveMotorInitializer(36, MotorType.kBrushless);
             backRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(37, MotorType.kBrushless);
             backRightConfig.driveMotorInverted = false;
-            backRightConfig.halSensorPosition = 196608.0;
+            backRightConfig.halSensorPosition = 187_420.0;
             swerveModuleConfigs.put(MountingLocations.BackRight, backRightConfig);
         }
 

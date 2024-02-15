@@ -1,49 +1,50 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import java.util.List;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.fridowpi.joystick.JoystickHandler;
-import frc.fridowpi.joystick.joysticks.Logitech;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.vision_autonomous.Gyro;
-import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
-import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
+import frc.fridowpi.sensors.FridoNavx;
+import frc.robot.commands.drive.ZeroEncoders;
 import frc.robot.subsystems.drive.Controls;
-import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.Tankdrive;
 import frc.robot.subsystems.drive.getAutonomousTrajectory;
 import frc.robot.subsystems.drive.swerve.SwerveDrive;
+import frc.robot.subsystems.drive.swerve.SwerveDriveBase;
 
 public class Robot extends TimedRobot {
 
     // Aliases for often used singleton instances
-    DriveBase drive = Tankdrive.getInstance();
-    ShooterSubsystem shooter = ShooterSubsystem.getInstance();
+    SwerveDriveBase drive = SwerveDrive.getInstance();
+    // ShooterSubsystem shooter = ShooterSubsystem.getInstance();
     ShuffleboardTab tab;
     
     @Override
     public void robotInit() {
+
+		FridoNavx.setup(SPI.Port.kMXP);
+
+        JoystickHandler.getInstance().setupJoysticks(List.of(Constants.Joystick.id));
+        JoystickHandler.getInstance().init();
+        JoystickHandler.getInstance().bind(SwerveDrive.getInstance());
+        JoystickHandler.getInstance().init();
+
+        SwerveDrive.getInstance();
+
+
         // Add subsystems
         Shuffleboard.getTab("Drive").add(drive);
-        Shuffleboard.getTab("Shooter").add(shooter);
+        // Shuffleboard.getTab("Shooter").add(shooter);
 
         // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
-        Shuffleboard.getTab("Debug").add(drive.getDefaultCommand());
+        // Shuffleboard.getTab("Debug").add(drive.getDefaultCommand());
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
 
         // SignalLogger.setPath("/media/sda1");
@@ -51,30 +52,22 @@ public class Robot extends TimedRobot {
 
         tab = Shuffleboard.getTab("robotpos");
 
-        JoystickButton resetButton = new JoystickButton(Controls.joystick,Logitech.b.getButtonId());
-        resetButton.onTrue(new InstantCommand(()->{Gyro.getInstance().reset();
-        Tankdrive_odometry.getInstance().reset_odometry();}));
-
-        SwerveDrive.getInstance();
-
-        JoystickHandler.getInstance().bind(SwerveDrive.getInstance());
-        JoystickHandler.getInstance().setupJoysticks(List.of(Constants.Joystick.id));
-        JoystickHandler.getInstance().init();
+        // JoystickButton resetButton = new JoystickButton(Controls.joystick,Logitech.b.getButtonId());
+        // resetButton.onTrue(new InstantCommand(()->{Gyro.getInstance().reset();
+        // Tankdrive_odometry.getInstance().reset_odometry();}));
     }
-
-    CANSparkMax spark = new CANSparkMax(1, MotorType.kBrushless);
 
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        Tankdrive_poseestimator.getInstance().updatePoseEstimator();
-        Tankdrive_odometry.getInstance().update_robot_pose();
+        // Tankdrive_poseestimator.getInstance().updatePoseEstimator();
+        // Tankdrive_odometry.getInstance().update_robot_pose();
     }
 
     @Override
     public void teleopInit() {
         SignalLogger.setPath("test");
-        shooter.setMotorSpeed(0);
+        // shooter.setMotorSpeed(0);
     }
 
     //AutoCommand aComand = null;
@@ -82,8 +75,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        // spark.set(0.1);
-        Tankdrive.getInstance().differentialDrive.feed();
         if (Controls.joystick.getYButtonPressed()) {
             System.out.println("start command");
             //aComand = new AutoCommand(getAutonomousTrajectory.getInstance());

@@ -82,7 +82,6 @@ public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
 
     @Override
     public List<Binding> getMappings() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMappings'");
+		return List.of();
     }
 }

@@ -1,7 +1,5 @@
 package frc.robot.subsystems.drive.swerve;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -15,7 +13,6 @@ import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.motors.FridolinsMotor.LimitSwitchPolarity;
 import frc.fridowpi.motors.utils.PidValues;
-import frc.fridowpi.utils.MathUtilities;
 import frc.fridowpi.utils.Vector2;
 
 public class SwerveModule implements Sendable {
@@ -168,20 +165,13 @@ public class SwerveModule implements Sendable {
     }
 
     public void setDesiredState(SwerveModuleState state) {
-        // if (limitedModuleStates)
-        //     desiredState = limiter.limitState(state, getModuleRotation(),
-        //             driveMotorEncoderVelocityToPercent(getSpeed()));
-        // else {
-        //     desiredState = limiter.limitState(state, getModuleRotation(), 0.0);
-        //     desiredState.speedMetersPerSecond = state.speedMetersPerSecond;
-        // }
-        desiredState = state;
-        // var v = Vector2.fromRad(state.angle.getRadians());
-
-        if (desiredState.speedMetersPerSecond < 0) {
-            desiredState.angle.rotateBy(Rotation2d.fromDegrees(180));
-            desiredState.speedMetersPerSecond *= -1;
-        }
+		var dst = Vector2.fromRad(state.angle.getRadians());
+		var src = getModuleRotation();
+		if (src.dot(dst) < 0) {
+			state.angle = state.angle.rotateBy(Rotation2d.fromDegrees(180));
+			state.speedMetersPerSecond *= -1;
+		}
+		this.desiredState = state;
     }
 
     public void enableLimitSwitch() {
@@ -218,7 +208,8 @@ public class SwerveModule implements Sendable {
 
     public void drive(double speedFactor) {
         motors.rotation.setPosition(angleToRotationMotorEncoderTicks(desiredState.angle.getRadians()));
-        motors.drive.setVelocity(desiredState.speedMetersPerSecond * speedFactor);
+        // motors.drive.setVelocity(desiredState.speedMetersPerSecond * speedFactor);
+		motors.drive.set(desiredState.speedMetersPerSecond * speedFactor);
     }
 
     public boolean isHalSensorTriggered() {
@@ -284,6 +275,8 @@ public class SwerveModule implements Sendable {
         builder.addDoubleProperty("Module Rotation Encoder Ticks", motors.rotation::getEncoderTicks, null);
         builder.addBooleanProperty("forward limit switch", motors.rotation::isForwardLimitSwitchActive, null);
         builder.addBooleanProperty("Module Zeroed", this::hasEncoderBeenZeroed, null);
+
+        builder.addDoubleProperty("Target", motors.rotation::getPidTarget, null);
     }
 
     public void setRotationEncoderTicks(double ticks) {
