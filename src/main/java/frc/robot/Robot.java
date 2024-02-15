@@ -24,6 +24,7 @@ public class Robot extends TimedRobot {
 
     // Aliases for often used singleton instances
     DriveBase drive = Tankdrive.getInstance();
+    Joystick2024 joyControl = Joystick2024.getInstance();
     // ShooterSubsystem shooter = ShooterSubsystem.getInstance();
     ShuffleboardTab tab;
 
@@ -31,7 +32,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Add subsystems
         Shuffleboard.getTab("Drive").add(drive);
-        // Shuffleboard.getTab("Shooter").add(shooter);
+        Shuffleboard.getTab("Drive").add("joystick", joyControl);
 
         // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
         Shuffleboard.getTab("Debug").add(drive.getDefaultCommand());

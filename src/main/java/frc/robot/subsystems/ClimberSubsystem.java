@@ -24,8 +24,9 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public FridolinsMotor seilZiehMotorLinks = new FridoFalcon500(Constants.Climber.seilZiehMotorLinks);
     public FridolinsMotor seilZiehMotorRechts = new FridoFalcon500(Constants.Climber.seilZiehMotorRechts);
-    private Servo federLoslassMotorLinks = new Servo(Constants.Climber.federLoslassMotorLinks);
-    private Servo federLoslassMotorRechts = new Servo(Constants.Climber.federLoslassMotorRechts);
+    public Servo federLoslassMotorLinks = new Servo(Constants.Climber.federLoslassMotorLinks);
+    
+    public Servo federLoslassMotorRechts = new Servo(Constants.Climber.federLoslassMotorRechts);
     
     /** Creates a new ClimberSubsystem. */
     private ClimberSubsystem() {
@@ -33,6 +34,7 @@ public class ClimberSubsystem extends SubsystemBase {
         seilZiehMotorRechts.setPID(Constants.Climber.pidValuesSlot0);
         seilZiehMotorRechts.follow(seilZiehMotorLinks, DirectionType.followMaster);
         seilZiehMotorLinks.setIdleMode(IdleMode.kBrake);
+        // federLoslassMotorLinks.setAngle(0);
     }
 
     @Override
@@ -48,7 +50,5 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void federnFreilassenOderFangen() {
-        federLoslassMotorLinks.setAngle(federLoslassMotorLinks.getAngle() + 180);
-        federLoslassMotorRechts.setAngle(federLoslassMotorRechts.getAngle() + 180);
     }
 }

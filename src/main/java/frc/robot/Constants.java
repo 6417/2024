@@ -78,7 +78,7 @@ public class Constants {
     public static final class Climber {
         public static final int seilZiehMotorLinks = 1;
         public static final int seilZiehMotorRechts = 2;
-        public static final int federLoslassMotorLinks = 3;
+        public static final int federLoslassMotorLinks = 2;
         public static final int federLoslassMotorRechts = 4;
 
         public static final PidValues pidValuesSlot0 = new PidValues(0, 0, 0);

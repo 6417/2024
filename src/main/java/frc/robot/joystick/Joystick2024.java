@@ -16,11 +16,13 @@ import frc.fridowpi.joystick.joysticks.Xbox360Extended;
 import frc.robot.Constants;
 import frc.robot.commands.SimplePrintCommand;
 import frc.robot.commands.climber.ClimberManuel;
+import frc.robot.commands.climber.ClimberRelease;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.Tankdrive;
 
-public class Joystick2024 implements Sendable{
+public class Joystick2024 implements Sendable {
     private static Joystick2024 instance = new Joystick2024();
 
     IJoystickButtonId btnId = Xbox360.a;
@@ -58,6 +60,7 @@ public class Joystick2024 implements Sendable{
     private void bindButtonsDefault() {
         JoystickHandler.getInstance().bind(ShooterSubsystem.getInstance());
         JoystickHandler.getInstance().bind(Tankdrive.getInstance());
+
     }
 
     public void setState(State state) {
@@ -65,7 +68,6 @@ public class Joystick2024 implements Sendable{
     }
 
     private void bindButtonsForSysid() {
-        IdsWithState.state = State.SYSID_TUNING;
         JoystickHandler.getInstance().bind(new Binding(
                 Constants.Joystick.primaryJoystickId,
                 Xbox360Extended.DPadUp,
@@ -73,43 +75,21 @@ public class Joystick2024 implements Sendable{
                 new SimplePrintCommand("DPadUp pressed")));
         JoystickHandler.getInstance().bind(new Binding(
                 Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadUpRight,
+                Xbox360.rb,
                 Trigger::onTrue,
-                new SimplePrintCommand("DPadUpRight pressed")));
-        JoystickHandler.getInstance().bind(new Binding(
-                Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadRight,
-                Trigger::onTrue,
-                new SimplePrintCommand("DPadRight pressed")));
-        JoystickHandler.getInstance().bind(new Binding(
-                Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadDownRight,
-                Trigger::onTrue,
-                new SimplePrintCommand("DPadDownRight pressed")));
-        JoystickHandler.getInstance().bind(new Binding(
-                Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadDown,
-                Trigger::onTrue,
-                new SimplePrintCommand("DPadDown pressed")));
-        JoystickHandler.getInstance().bind(new Binding(
-                Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadDownLeft,
-                Trigger::onTrue,
-                new SimplePrintCommand("DPadDownLeft pressed")));
-        JoystickHandler.getInstance().bind(new Binding(
-                Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadLeft,
-                Trigger::onTrue,
-                new SimplePrintCommand("DPadLeft pressed")));
-        JoystickHandler.getInstance().bind(new Binding(
-                Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadUpLeft,
-                Trigger::onTrue,
-                new SimplePrintCommand("DPadUpLeft pressed")));
+                new ClimberRelease(ClimberSubsystem.getInstance())));
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("XleftJoystick", () -> JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getX(), null);
+        builder.addDoubleProperty("YrightJoystick",
+                () -> JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getTwist(), null);
     }
 }
+// getX() -> joystick left x
+// getY() -> joystick left y
+// getZ() -> joystick right x
+// getTwist() -> joystick right y
+// getThrottle() -> rt
+// getMagnitude() -> how close the joystick is to joystick centre
+// getDirection() -> direction from -180 to 180 Degrees, joystick left
