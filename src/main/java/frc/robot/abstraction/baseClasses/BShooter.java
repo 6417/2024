@@ -1,14 +1,11 @@
 package frc.robot.abstraction.baseClasses;
 
-import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.abstraction.interfaces.IShooter;
 
 /**
  * BShooter: Base class for all shooter subsystems
  */
-public abstract class BShooter implements IShooter, Sendable {
-
-	@Override
-	public abstract void shoot();
+public abstract class BShooter extends SubsystemBase implements IShooter {
 
 }

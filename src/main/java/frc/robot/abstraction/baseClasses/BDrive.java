@@ -2,7 +2,7 @@
 package frc.robot.abstraction.baseClasses;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.drive.IDrive;
+import frc.robot.abstraction.interfaces.IDrive;
 
 /**
  * BDrive: Abstract base class for all drive subsystems

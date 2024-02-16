@@ -12,8 +12,11 @@ public interface IShooter {
 	public void setSpeedPercent(double speed);
 
 	// Must be called in a .periodic() function, so that the motors are fed
-	// If enabled is false, don't run
-	public void run(boolean enabled);
+	public void run();
+
+	public void enable();
+
+	public void disable();
 
 
 	// GETTERS

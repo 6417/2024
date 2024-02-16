@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.robot.abstraction.baseClasses.BDrive;
 
 public class BreakCommand extends Command {
@@ -12,6 +13,6 @@ public class BreakCommand extends Command {
 
     @Override
     public void initialize() {
-        m_drive_subsystem.brake();
+        m_drive_subsystem.setIdleMode(IdleMode.kBrake);
     }
 }

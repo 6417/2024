@@ -1,17 +1,36 @@
 package frc.robot.abstraction;
 
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.*;
+import frc.fridowpi.motors.utils.PidValues;
 
 /**
- * RobotData: Holds immutable data of the active robot.
+ * RobotData: Holds important constants of the active robot.
  */
 public record RobotData(
+		HardwareData hardware,
+		AutoData auto,
+		PidData pid
+		) {
+
+	public record HardwareData(
 		Measure<Distance> wheelPerimeter,
 		Measure<Distance> trackWidth,
-		double encoderToMeters,
-		Measure<Distance> ks,
-		Measure<Velocity<Distance>> kv,
-		Measure<Velocity<Velocity<Distance>>> ka) {
+		double encoderToMeters
+	) { }
+
+	public record AutoData(
+		Measure<Velocity<Distance>> maxVelocity,
+		Measure<Velocity<Velocity<Distance>>> maxAcceleration,
+		Measure<Distance> ksVolts,
+		Measure<Velocity<Distance>> kvVolts,
+		Measure<Velocity<Velocity<Distance>>> kaVolts,
+		Measure<Distance> kRamseteB,
+		Measure<Time> kRamseteZeta
+		) { }
+
+	public record PidData(
+			PidValues pathWeaver,
+			PidValues driveLeft,
+			PidValues driveRight
+	) { }
 }

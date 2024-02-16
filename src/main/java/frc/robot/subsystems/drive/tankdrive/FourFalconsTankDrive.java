@@ -45,18 +45,18 @@ public class FourFalconsTankDrive extends BTankDrive {
 			int rightFollower) {
 
 		motors = new MotorSet(
-			new FridoFalcon500(leftMaster),
-			new FridoFalcon500(rightMaster),
-			new FridoFalcon500(leftFollower),
-			new FridoFalcon500(rightFollower));
+				new FridoFalcon500(leftMaster),
+				new FridoFalcon500(rightMaster),
+				new FridoFalcon500(leftFollower),
+				new FridoFalcon500(rightFollower));
 
 		motors.invert(MotorRole.LeftMaster);
 
 		differentialDrive = new DifferentialDrive(
-			motors.getMotor(MotorRole.LeftMaster)::set,
-			motors.getMotor(MotorRole.RightMaster)::set);
+				motors.getMotor(MotorRole.LeftMaster)::set,
+				motors.getMotor(MotorRole.RightMaster)::set);
 
-		m_kinematics = new DifferentialDriveKinematics(Config.data().wheelPerimeter());
+		m_kinematics = new DifferentialDriveKinematics(Config.data().hardware().wheelPerimeter());
 
 		setDefaultCommand(new DriveCommand(this));
 	}
@@ -75,19 +75,25 @@ public class FourFalconsTankDrive extends BTankDrive {
 						log.motor("drive-left")
 								.voltage(
 										m_appliedVoltage.mut_replace(
-												motors.getMotor(MotorRole.LeftMaster).get() * RobotController.getBatteryVoltage(), Volts))
+												motors.getMotor(MotorRole.LeftMaster).get()
+														* RobotController.getBatteryVoltage(),
+												Volts))
 								.linearPosition(m_distance.mut_replace(getLeftEncoderPos(), Meters))
 								.linearVelocity(
-										m_velocity.mut_replace(getDifferentialWheelSpeeds().get().leftMetersPerSecond, MetersPerSecond));
+										m_velocity.mut_replace(getDifferentialWheelSpeeds().get().leftMetersPerSecond,
+												MetersPerSecond));
 						// Record a frame for the right motors. Since these share an encoder, we
 						// consider the entire group to be one motor.
 						log.motor("drive-right")
 								.voltage(
 										m_appliedVoltage.mut_replace(
-												motors.getMotor(MotorRole.RightMaster).get() * RobotController.getBatteryVoltage(), Volts))
+												motors.getMotor(MotorRole.RightMaster).get()
+														* RobotController.getBatteryVoltage(),
+												Volts))
 								.linearPosition(m_distance.mut_replace(getRightEncoderPos(), Meters))
 								.linearVelocity(
-										m_velocity.mut_replace(getDifferentialWheelSpeeds().get().rightMetersPerSecond, MetersPerSecond));
+										m_velocity.mut_replace(getDifferentialWheelSpeeds().get().rightMetersPerSecond,
+												MetersPerSecond));
 					},
 					this));
 
@@ -117,8 +123,10 @@ public class FourFalconsTankDrive extends BTankDrive {
 
 	public Optional<DifferentialDriveWheelSpeeds> getDifferentialWheelSpeeds() {
 		return Optional.of(new DifferentialDriveWheelSpeeds(
-				motors.getMotor(MotorRole.LeftMaster).get() * 10 * Config.data().encoderToMeters(),
-				motors.getMotor(MotorRole.RightMaster).get() * -10 * Config.data().encoderToMeters()));
+				motors.getMotor(MotorRole.LeftMaster).getEncoderVelocity() * 10
+						* Config.data().hardware().encoderToMeters(),
+				motors.getMotor(MotorRole.RightMaster).getEncoderVelocity() * -10
+						* Config.data().hardware().encoderToMeters()));
 	}
 
 	@Override
@@ -144,13 +152,8 @@ public class FourFalconsTankDrive extends BTankDrive {
 	}
 
 	@Override
-	public void brake() {
-		motors.setIdleMode(IdleMode.kBrake);
-	}
-
-	@Override
-	public void release_brake() {
-		motors.setIdleMode(IdleMode.kCoast);
+	public void setIdleMode(IdleMode mode) {
+		motors.setIdleMode(mode);
 	}
 
 	@Override
@@ -165,7 +168,8 @@ public class FourFalconsTankDrive extends BTankDrive {
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 		builder.addDoubleProperty("LeftPosition", () -> motors.getMotor(MotorRole.LeftMaster).getEncoderTicks(), null);
-		builder.addDoubleProperty("RightPosition", () -> motors.getMotor(MotorRole.RightMaster).getEncoderTicks(), null);
+		builder.addDoubleProperty("RightPosition", () -> motors.getMotor(MotorRole.RightMaster).getEncoderTicks(),
+				null);
 		builder.addBooleanProperty("CoastMode",
 				() -> motors.getIdleMode() == IdleMode.kCoast,
 				val -> motors.setIdleMode(val ? IdleMode.kCoast : IdleMode.kBrake));

@@ -3,6 +3,8 @@ package frc.robot.subsystems.visionAutonomous;
 import java.util.ArrayList;
 import java.util.List;
 
+import static edu.wpi.first.units.Units.*;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -39,7 +41,7 @@ public class getAutonomousTrajectory {
 	}
 
 	private RamseteCommand getTrajectory() {
-		assert !Config.drive().isSwerve();
+		assert !Config.drive().isSwerve() : "Swerve is not yet implemented";
 
 		TrajectoryConfig conf = getTrajectoryConfig();
 		List<Translation2d> list_translationd2 = new ArrayList<Translation2d>();
@@ -51,18 +53,34 @@ public class getAutonomousTrajectory {
 						.plus(new Transform2d(new Translation2d(1, 0), new Rotation2d(0))),
 				conf);
 
-		RamseteCommand command = new RamseteCommand(
+		var controller = new RamseteController(
+				Config.data().auto().kRamseteB().in(Meters),
+				Config.data().auto().kRamseteZeta().in(Seconds));
+
+		var pidLeft = new PIDController(
+				Config.data().pid().driveLeft().kP,
+				Config.data().pid().driveLeft().kI,
+				Config.data().pid().driveLeft().kD);
+
+		var pidRight = new PIDController(
+				Config.data().pid().driveRight().kP,
+				Config.data().pid().driveRight().kI,
+				Config.data().pid().driveRight().kD);
+
+		var feedforward = new SimpleMotorFeedforward(
+				Config.data().auto().ksVolts().in(Meters),
+				Config.data().auto().kvVolts().in(MetersPerSecond),
+				Config.data().auto().kaVolts().in(MetersPerSecondPerSecond));
+
+		var command = new RamseteCommand(
 				new_trajectory,
 				Config.drive()::getPos,
-				new RamseteController(Constants.Testchassi.PathWeaver.kRamsetB,
-						Constants.Testchassi.PathWeaver.kRamseteZeta),
-				new SimpleMotorFeedforward(Constants.Testchassi.ksVolts,
-						Constants.Testchassi.kvVoltSevondsPerMeter,
-						Constants.Testchassi.kaVoltSecondsSquaredPerMeter),
+				controller,
+				feedforward,
 				Config.drive().getDifferentialKinematics().get(),
 				() -> Config.drive().getDifferentialWheelSpeeds().get(),
-				new PIDController(Constants.Testchassi.kPDriveVel, 0, 0),
-				new PIDController(Constants.Testchassi.kPDriveVel, 0, 0),
+				pidLeft,
+				pidRight,
 				Config.drive()::setVolts,
 				Config.drive());
 

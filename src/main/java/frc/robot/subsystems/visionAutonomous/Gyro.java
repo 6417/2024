@@ -19,6 +19,18 @@ public class Gyro {
         return gyro.getRotation2d();
     }
 
+    public double getRot(){
+        return gyro.getAngle();
+    }
+
+    public void reset(){
+        gyro.reset();
+    }
+
+    public void setAngle(double angle){
+        gyro.setAngleAdjustment(angle);
+    }
+
     public static Gyro getInstance(){
         if (instance == null){
             instance = new Gyro();

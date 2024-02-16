@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive;
+package frc.robot.abstraction.interfaces;
 
 import java.util.Optional;
 
@@ -10,6 +10,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 
 public interface IDrive extends Sendable {
 
@@ -20,10 +21,8 @@ public interface IDrive extends Sendable {
 
     public void driveToPos(Pose2d pos);
 
-    // Braking
-    public void release_brake();
-
-    public void brake();
+    // Braking Mode
+    public void setIdleMode(IdleMode mode);
 
     // Sysid tuning (not really necessary)
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction);

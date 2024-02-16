@@ -4,15 +4,15 @@ import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.abstraction.baseClasses.BShooter;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends BShooter {
     /* Ideal values:
      *  - Intake        : -0.5
      *  - Shoot AMP     : 0.3
      *  - Shoot SPEAKER : 0.8 to 0.9
      */
-    static ShooterSubsystem instance = new ShooterSubsystem();
+	boolean enabled = true;
 
     final TalonSRX motor_left = new TalonSRX(22);
     final TalonSRX motor_right = new TalonSRX(23);
@@ -23,15 +23,8 @@ public class ShooterSubsystem extends SubsystemBase {
         motor_left.follow(motor_right);
     }
 
-    public static ShooterSubsystem getInstance() {
-        return instance;
-    }
-
-    public void setMotorSpeed(double speed) {
-        speeds = speed;
-    }
-
-    public void run(boolean enabled) {
+	@Override
+    public void run() {
         if (enabled) {
             motor_right.set(TalonSRXControlMode.PercentOutput, speeds);
         } else {
@@ -39,8 +32,39 @@ public class ShooterSubsystem extends SubsystemBase {
         }
     }
 
+	@Override
+	public void setSpeedPercent(double speed) {
+		if (speed > 1.0) {
+			System.out.println("Speed too high: " + speed);
+			speed = 1.0;
+		} else if (speed < -1.0) {
+			System.out.println("Speed too low: " + speed);
+			speed = -1.0;
+		}
+        speeds = speed;
+    }
+
+	@Override
+	public double getSpeedPercent() {
+		return speeds;
+	}
+
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("shooterSpeeds", () -> speeds, (val) -> speeds = val);
     }
+
+	@Override
+	public void shoot() {
+	}
+
+	@Override
+	public void enable() {
+		enabled = true;
+	}
+
+	@Override
+	public void disable() {
+		enabled = false;
+	}
 }

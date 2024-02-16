@@ -11,7 +11,7 @@ public class TankdriveOdometry {
 
     public static TankdriveOdometry instance;
 
-    DifferentialDriveOdometry m_odometry;
+    public DifferentialDriveOdometry m_odometry;
 
     private TankdriveOdometry(){
         m_odometry = new DifferentialDriveOdometry(
