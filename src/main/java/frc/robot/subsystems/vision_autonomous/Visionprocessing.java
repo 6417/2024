@@ -1,6 +1,12 @@
 package frc.robot.subsystems.vision_autonomous;
 
+import com.google.gson.*;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+
 import javax.print.attribute.standard.Media;
+
+import org.json.JSONObject;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTable;
@@ -36,15 +42,15 @@ public class Visionprocessing extends SubsystemBase {
             180, 0, 120, 240 };
 
     private Visionprocessing() {
-        filter_x = new MedianFilter(20);
-        filter_y = new MedianFilter(20);
+        filter_x = new MedianFilter(2);
+        filter_y = new MedianFilter(2);
     }
 
     @Override
     public void periodic() {
     }
 
-    private double[] getData() {
+    public double[] getData() {
         double[] data = NetworkTableInstance.getDefault().getTable("limelight").getEntry("targetpose_cameraspace").getDoubleArray(new double[6]);
         return data;
     }
@@ -64,16 +70,24 @@ public class Visionprocessing extends SubsystemBase {
         return data;
     }
 
+    public String get_json(){
+        String json = NetworkTableInstance.getDefault().getTable("limelight").getEntry("json").getString("none");
+        return json;
+    }
+
+    public void analyse_json(String json){
+        JSONObject obj = new JSONObject(json);
+
+    }
+
     public double[] getFieldPos(){
-        if (Tankdrive.getInstance().getWeelSpeeds().leftMetersPerSecond != 0 && Tankdrive.getInstance().getWeelSpeeds().rightMetersPerSecond != 0){
-            resetFilter();
-            double [] data = getFieldPos_raw();
-            double x = filter_x.calculate(data[0]);
-            double y = filter_y.calculate(data[1]);
-            return new double[] {x,y,data[2], data[3], data[4], data[5]};
-        } else{
-            return getFieldPos_raw();
+        double[] pos = getFieldPos_raw();
+        if (Tankdrive.getInstance().getWeelSpeeds().leftMetersPerSecond == 0 && Tankdrive.getInstance().getWeelSpeeds().rightMetersPerSecond == 0 || true){
+            double x = filter_x.calculate(pos[0]);
+            double y = filter_y.calculate(pos[1]);
+            return new double[] {x,y,pos[2],pos[3],pos[4],pos[5]};
         }
+        return pos;
     }
 
     public void resetFilter(){

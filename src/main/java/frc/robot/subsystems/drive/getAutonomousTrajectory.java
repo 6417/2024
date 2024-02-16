@@ -21,6 +21,7 @@ import frc.robot.Constants;
 import frc.robot.autonomous_tools.PathviewerLoader;
 import frc.robot.commands.CSVLoggerCommand;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
+import frc.robot.subsystems.vision_autonomous.Visionprocessing;
 
 public class getAutonomousTrajectory extends SubsystemBase {
 
@@ -46,7 +47,7 @@ public class getAutonomousTrajectory extends SubsystemBase {
         TrajectoryConfig conf = getTrajectoryConfig();
         List<Translation2d> list_Translation2d = new ArrayList<Translation2d>();
 
-        Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_odometry.getInstance().m_odometry.getPoseMeters(),
+        Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition(),
         list_Translation2d,
         endPose,
         conf);
@@ -58,11 +59,11 @@ public class getAutonomousTrajectory extends SubsystemBase {
         TrajectoryConfig conf = getTrajectoryConfig();
         List<Translation2d> list_Translation2d = new ArrayList<Translation2d>();
 
-        Translation2d endtranslation = Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getTranslation().plus(endPose.getTranslation());
+        Translation2d endtranslation = Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getTranslation().plus(endPose.getTranslation());
         endPose = new Pose2d(endtranslation, endPose.getRotation());
         Trajectory new_trajectory = null;
 
-        new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_odometry.getInstance().m_odometry.getPoseMeters(),
+        new_trajectory = TrajectoryGenerator.generateTrajectory(Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition(),
         list_Translation2d,
         endPose,
         conf);
@@ -74,6 +75,9 @@ public class getAutonomousTrajectory extends SubsystemBase {
 
         Trajectory trajectory = createTrajectory(endPose, type);
 
+        Trajectory.State state = new Trajectory.State(5, 0, 0, trajectory.getStates().get(trajectory.getStates().size()-1).poseMeters, 0);
+        Trajectory waitoAtEnd = new Trajectory(List.of(state));
+        trajectory = trajectory.concatenate(waitoAtEnd);
         //Trajectory drive_to_apriltag = get_abs_trajectory(new Pose2d(15.5,5.5, new Rotation2d(0)));¨
         
         //Trajectory own_trajectory_from_pathviewer = PathviewerLoader.loadTrajectory("C:/Users/l.hefti/Desktop/2024/PathWeaver/pathweaver.json");
@@ -81,8 +85,7 @@ public class getAutonomousTrajectory extends SubsystemBase {
         RamseteCommand command = new RamseteCommand(
                 trajectory,
                 Tankdrive.getInstance()::getPos,
-                new RamseteController(Constants.Testchassi.PathWeaver.kRamsetB,
-                        Constants.Testchassi.PathWeaver.kRamseteZeta),
+                new RamseteController(Constants.Testchassi.PathWeaver.kRamsetB,Constants.Testchassi.PathWeaver.kRamseteZeta),
                 new SimpleMotorFeedforward(Constants.Testchassi.ksVolts,
                         Constants.Testchassi.kvVoltSevondsPerMeter,
                         Constants.Testchassi.kaVoltSecondsSquaredPerMeter),
@@ -113,7 +116,7 @@ public class getAutonomousTrajectory extends SubsystemBase {
         Pose2d firstApriltag = new Pose2d(15,5.5,new Rotation2d(0));
         Pose2d backward = new Pose2d(-2,0, new Rotation2d(0));
         Pose2d secondApriltag = new Pose2d(14.7,7,new Rotation2d(Math.PI/2));
-        Pose2d test_back = new Pose2d(1, 0, new Rotation2d(0));
+        Pose2d test_back = new Pose2d(2, 0, new Rotation2d(0));
 
         RamseteCommand command = getTrajectory(firstApriltag,1);
         RamseteCommand command2 = getTrajectory(backward, 2);
