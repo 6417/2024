@@ -30,7 +30,6 @@ import frc.robot.Constants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.vision_autonomous.Gyro;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
-import frc.robot.subsystems.vision_autonomous.Tankdrive_poseestimator;
 
 public class Tankdrive extends DriveBase {
 
@@ -148,7 +147,7 @@ public class Tankdrive extends DriveBase {
 
     @Override
     public Pose2d getPos() {
-        return Tankdrive_poseestimator.getInstance().m_poseEstimator.getEstimatedPosition();
+        return Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition();
     }
 
     public DifferentialDriveWheelPositions getWeelPosition(){
@@ -203,9 +202,9 @@ public class Tankdrive extends DriveBase {
                 () -> rightfront.getControlMode().getValue() == ControlModeValue.CoastOut,
                 val -> 
                     rightfront.setNeutralMode(val? NeutralModeValue.Coast: NeutralModeValue.Brake));
-        builder.addDoubleProperty("odometry_x", () -> Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getX(), null);
-        builder.addDoubleProperty("odometry_y", () -> Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getY(), null);
-        builder.addDoubleProperty("odometry_rot", () -> Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getRotation().getDegrees(), null);
+        builder.addDoubleProperty("odometry_x", () -> Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getX(), null);
+        builder.addDoubleProperty("odometry_y", () -> Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getY(), null);
+        builder.addDoubleProperty("odometry_rot", () -> Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getRotation().getDegrees(), null);
         builder.addDoubleProperty("gyro_angle", () -> Gyro.getInstance().getRotation2d().getDegrees(), null);
         builder.addDoubleProperty("whee_speed_lef", ()-> getWeelSpeeds().leftMetersPerSecond,null);
     }

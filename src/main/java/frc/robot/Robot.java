@@ -8,6 +8,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -18,11 +20,15 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.joystick.joysticks.Logitech;
 import frc.fridowpi.sensors.FridoNavx;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.vision_autonomous.Gyro;
+import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.Tankdrive;
 import frc.robot.subsystems.drive.getAutonomousTrajectory;
 import frc.robot.subsystems.drive.swerve.SwerveDrive;
-import frc.robot.subsystems.drive.swerve.SwerveDriveBase;import frc.robot.subsystems.vision_autonomous.Gyro
+import frc.robot.subsystems.drive.swerve.SwerveDriveBase;
+import frc.robot.subsystems.vision_autonomous.Gyro;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 
 public class Robot extends TimedRobot {
@@ -68,8 +74,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        // Tankdrive_poseestimator.getInstance().updatePoseEstimator();
-        // Tankdrive_odometry.getInstance().update_robot_pose();
+        Tankdrive_odometry.getInstance().update_robot_pose();
     }
 
     @Override
@@ -80,11 +85,18 @@ public class Robot extends TimedRobot {
 
     // AutoCommand aComand = null;
     Command auto_command = null;
+    Servo exampleServo = new Servo(0);
+    //PWM pwm = new PWM(0);
 
     @Override
     public void teleopPeriodic() {
 
         //Tankdrive.getInstance().differentialDrive.feed();
+        //exampleServo.setBoundsMicroseconds(2150, 1501, 1500, 1499, 850);
+        //exampleServo.setPulseTimeMicroseconds((int) (000*Controls.joystick.getRightX()));
+        //exampleServo.set(Controls.joystick.getRightX());
+
+        Tankdrive.getInstance().differentialDrive.feed();
         
         if (Controls.joystick.getYButtonPressed()) {
             System.out.println("start command");

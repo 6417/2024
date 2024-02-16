@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class CSVLoggerCommand extends Command {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final CSVLogger loger;
 
   /**
@@ -24,13 +24,14 @@ public class CSVLoggerCommand extends Command {
    * @param subsystem The subsystem used by this command.
    */
   Trajectory trajectory;
-  Timer t; 
+  Timer t;
+
   public CSVLoggerCommand(String pathname, Trajectory trajectory) {
     loger = new CSVLogger(pathname);
     this.trajectory = trajectory;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    //addRequirements(subsystem);
+    // addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -40,19 +41,25 @@ public class CSVLoggerCommand extends Command {
     t.start();
   }
 
+  int i = 0;
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var goal = trajectory.sample(t.get());
-    loger.put("odometry_x", Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getX());
-    loger.put("odometry_y", Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getY());
-    loger.put("pose_traj_x", goal.poseMeters.getX());
-    loger.put("pose_traj_y", goal.poseMeters.getY());
-    loger.put("rot_traj", goal.poseMeters.getRotation().getDegrees());
-    loger.put("rot_gyro", Gyro.getInstance().getRotation2d().getDegrees());
-    loger.put("time", t.get());
-    loger.put("rot_odo", Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getRotation().getDegrees());
-    //System.out.println(Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getX());
+    if (t.hasElapsed(0.1 * i)) {
+      var goal = trajectory.sample(t.get());
+      loger.put("odometry_x", Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getX());
+      loger.put("odometry_y", Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getY());
+      loger.put("pose_traj_x", goal.poseMeters.getX());
+      loger.put("pose_traj_y", goal.poseMeters.getY());
+      loger.put("rot_traj", goal.poseMeters.getRotation().getDegrees());
+      loger.put("rot_gyro", Gyro.getInstance().getRotation2d().getDegrees());
+      loger.put("time", t.get());
+      loger.put("rot_odo",
+          Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getRotation().getDegrees());
+      // System.out.println(Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getX());
+      i++;
+    }
   }
 
   // Called once the command ends or is interrupted.

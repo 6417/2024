@@ -50,11 +50,11 @@ public class Constants {
             //public static final double ka = 0.40922;
 
             public static final double kMaxVMetersPerSecond = 1;            //own constraints
-            public static final double kMaxAccMetersPerSecond = 0.8; //0.9
+            public static final double kMaxAccMetersPerSecond = 0.3; //0.9
             public static final double kMaxCentripetalAcceleration = 0;
 
-            public static final double kRamsetB = 0;
-            public static final double kRamseteZeta = 0;
+            public static final double kRamsetB = 2;
+            public static final double kRamseteZeta = 0.7;
 
             public static final double kP = 0.62585;// old value 0.36205;
             public static final double kI = 0;
