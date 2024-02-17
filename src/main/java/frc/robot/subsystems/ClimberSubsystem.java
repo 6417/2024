@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridoFalcon500;
+import frc.fridowpi.motors.FridoServoMotor;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
@@ -24,8 +25,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public FridolinsMotor seilZiehMotorLinks = new FridoFalcon500(Constants.Climber.seilZiehMotorLinks);
     public FridolinsMotor seilZiehMotorRechts = new FridoFalcon500(Constants.Climber.seilZiehMotorRechts);
-    public Servo federLoslassMotorLinks = new Servo(Constants.Climber.federLoslassMotorLinks);
-    public Servo federLoslassMotorRechts = new Servo(Constants.Climber.federLoslassMotorRechts);
+    public FridoServoMotor federLoslassMotorLinks = new FridoServoMotor(Constants.Climber.federLoslassMotorLinks);
+    public FridoServoMotor federLoslassMotorRechts = new FridoServoMotor(Constants.Climber.federLoslassMotorRechts);
     
     /** Creates a new ClimberSubsystem. */
     private ClimberSubsystem() {
@@ -33,7 +34,8 @@ public class ClimberSubsystem extends SubsystemBase {
         seilZiehMotorRechts.setPID(Constants.Climber.pidValuesSlot0);
         seilZiehMotorRechts.follow(seilZiehMotorLinks, DirectionType.followMaster);
         seilZiehMotorLinks.setIdleMode(IdleMode.kBrake);
-        federLoslassMotorLinks.setBoundsMicroseconds(2000, 1519, 1520, 1521, 850);
+        federLoslassMotorLinks.setBoundsMicroseconds(2200, 1499, 1500, 1501, 800);
+        federLoslassMotorLinks.setMaxAngle(130);
     }
 
     @Override

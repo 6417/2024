@@ -20,11 +20,11 @@ public class DriveCommand extends Command {
 
   @Override
   public void execute() {
-    double x = Controls.joystick.getThrottle();
-    double y = Controls.joystick.getTwist();
-    double rot = Controls.joystick.getX();
+    double x = Controls.joystick.getX();
+    double y = Controls.joystick.getZ();
+    double rot = Controls.joystick.getTwist();
     // getRightY() somehow is always 0: Don't use
-    m_subsystem.drive(y, x, x);
+    m_subsystem.drive(y, x, rot);
   }
 
   @Override

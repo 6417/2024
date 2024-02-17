@@ -88,7 +88,7 @@ public class Constants {
         public static final double zielPosition = 2;
 
         public static final double manualClimberMovementSpeed = 0.5;
-        public static final double maxServoPos = 180;
+        public static final double maxServoPos = 130;
     }
 
     public static final class Joystick {
