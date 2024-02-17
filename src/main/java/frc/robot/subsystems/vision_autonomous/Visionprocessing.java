@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 
 import javax.print.attribute.standard.Media;
 
-import org.json.JSONObject;
-
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -76,8 +74,6 @@ public class Visionprocessing extends SubsystemBase {
     }
 
     public void analyse_json(String json){
-        JSONObject obj = new JSONObject(json);
-
     }
 
     public double[] getFieldPos(){

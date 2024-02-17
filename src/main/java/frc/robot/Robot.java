@@ -26,6 +26,7 @@ import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.Tankdrive;
 import frc.robot.subsystems.drive.getAutonomousTrajectory;
+import frc.robot.subsystems.drive.getRamsetCommand;
 import frc.robot.subsystems.drive.swerve.SwerveDrive;
 import frc.robot.subsystems.drive.swerve.SwerveDriveBase;
 import frc.robot.subsystems.vision_autonomous.Gyro;
@@ -100,7 +101,7 @@ public class Robot extends TimedRobot {
         
         if (Controls.joystick.getYButtonPressed()) {
             System.out.println("start command");
-            auto_command = getAutonomousTrajectory.getInstance().start_command();
+            auto_command = getRamsetCommand.getInstance().start_command();
         }
         
         
