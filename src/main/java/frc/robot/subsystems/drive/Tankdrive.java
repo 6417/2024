@@ -26,9 +26,9 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.Constants;
 import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.vision_autonomous.Gyro;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 
 public class Tankdrive extends DriveBase {
@@ -205,7 +205,7 @@ public class Tankdrive extends DriveBase {
         builder.addDoubleProperty("odometry_x", () -> Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getX(), null);
         builder.addDoubleProperty("odometry_y", () -> Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getY(), null);
         builder.addDoubleProperty("odometry_rot", () -> Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getRotation().getDegrees(), null);
-        builder.addDoubleProperty("gyro_angle", () -> Gyro.getInstance().getRotation2d().getDegrees(), null);
+        builder.addDoubleProperty("gyro_angle", () -> FridoNavx.getInstance().getRotation2d().getDegrees(), null);
         builder.addDoubleProperty("whee_speed_lef", ()-> getWeelSpeeds().leftMetersPerSecond,null);
     }
 

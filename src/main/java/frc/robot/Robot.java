@@ -21,7 +21,7 @@ import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.joystick.joysticks.Logitech;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.vision_autonomous.Gyro;
+import frc.robot.subsystems.vision_autonomous.Swervdrive_poseestimator;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 import frc.robot.subsystems.drive.Controls;
 import frc.robot.subsystems.drive.Tankdrive;
@@ -29,7 +29,6 @@ import frc.robot.subsystems.drive.getAutonomousTrajectory;
 import frc.robot.subsystems.drive.getRamsetCommand;
 import frc.robot.subsystems.drive.swerve.SwerveDrive;
 import frc.robot.subsystems.drive.swerve.SwerveDriveBase;
-import frc.robot.subsystems.vision_autonomous.Gyro;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 
 public class Robot extends TimedRobot {
@@ -64,18 +63,11 @@ public class Robot extends TimedRobot {
         SignalLogger.setPath("/home/lvuser/logs");
 
         tab = Shuffleboard.getTab("robotpos");
-        
-        JoystickButton resetButton = new JoystickButton(Controls.joystick, Logitech.b.getButtonId());
-        resetButton.onTrue(new InstantCommand(() -> {
-            Gyro.getInstance().reset();
-            Tankdrive_odometry.getInstance().reset_odometry();
-        }));
     }
 
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        Tankdrive_odometry.getInstance().update_robot_pose();
     }
 
     @Override

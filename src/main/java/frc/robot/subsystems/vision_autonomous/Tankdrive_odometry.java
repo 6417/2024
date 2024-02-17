@@ -12,9 +12,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drive.Tankdrive;
 
-public class Tankdrive_odometry {
+public class Tankdrive_odometry extends SubsystemBase{
 
     public static Tankdrive_odometry instance;
 
@@ -23,7 +24,7 @@ public class Tankdrive_odometry {
 
     private Tankdrive_odometry(){
         double[] pos = Visionprocessing.getInstance().getFieldPos();
-        m_odometry = new DifferentialDrivePoseEstimator(Tankdrive.getInstance().m_kinematics, Gyro.getInstance().getRotation2d(),
+        m_odometry = new DifferentialDrivePoseEstimator(Tankdrive.getInstance().m_kinematics, FridoNavx.getInstance().getRotation2d(),
         Tankdrive.getInstance().getLeftEncoderPos(), Tankdrive.getInstance().getRightEndocderPos(), new Pose2d(pos[0],pos[1],new Rotation2d(Units.rotationsToDegrees(pos[5]))));
         //attention vision rotation in radians not in degrees
         timer = new Timer();
@@ -43,7 +44,7 @@ public class Tankdrive_odometry {
     }
 
     public void update_robot_pose(){
-        Rotation2d gyroAngle = Gyro.getInstance().getRotation2d();
+        Rotation2d gyroAngle = FridoNavx.getInstance().getRotation2d();
 
         Pose2d m_pose = m_odometry.updateWithTime(timer.get(),gyroAngle,Tankdrive.getInstance().getLeftEncoderPos(),
         Tankdrive.getInstance().getRightEndocderPos());
@@ -67,6 +68,11 @@ public class Tankdrive_odometry {
     public void reset_odometry(){
         m_odometry.resetPosition(new Rotation2d(0), Tankdrive.getInstance().getWeelPosition(), 
         new Pose2d(0,0, new Rotation2d(0)));
+    }
+
+    @Override
+    public void periodic(){
+        update_robot_pose();
     }
 
 

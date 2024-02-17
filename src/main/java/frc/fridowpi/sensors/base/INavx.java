@@ -4,6 +4,8 @@ import frc.fridowpi.initializer.Initialisable;
 import com.kauailabs.navx.frc.AHRS;
 import com.kauailabs.navx.frc.ITimestampedDataSubscriber;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public interface INavx extends Initialisable {
 
     float getPitch();
@@ -87,6 +89,8 @@ public interface INavx extends Initialisable {
     double getAngleAdjustment();
 
     void reset();
+
+    Rotation2d getRotation2d();
 
     float getRawGyroX();
 
