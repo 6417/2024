@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive.swerve;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -162,7 +164,7 @@ public class SwerveDrive extends SwerveDriveBase {
 	public void initSendable(SendableBuilder builder) {
 	}
 
-	public SwerveDriveKinematics getKinematics(){
+	public SwerveDriveKinematics getKinematics() {
 		return kinematics;
 	}
 
@@ -191,6 +193,15 @@ public class SwerveDrive extends SwerveDriveBase {
 	@Override
 	public void setDriveMode(DriveOrientation driveMode) {
 		this.driveMode = driveMode;
+	}
+
+	@Override
+	public SwerveModulePosition[] getOdometryPoses(){
+		List<SwerveModulePosition> pos = List.of();
+		for (var module:modules.values()){
+			pos.add(module.getOdometryPos());
+		}
+		return pos.toArray(SwerveModulePosition[]::new);
 	}
 
 	@Override
