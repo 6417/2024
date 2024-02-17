@@ -19,9 +19,9 @@ public class DefaultDriveCommand extends Command {
 
     private boolean joystickNotInDeadBand() {
         boolean result = false;
-        result |= Constants.SwerveDrive.deadBand < Math.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getX());
-        result |= Constants.SwerveDrive.deadBand < Math.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getY());
-        result |= Constants.SwerveDrive.deadBand < Math.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getZ());
+        result |= Constants.SwerveDriveConsts.deadBand < Math.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getX());
+        result |= Constants.SwerveDriveConsts.deadBand < Math.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getY());
+        result |= Constants.SwerveDriveConsts.deadBand < Math.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getZ());
         return result;
     }
 
@@ -35,23 +35,23 @@ public class DefaultDriveCommand extends Command {
 		var joystick = JoystickHandler.getInstance().getJoystick(Constants.Joystick.id);
 		var x = joystick.getX();
 		var y = joystick.getY();
-		if (Math.abs(x) < Constants.SwerveDrive.deadBand) {
+		if (Math.abs(x) < Constants.SwerveDriveConsts.deadBand) {
 			x = 0;
 		} else {
-			x = MathUtilities.map(Math.abs(x), Constants.SwerveDrive.deadBand, 1.0, 0.0, 1.0) * Math.signum(x);
+			x = MathUtilities.map(Math.abs(x), Constants.SwerveDriveConsts.deadBand, 1.0, 0.0, 1.0) * Math.signum(x);
 		}
-		if (Math.abs(y) < Constants.SwerveDrive.deadBand) {
+		if (Math.abs(y) < Constants.SwerveDriveConsts.deadBand) {
 			y = 0;
 		} else {
-			y = MathUtilities.map(Math.abs(y), Constants.SwerveDrive.deadBand, 1.0, 0.0, 1.0) * Math.signum(y);
+			y = MathUtilities.map(Math.abs(y), Constants.SwerveDriveConsts.deadBand, 1.0, 0.0, 1.0) * Math.signum(y);
 		}
 		return new Vector2(x, y);
     }
 
     private JoystickInput applyDeadBandToXandY() {
         JoystickInput result = new JoystickInput();
-        boolean xyNotInDeadBand = Math.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getX()) > Constants.SwerveDrive.deadBand
-                || Math.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getY()) > Constants.SwerveDrive.deadBand;
+        boolean xyNotInDeadBand = Math.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getX()) > Constants.SwerveDriveConsts.deadBand
+                || Math.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getY()) > Constants.SwerveDriveConsts.deadBand;
         if (xyNotInDeadBand) {
             Vector2 xyVector = getXYvectorWithAppliedDeadBandFromJoystick();
             result.x = xyVector.x;
@@ -65,10 +65,10 @@ public class DefaultDriveCommand extends Command {
 
     private double getJoystickRotationWithAppliedDeadBand() {
         boolean rotaionNotInDeadBand = Math
-                .abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getZ()) > Constants.SwerveDrive.deadBand;
+                .abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getZ()) > Constants.SwerveDriveConsts.deadBand;
         if (rotaionNotInDeadBand)
             return MathUtilities.map(JoystickHandler.getInstance().getJoystick(Constants.Joystick.id).getZ(),
-                    Constants.SwerveDrive.deadBand, 1.0, 0.0, 1.0);
+                    Constants.SwerveDriveConsts.deadBand, 1.0, 0.0, 1.0);
         return 0.0;
     }
 
@@ -81,9 +81,9 @@ public class DefaultDriveCommand extends Command {
     private Vector2 convertJoystickInputToVector(JoystickInput xyr) {
         double xSpeed = SwerveDrive.joystickInputToMetersPerSecond(xyr.x);
         double ySpeed = SwerveDrive.joystickInputToMetersPerSecond(xyr.y);
-        if (Constants.SwerveDrive.joystickYinverted)
+        if (Constants.SwerveDriveConsts.joystickYinverted)
             ySpeed *= -1;
-        if (Constants.SwerveDrive.joystickXinverted)
+        if (Constants.SwerveDriveConsts.joystickXinverted)
             xSpeed *= -1;
         return new Vector2(xSpeed, ySpeed);
     }
@@ -110,7 +110,7 @@ public class DefaultDriveCommand extends Command {
         if (SwerveDrive.getInstance().areAllModulesZeroed() && joystickNotInDeadBand()) {
             JoystickInput xyr = applyDeadBandToJoystickInput();
             Vector2 xyVector = convertJoystickInputToVector(xyr);
-            double rotationSpeed = xyr.r * Constants.SwerveDrive.maxRotationSpeed;
+            double rotationSpeed = xyr.r * Constants.SwerveDriveConsts.maxRotationSpeed;
             setChassisSpeeds(xyVector, rotationSpeed);
         } else
             SwerveDrive.getInstance().stopAllMotors();

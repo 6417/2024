@@ -97,7 +97,7 @@ public class Constants {
     }
 
     
-    public static final class SwerveDrive {
+    public static final class SwerveDriveConsts {
 
         public static enum MountingLocations {
             FrontRight, FrontLeft, BackRight, BackLeft

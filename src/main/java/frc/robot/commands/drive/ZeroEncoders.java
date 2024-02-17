@@ -35,13 +35,13 @@ public class ZeroEncoders extends ParallelCommandGroup {
             module.setEncoderZeroedFalse();
             module.stopAllMotors();
             module.enableLimitSwitch();
-            currentSetPoint = module.getRotationEncoderTicks() + Constants.SwerveDrive.zeroingSpeed;
+            currentSetPoint = module.getRotationEncoderTicks() + Constants.SwerveDriveConsts.zeroingSpeed;
         }
 
         @Override
         public void execute() {
             module.setDesiredRotationMotorTicks(currentSetPoint);
-            currentSetPoint += Constants.SwerveDrive.zeroingSpeed;
+            currentSetPoint += Constants.SwerveDriveConsts.zeroingSpeed;
         }
 
         @Override
@@ -72,10 +72,10 @@ public class ZeroEncoders extends ParallelCommandGroup {
             module.stopAllMotors();
             module.enableLimitSwitch();
             currentSetPoint = module.getRotationEncoderTicks()
-                    - Constants.SwerveDrive.zeroingSpeed * Constants.SwerveDrive.finetuningZeroFactor;
+                    - Constants.SwerveDriveConsts.zeroingSpeed * Constants.SwerveDriveConsts.finetuningZeroFactor;
             while (module.isHalSensorTriggered()) {
                 module.setDesiredRotationMotorTicks(currentSetPoint);
-                currentSetPoint -= Constants.SwerveDrive.zeroingSpeed * Constants.SwerveDrive.finetuningZeroFactor;
+                currentSetPoint -= Constants.SwerveDriveConsts.zeroingSpeed * Constants.SwerveDriveConsts.finetuningZeroFactor;
             }
             currentSetPoint = module.getRotationEncoderTicks();
             startingPosition = module.getRotationEncoderTicks();
@@ -84,7 +84,7 @@ public class ZeroEncoders extends ParallelCommandGroup {
         @Override
         public void execute() {
             module.setDesiredRotationMotorTicks(currentSetPoint);
-            currentSetPoint += Constants.SwerveDrive.zeroingSpeed * Constants.SwerveDrive.finetuningZeroFactor;
+            currentSetPoint += Constants.SwerveDriveConsts.zeroingSpeed * Constants.SwerveDriveConsts.finetuningZeroFactor;
             if (module.isHalSensorTriggered())
                 module.setRotationEncoderTicks(module.halSensorPosition);
 
