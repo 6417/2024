@@ -137,9 +137,9 @@ public class Constants {
         public static final Map<MountingLocations, SwerveModule.Config> swerveModuleConfigs = new HashMap<>();
 
         public static SwerveModule.Config commonConfigurations = new SwerveModule.Config();
-        public static double defaultSpeedFactor = 0.75;
-        public static double slowSpeedFactor = 0.35;
-        public static double fullSpeed =  1.0;
+        public static final double defaultSpeedFactor = 0.75;
+        public static final double slowSpeedFactor = 0.35;
+        public static final double fullSpeed =  1.0;
 
         static {
             setSwerveDriveConstants();

@@ -4,8 +4,8 @@
 
 package frc.robot.commands;
 
+import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.vision_autonomous.Gyro;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 import frc.robot.utils.CSVLogger;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -53,7 +53,7 @@ public class CSVLoggerCommand extends Command {
       loger.put("pose_traj_x", goal.poseMeters.getX());
       loger.put("pose_traj_y", goal.poseMeters.getY());
       loger.put("rot_traj", goal.poseMeters.getRotation().getDegrees());
-      loger.put("rot_gyro", Gyro.getInstance().getRotation2d().getDegrees());
+      loger.put("rot_gyro", FridoNavx.getInstance().getRotation2d().getDegrees());
       loger.put("time", t.get());
       loger.put("rot_odo",
           Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getRotation().getDegrees());
