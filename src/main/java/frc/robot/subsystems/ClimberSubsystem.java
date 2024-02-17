@@ -4,19 +4,21 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.fridowpi.motors.FridoFalcon500;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.robot.Constants;
+import frc.robot.abstraction.baseClasses.BClimber;
 
-public class ClimberSubsystem extends SubsystemBase {
+public class ClimberSubsystem extends BClimber {
     private static ClimberSubsystem instance;
 
-    public FridolinsMotor seilZiehMotorLinks = new FridoFalcon500(Constants.Climber.seilZiehMotorLinks);
-    public FridolinsMotor seilZiehMotorRechts = new FridoFalcon500(Constants.Climber.seilZiehMotorRechts);
+    public FridolinsMotor seilZiehMotorLinks = new FridoFalcon500(getData().motorIds.get(0));
+    public FridolinsMotor seilZiehMotorRechts = new FridoFalcon500(getData().motorIds.get(1));
     public Servo federLoslassMotorLinks = new Servo(Constants.Climber.federLoslassMotorLinks);
     
     public Servo federLoslassMotorRechts = new Servo(Constants.Climber.federLoslassMotorRechts);
@@ -30,9 +32,7 @@ public class ClimberSubsystem extends SubsystemBase {
         // federLoslassMotorLinks.setAngle(0);
     }
 
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
+    public void run() {
     }
 
     public static ClimberSubsystem getInstance() {
@@ -44,4 +44,15 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void federnFreilassenOderFangen() {
     }
+
+	@Override
+	public ClimberData getData() {
+		var motorLeft = 22;
+		var motorRight = 21;
+		var servo = -1;
+		return new ClimberData(
+				Constants.Climber.enabled,
+				List.of(motorLeft, motorRight, servo));
+	}
+
 }

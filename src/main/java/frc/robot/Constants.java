@@ -1,6 +1,9 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,11 +29,8 @@ import frc.robot.abstraction.RobotData.AutoData;
 import frc.robot.abstraction.RobotData.DriveData;
 import frc.robot.abstraction.RobotData.HardwareData;
 import frc.robot.abstraction.RobotData.PidData;
+import frc.robot.abstraction.baseClasses.BShooter.ShooterData;
 import frc.robot.subsystems.drive.swerve.SwerveModule;
-import java.util.function.Supplier;
-
-import frc.fridowpi.joystick.IJoystickId;
-import frc.fridowpi.motors.utils.PidValues;
 
 public class Constants {
 
@@ -50,12 +50,18 @@ public class Constants {
 	}
 
 	public static final class Shooter {
+		public static final boolean enabled = false;
 		public static final double OptimalAmpSpeed = 0.3;
 		public static final double OptimalSpeakerSpeed = 0.9;
 		public static final double OptimalIntakeSpeed = -0.6;
+
+		public static final ShooterData data = new ShooterData(
+				enabled, List.of(-1, -1));
 	}
 
     public static final class Climber {
+		public static boolean enabled = false;
+
         public static final int seilZiehMotorLinks = 1;
         public static final int seilZiehMotorRechts = 2;
         public static final int federLoslassMotorLinks = 2;
@@ -68,7 +74,6 @@ public class Constants {
         public static final double zielPosition = 2;
 
         public static final double manualClimberMovementSpeed = 0.5;
-
     }
 
 	public static final class Diplodocus {

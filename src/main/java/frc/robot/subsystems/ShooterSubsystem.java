@@ -1,18 +1,19 @@
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BShooter;
 
 public class ShooterSubsystem extends BShooter {
 
-    final TalonSRX motor_left = new TalonSRX(22); // TODO: impove
-    final TalonSRX motor_right = new TalonSRX(23);
+    final TalonSRX motor_left = new TalonSRX(getData().motorIds.get(0));
+    final TalonSRX motor_right = new TalonSRX(getData().motorIds.get(1));
     double speeds = 0.0;
-
-	boolean enabled = true;
 
     private ShooterSubsystem() {
         motor_right.setInverted(true);
@@ -21,7 +22,7 @@ public class ShooterSubsystem extends BShooter {
 
 	@Override
     public void run() {
-        if (enabled) {
+        if (Constants.Shooter.data.enabled) {
             motor_right.set(TalonSRXControlMode.PercentOutput, speeds);
         } else {
             motor_right.set(TalonSRXControlMode.Disabled, 0.0);
@@ -47,7 +48,7 @@ public class ShooterSubsystem extends BShooter {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("shooterSpeeds", () -> speeds, (val) -> speeds = val);
+        builder.addDoubleProperty("shooterSpeeds", () -> speeds, val -> speeds = val);
     }
 
 	@Override
@@ -56,11 +57,16 @@ public class ShooterSubsystem extends BShooter {
 
 	@Override
 	public void enable() {
-		enabled = true;
+		getData().enabled = true;
 	}
 
 	@Override
 	public void disable() {
-		enabled = false;
+		getData().enabled = false;
+	}
+
+	@Override
+	public ShooterData getData() {
+		return Constants.Shooter.data;
 	}
 }
