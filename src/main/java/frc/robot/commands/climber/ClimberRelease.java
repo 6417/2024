@@ -4,6 +4,7 @@
 
 package frc.robot.commands.climber;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class ClimberRelease extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ClimberSubsystem m_subsystem;
+  private double winkel = Constants.Climber.maxServoPos;
 
   
   public ClimberRelease(ClimberSubsystem subsystem) {
@@ -25,7 +27,16 @@ public class ClimberRelease extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.federLoslassMotorLinks.setAngle(m_subsystem.federLoslassMotorLinks.getAngle() + 180);
+    if (winkel == Constants.Climber.maxServoPos){
+      winkel = 0; 
+    }
+    else{
+      winkel = Constants.Climber.maxServoPos;
+    }
+    m_subsystem.federLoslassMotorLinks.setAngle(winkel);
+    System.out.println("Value: " + m_subsystem.federLoslassMotorLinks.getAngle());
+    
+    // m_subsystem.federLoslassMotorLinks.setAngle(m_subsystem.federLoslassMotorLinks.getAngle() + 180);
     //m_subsystem.federLoslassMotorRechts.setAngle(m_subsystem.federLoslassMotorRechts.getAngle() + 180);
 }
 
@@ -36,6 +47,6 @@ public class ClimberRelease extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
