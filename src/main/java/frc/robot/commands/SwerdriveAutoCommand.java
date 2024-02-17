@@ -1,18 +1,21 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.drive.swerve.SwerveDrive;
+import frc.robot.subsystems.vision_autonomous.SwervdriveAuto;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class SwerdriveAutoCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final SwerdrivAuto m_subsystem;
 
   Timer timer = new Timer();
+  Trajectory trajectory;
 
-  public SwerdriveAutoCommand(SwerdriveAutoCommand subsystem) {
-    swerdriveauto = subsystem;
+  public SwerdriveAutoCommand(Trajectory tra) {
+    trajectory = tra;
     //addRequirements(subsystem);
   }
 
@@ -24,7 +27,8 @@ public class SwerdriveAutoCommand extends Command {
   @Override
   public void execute() {
     double t = timer.get();
-    ChassisSpeeds speeds = swervderiveauto
+    ChassisSpeeds speeds = SwervdriveAuto.getInstance().getVelocitis(trajectory, t);
+    SwerveDrive.getInstance().drive(speeds);
   }
 
   @Override

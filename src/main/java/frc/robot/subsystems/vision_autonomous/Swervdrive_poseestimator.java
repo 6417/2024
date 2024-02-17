@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Swervdrive_poseestimator extends SubsystemBase {
-  SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+  public SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-  private static Swervdrive_poseestimator instance;
+  public static Swervdrive_poseestimator instance;
   Timer timer;
 
   public Swervdrive_poseestimator() {

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.fridowpi.joystick.Binding;
@@ -78,6 +79,10 @@ public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
 
     public void configureButtonBindings(Joystick joystick) {
 
+    }
+
+    public SwerveDriveKinematics getKinematics(){
+        return null;
     }
 
     @Override

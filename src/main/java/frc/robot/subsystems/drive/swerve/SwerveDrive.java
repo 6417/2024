@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -159,6 +160,10 @@ public class SwerveDrive extends SwerveDriveBase {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
+	}
+
+	public SwerveDriveKinematics getKinematics(){
+		return kinematics;
 	}
 
 	@Override
