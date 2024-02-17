@@ -78,6 +78,17 @@ public class Joystick2024 implements Sendable {
                 Xbox360.rb,
                 Trigger::onTrue,
                 new ClimberRelease(ClimberSubsystem.getInstance())));
+        JoystickHandler.getInstance().bind(new Binding(
+                Constants.Joystick.primaryJoystickId,
+                Xbox360Extended.Lt,
+                Trigger::onTrue,
+                new SimplePrintCommand("lt pressed")));
+        JoystickHandler.getInstance().bind(new Binding(
+                Constants.Joystick.primaryJoystickId,
+                Xbox360Extended.Rt,
+                Trigger::onTrue,
+                new SimplePrintCommand("rt pressed")));
+        
     }
 
     @Override

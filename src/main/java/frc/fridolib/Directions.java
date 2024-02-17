@@ -3,6 +3,7 @@ package frc.fridolib;
 import org.opencv.core.Mat.Tuple2;
 
 import edu.wpi.first.math.Pair;
+import frc.robot.Constants;
 
 public class Directions {
     // public enum RawDirection {
@@ -40,5 +41,4 @@ public class Directions {
             return Math.toRadians(angle);
         }
     }
-
 }

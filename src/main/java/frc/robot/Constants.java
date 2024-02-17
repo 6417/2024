@@ -94,5 +94,6 @@ public class Constants {
     public static final class Joystick {
         public static final IJoystickId primaryJoystickId = () -> 0;
         public static int idCounterStart = 1000;
+        public static double treshold = 0.2;
     }
 }
