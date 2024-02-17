@@ -34,7 +34,7 @@ public enum RobotPreset {
 
 	// Enum variants //
 
-	// Diplodocus(new FourFalconsTankDrive()),
+	Diplodocus(Constants.Diplodocus.robotData, new FourFalconsTankDrive()),
 	TestChassisDrive(Constants.Testchassis.robotData, new FourFalconsTankDrive()),
 	// TestChassisShooter(new FourFalconTankDrive(-1, -1, -1, -1), new ShooterTwoPhoenix(-1, -1)),
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))

@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.IJoystickId;
@@ -31,6 +32,7 @@ import frc.robot.abstraction.RobotData.HardwareData;
 import frc.robot.abstraction.RobotData.PidData;
 import frc.robot.abstraction.baseClasses.BShooter.ShooterData;
 import frc.robot.subsystems.drive.swerve.SwerveModule;
+import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 
 public class Constants {
 
@@ -84,6 +86,8 @@ public class Constants {
 		public static final int mLeftBack = 13;
 		public static final int mRightBack = 12;
 
+		public static final List<MotorRole> invertedMotors = List.of();
+
 		public static final class Odometry {
 			public static final Measure<Distance> wheelCircumstance = Meters.of(0.47);
 			public static final Measure<Distance> trackWidth = Meters.of(0.5);
@@ -106,28 +110,35 @@ public class Constants {
 			public static final Measure<Distance> kS = Meters.of(0.14604);
 			public static final Measure<Velocity<Distance>> kV = MetersPerSecond.of(2.3639);
 			public static final Measure<Velocity<Velocity<Distance>>> kA = MetersPerSecondPerSecond.of(0.35094);
+
+			public static final Measure<Distance> ramseteB = Meters.of(2.0);
+			public static final Measure<Time> ramseteZeta = Seconds.of(0.7);
+
+			public static final PidValues pathWeaverPid = new PidValues(0.36205, 0.0, 0.0);
+			public static final PidValues drivePid = new PidValues(0.01, 0.0, 0.0);
 		}
 
-		// RobotData data = new RobotData(
-		// 		new HardwareData(
-		// 			Odometry.wheelCircumstance,
-		// 				Odometry.trackWidth,
-		// 				Odometry.encoderToMeters),
-		// 		new DriveData(
-		// 			driveEnabled,
-		// 			List.of(mLeftFront, mRightFront, mLeftBack, mRightBack)),
-		// 		new AutoData(
-		// 				MetersPerSecond.of(PathWeaver.kMaxVMetersPerSecond),
-		// 				MetersPerSecondPerSecond.of(PathWeaver.kMaxAccMetersPerSecond),
-		// 				Meters.of(PathWeaver.ksMeters),
-		// 				MetersPerSecond.of(PathWeaver.kvMetersPerSecoond),
-		// 				MetersPerSecondPerSecond.of(PathWeaver.ka),
-		// 				Meters.of(PathWeaver.kRamsetB),
-		// 				Seconds.of(PathWeaver.kRamseteZeta)),
-		// 		new PidData(
-		// 				new PidValues(PathWeaver.kP, PathWeaver.kI, PathWeaver.kD),
-		// 				new PidValues(kPDriveVel, 0.0, 0.0),
-		// 				new PidValues(kPDriveVel, 0.0, 0.0)));
+		public static final RobotData robotData = new RobotData(
+				new HardwareData(
+					Odometry.wheelCircumstance,
+						Odometry.trackWidth,
+						Odometry.encoderToMeters),
+				new DriveData(
+					driveEnabled,
+					List.of(mLeftFront, mRightFront, mLeftBack, mRightBack),
+					invertedMotors),
+				new AutoData(
+					Autonomous.maxSpeed,
+					Autonomous.maxAcceleration,
+					Autonomous.kS,
+					Autonomous.kV,
+					Autonomous.kA,
+					Autonomous.ramseteB,
+					Autonomous.ramseteZeta),
+				new PidData(
+					Autonomous.pathWeaverPid,
+					Autonomous.drivePid,
+					Autonomous.drivePid.clone()));
 	}
 
 	public static final class Testchassis {
@@ -137,6 +148,8 @@ public class Constants {
 		final public static int idRigthfront = 13;
 		final public static Integer idLeftback = 0;
 		final public static Integer idRigthback = 11;
+
+		public static final List<MotorRole> invertedMotors = List.of(MotorRole.LeftMaster);
 
 		public static final class Odometry {
 			public static final double wheelPerimeterMeters = 0.47;
@@ -159,8 +172,8 @@ public class Constants {
 			public static final double kMaxAccMetersPerSecond = 0.9;
 			public static final double kMaxCentripetalAcceleration = 0;
 
-			public static final double kRamsetB = 0;
-			public static final double kRamseteZeta = 0;
+			public static final double kRamsetB = 2.0;
+			public static final double kRamseteZeta = 0.7;
 
 			public static final double kP = 0.36205;
 			public static final double kI = 0;
@@ -182,7 +195,8 @@ public class Constants {
 						Odometry.encoderToMetersConversion),
 				new DriveData(
 					driveEnabled,
-					List.of(idLeftfront, idRigthfront, idLeftback, idRigthback)),
+					List.of(idLeftfront, idRigthfront, idLeftback, idRigthback),
+					invertedMotors),
 				new AutoData(
 						MetersPerSecond.of(PathWeaver.kMaxVMetersPerSecond),
 						MetersPerSecondPerSecond.of(PathWeaver.kMaxAccMetersPerSecond),

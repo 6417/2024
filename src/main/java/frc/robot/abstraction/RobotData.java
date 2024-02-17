@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.wpi.first.units.*;
 import frc.fridowpi.motors.utils.PidValues;
+import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 
 /**
  * RobotData: Holds important constants of the active robot.
@@ -17,7 +18,8 @@ public record RobotData(
 
 	public record DriveData(
 			boolean enabled,
-			List<Integer> motorIds
+			List<Integer> motorIds,
+			List<MotorRole> inverted
 			) { }
 
 	public record HardwareData(

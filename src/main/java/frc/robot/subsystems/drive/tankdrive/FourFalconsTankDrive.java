@@ -45,15 +45,18 @@ public class FourFalconsTankDrive extends BTankDrive {
 	public void init() {
 		super.init();
 
+		// Assign ids //
 		var ids = Config.data().drive().motorIds();
 		assert ids.size() == 4;
+
 		motors = new MotorSet(
 				new FridoFalcon500v6(ids.get(0)),
 				new FridoFalcon500v6(ids.get(1)),
 				new FridoFalcon500v6(ids.get(2)),
 				new FridoFalcon500v6(ids.get(3)));
 
-		motors.invert(MotorRole.LeftMaster);
+		// Invert if necessary //
+		Config.data().drive().inverted().forEach(m -> motors.invert(m));
 
 		differentialDrive = new DifferentialDrive(
 				motors.getMotor(MotorRole.LeftMaster)::set,

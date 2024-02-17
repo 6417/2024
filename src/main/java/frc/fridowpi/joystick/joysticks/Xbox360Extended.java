@@ -1,9 +1,7 @@
 package frc.fridowpi.joystick.joysticks;
 
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.fridolib.Directions.Pov;
 import frc.fridowpi.joystick.IJoystickButtonId;
-import frc.robot.joystick.ControllerWithState;
 
 public enum Xbox360Extended implements IJoystickButtonId {
     DPadUp(100, Pov.UP),

@@ -2,8 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.fridowpi.joystick.IJoystick;
-import frc.fridowpi.joystick.JoystickHandler;
 
 /** 
  * Holds the data concerning input, which should be available
@@ -12,10 +10,8 @@ import frc.fridowpi.joystick.JoystickHandler;
 public class Controls extends SubsystemBase {
     private static Controls instance = new Controls();
     
-    
     private static double turnSensitivity = 0.6;
     private static double accelerationSensitivity = 0.6;
-    public static IJoystick joystick = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId);
 
     // Initialization
     private Controls() {}

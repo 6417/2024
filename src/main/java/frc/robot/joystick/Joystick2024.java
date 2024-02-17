@@ -8,17 +8,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.JoystickHandler;
-import frc.fridowpi.joystick.XBoxJoystick;
 import frc.fridowpi.joystick.joysticks.Xbox360;
 import frc.fridowpi.joystick.joysticks.Xbox360Extended;
 import frc.robot.Config;
 import frc.robot.Constants;
-import frc.robot.commands.SimplePrintCommand;
 import frc.robot.commands.climber.ClimberManuel;
 import frc.robot.commands.climber.ClimberRelease;
 import frc.robot.joystick.IdsWithState.State;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 
 public class Joystick2024 implements Sendable {
     private static Joystick2024 instance = new Joystick2024();
@@ -66,11 +63,6 @@ public class Joystick2024 implements Sendable {
     }
 
     private void bindButtonsForSysid() {
-        JoystickHandler.getInstance().bind(new Binding(
-                Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.DPadUp,
-                Trigger::onTrue,
-                new SimplePrintCommand("DPadUp pressed")));
         JoystickHandler.getInstance().bind(new Binding(
                 Constants.Joystick.primaryJoystickId,
                 Xbox360.rb,

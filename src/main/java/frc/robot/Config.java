@@ -6,7 +6,7 @@ import frc.robot.abstraction.RobotData;
 import frc.robot.abstraction.baseClasses.BDrive;
 
 public class Config {
-	public static final RobotPreset active = RobotPreset.TestChassisDrive;
+	public static final RobotPreset active = RobotPreset.Diplodocus;
 	public static final IJoystick joystick = Controls.joystick; // Temporarily
 	
 	// Drive should always exist
