@@ -9,6 +9,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.fridowpi.sensors.FridoNavx;
+import frc.robot.subsystems.drive.swerve.SwerveDrive;
 
 public class Swervdrive_poseestimator extends SubsystemBase {
   public SwerveDrivePoseEstimator swerveDrivePoseEstimator;
@@ -18,7 +20,8 @@ public class Swervdrive_poseestimator extends SubsystemBase {
 
   public Swervdrive_poseestimator() {
     double[] pos = Visionprocessing.getInstance().getFieldPos();
-    swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(null, Gyro.getInstance().getRotation2d(), null,
+    swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(SwerveDrive.getInstance().getKinematics(),
+        FridoNavx.getInstance().getRotation2d(), SwerveDrive.getInstance().getOdometryPoses(),
         new Pose2d(pos[0], pos[1], new Rotation2d(Units.degreesToRadians(pos[5]))));
     timer = new Timer();
     timer.start();
@@ -37,8 +40,8 @@ public class Swervdrive_poseestimator extends SubsystemBase {
   }
 
   public void update(Pose2d pose) {
-    Rotation2d gyroAngle = Gyro.getInstance().getRotation2d();
-    swerveDrivePoseEstimator.updateWithTime(timer.get(),gyroAngle, new SwerveModulePosition[] {});
+    Rotation2d gyroAngle = FridoNavx.getInstance().getRotation2d();
+    swerveDrivePoseEstimator.updateWithTime(timer.get(), gyroAngle, new SwerveModulePosition[] {});
 
     int t = Visionprocessing.getInstance().validTarget();
 
