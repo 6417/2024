@@ -10,13 +10,10 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.sensors.FridoNavx;
-import frc.robot.subsystems.drive.swerve.SwerveDrive;
-import frc.robot.subsystems.drive.swerve.SwerveDriveBase;
 
 public class Robot extends TimedRobot {
 
     // Aliases for often used singleton instances
-    SwerveDriveBase drive = SwerveDrive.getInstance();
     // ShooterSubsystem shooter = ShooterSubsystem.getInstance();
     
     @Override
@@ -27,14 +24,13 @@ public class Robot extends TimedRobot {
 		// Setup joysticks
         JoystickHandler.getInstance().setupJoysticks(List.of(Constants.Joystick.id));
         JoystickHandler.getInstance().init();
-        JoystickHandler.getInstance().bind(SwerveDrive.getInstance());
+        JoystickHandler.getInstance().bind(Config.drive());
         JoystickHandler.getInstance().init();
 
-		// Make sure all subsystems are initialized
-        SwerveDrive.getInstance();
+		Config.active.initAll();
 
-        // Add subsystems
-        Shuffleboard.getTab("Drive").add(drive);
+        // Shuffleboard //
+        Shuffleboard.getTab("Drive").add(Config.drive());
         // Shuffleboard.getTab("Shooter").add(shooter);
 
         // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2

@@ -1,11 +1,11 @@
 package frc.robot.abstraction.baseClasses;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.fridowpi.module.Module;
 import frc.robot.abstraction.interfaces.IShooter;
 
 /**
  * BShooter: Base class for all shooter subsystems
  */
-public abstract class BShooter extends SubsystemBase implements IShooter {
+public abstract class BShooter extends Module implements IShooter {
 
 }

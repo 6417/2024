@@ -2,11 +2,12 @@ package frc.fridolib;
 
 import java.util.Optional;
 
+import frc.robot.Constants;
 import frc.robot.abstraction.RobotData;
 import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.abstraction.interfaces.ISwerveModule;
-import frc.robot.subsystems.drive.swerve_2024.SwerveModulePhoenixSparkMax;
+// import frc.robot.subsystems.drive.swerve_2024.SwerveModulePhoenixSparkMax;
 import frc.robot.subsystems.drive.tankdrive.FourFalconsTankDrive;
 
 /** Preset robot configurations
@@ -33,22 +34,30 @@ public enum RobotPreset {
 
 	// Enum variants //
 
-	Diplodocus(new FourFalconsTankDrive(-1, -1, -1, -1)),
-	TestChassisDrive(new FourFalconsTankDrive(12, 13, 0, 11)),
+	// Diplodocus(new FourFalconsTankDrive()),
+	TestChassisDrive(Constants.Testchassis.robotData, new FourFalconsTankDrive()),
 	// TestChassisShooter(new FourFalconTankDrive(-1, -1, -1, -1), new ShooterTwoPhoenix(-1, -1)),
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))
-	DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),
+	// DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),
 	;
 
 
 	// Variables //
 
-	public Optional<BDrive> DRIVE = null;
+	public Optional<BDrive> DRIVE = Optional.empty();
 	// public final Optional<IArm> ARM = null;
-	public Optional<BShooter> SHOOTER = null;
-	public Optional<ISwerveModule> SINGLE_SWERVE_MODULE = null;
+	public Optional<BShooter> SHOOTER = Optional.empty();
+	public Optional<ISwerveModule> SINGLE_SWERVE_MODULE = Optional.empty();
 	public RobotData ROBOT_DATA = null;
 
+	// Functions //
+	public void initAll() {
+		if (DRIVE.isPresent()) { DRIVE.get().init(); }
+		if (SHOOTER.isPresent()) { SHOOTER.get().init(); }
+		if (SINGLE_SWERVE_MODULE.isPresent()) {
+			SINGLE_SWERVE_MODULE.get().init();
+		}
+	}
 
 	// Getters / Accessors //
 
@@ -66,16 +75,19 @@ public enum RobotPreset {
 
 	// Constructors //
 
-	private RobotPreset(BDrive drive) {
+	private RobotPreset(RobotData data, BDrive drive) {
+		ROBOT_DATA = data;
 		DRIVE = Optional.of(drive);
 	}
 
-	private RobotPreset(BDrive drive, ISwerveModule swerveModule) {
+	private RobotPreset(RobotData data, BDrive drive, ISwerveModule swerveModule) {
+		ROBOT_DATA = data;
 		DRIVE = Optional.of(drive);
 		SINGLE_SWERVE_MODULE = Optional.of(swerveModule);
 	}
 
-	private RobotPreset(BDrive drive, BShooter shooter) {
+	private RobotPreset(RobotData data, BDrive drive, BShooter shooter) {
+		ROBOT_DATA = data;
 		DRIVE = Optional.of(drive);
 		SHOOTER = Optional.of(shooter);
 	}

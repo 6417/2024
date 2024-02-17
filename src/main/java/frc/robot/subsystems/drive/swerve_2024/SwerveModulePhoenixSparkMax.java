@@ -5,9 +5,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import frc.fridowpi.module.Module;
 import frc.robot.abstraction.interfaces.ISwerveModule;
 
-public class SwerveModulePhoenixSparkMax implements ISwerveModule {
+public class SwerveModulePhoenixSparkMax extends Module implements ISwerveModule {
     TalonFX driveMotor;
     CANSparkMax turnMotor;
     AnalogEncoder absEncoder;

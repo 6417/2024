@@ -10,9 +10,11 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.fridowpi.joystick.JoystickBindable;
+import frc.fridowpi.module.IModule;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 
-public interface IDrive extends Sendable {
+public interface IDrive extends IModule, Sendable, JoystickBindable {
 
     // Steering functions
     public void drive(double v_x, double v_y, double rot);

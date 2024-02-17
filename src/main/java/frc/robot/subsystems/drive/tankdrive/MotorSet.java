@@ -25,11 +25,16 @@ public class MotorSet extends BMotorSet {
 	}
 
 	public MotorSet(
-			FridolinsMotor leftMasterId, FridolinsMotor rightMasterId,
-			FridolinsMotor leftFollowerId, FridolinsMotor rightFollowerId) {
+			FridolinsMotor leftMaster, FridolinsMotor rightMaster,
+			FridolinsMotor leftFollower, FridolinsMotor rightFollower) {
+		this.leftMaster = leftMaster;
+		this.rightMaster = rightMaster;
+		this.leftFollower = leftFollower;
+		this.rightFollower = rightFollower;
+
 		// Default to following without inversion
-		rightFollower.follow(rightMaster, DirectionType.followMaster);
-		leftFollower.follow(leftMaster, DirectionType.followMaster);
+		this.rightFollower.follow(this.rightMaster, DirectionType.followMaster);
+		this.leftFollower.follow(this.leftMaster, DirectionType.followMaster);
 		setIdleMode(idleMode);
 	}
 

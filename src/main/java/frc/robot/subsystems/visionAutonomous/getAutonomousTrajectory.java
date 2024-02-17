@@ -27,15 +27,16 @@ public class getAutonomousTrajectory {
 		assert !Config.drive().isSwerve();
 
 		final var voltageConstraint = new DifferentialDriveVoltageConstraint(
-				new SimpleMotorFeedforward(Constants.Testchassi.ksVolts,
-						Constants.Testchassi.kvVoltSevondsPerMeter,
-						Constants.Testchassi.kaVoltSecondsSquaredPerMeter),
+				new SimpleMotorFeedforward(Constants.Testchassis.ksVolts,
+						Constants.Testchassis.kvVoltSevondsPerMeter,
+						Constants.Testchassis.kaVoltSecondsSquaredPerMeter),
 				Config.drive().getDifferentialKinematics().get(), 10);
 
-		final TrajectoryConfig config = new TrajectoryConfig(Constants.Testchassi.PathWeaver.kMaxVMetersPerSecond,
-				Constants.Testchassi.PathWeaver.kMaxAccMetersPerSecond)
+		final TrajectoryConfig config = new TrajectoryConfig(Constants.Testchassis.PathWeaver.kMaxVMetersPerSecond,
+				Constants.Testchassis.PathWeaver.kMaxAccMetersPerSecond)
 				.setKinematics(Config.drive().getDifferentialKinematics().get())
 				.addConstraint(voltageConstraint);
+
 
 		return config;
 	}

@@ -1,5 +1,7 @@
 package frc.robot.abstraction;
 
+import java.util.List;
+
 import edu.wpi.first.units.*;
 import frc.fridowpi.motors.utils.PidValues;
 
@@ -8,12 +10,18 @@ import frc.fridowpi.motors.utils.PidValues;
  */
 public record RobotData(
 		HardwareData hardware,
+		DriveData drive,
 		AutoData auto,
 		PidData pid
 		) {
 
+	public record DriveData(
+			boolean enabled,
+			List<Integer> motorIds
+			) { }
+
 	public record HardwareData(
-		Measure<Distance> wheelPerimeter,
+		Measure<Distance> wheelCircumference,
 		Measure<Distance> trackWidth,
 		double encoderToMeters
 	) { }

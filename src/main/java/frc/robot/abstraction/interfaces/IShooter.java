@@ -1,9 +1,11 @@
 package frc.robot.abstraction.interfaces;
 
+import frc.fridowpi.module.IModule;
+
 /**
  * IShooter: Interface for all shooters
  */
-public interface IShooter {
+public interface IShooter extends IModule {
 
 	// Executes one shooting cycle, if defined
 	public void shoot();

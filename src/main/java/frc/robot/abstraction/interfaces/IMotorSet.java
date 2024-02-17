@@ -2,6 +2,7 @@ package frc.robot.abstraction.interfaces;
 
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import frc.fridowpi.module.IModule;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
@@ -9,7 +10,7 @@ import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 /**
  * IMotorSet: Common interface for differential motor sets
  */
-public interface IMotorSet {
+public interface IMotorSet extends IModule {
 
 	public FridolinsMotor getMotor(MotorRole role);
 

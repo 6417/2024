@@ -38,17 +38,20 @@ public class FourFalconsTankDrive extends BTankDrive {
 	public DifferentialDriveKinematics m_kinematics;
 	private DifferentialDrive differentialDrive;
 
-	public FourFalconsTankDrive(
-			int leftMaster,
-			int rightMaster,
-			int leftFollower,
-			int rightFollower) {
+	public FourFalconsTankDrive() {
+	}
 
+	@Override
+	public void init() {
+		super.init();
+
+		var ids = Config.data().drive().motorIds();
+		assert ids.size() == 4;
 		motors = new MotorSet(
-				new FridoFalcon500(leftMaster),
-				new FridoFalcon500(rightMaster),
-				new FridoFalcon500(leftFollower),
-				new FridoFalcon500(rightFollower));
+				new FridoFalcon500(ids.get(0)),
+				new FridoFalcon500(ids.get(1)),
+				new FridoFalcon500(ids.get(2)),
+				new FridoFalcon500(ids.get(3)));
 
 		motors.invert(MotorRole.LeftMaster);
 
@@ -56,7 +59,7 @@ public class FourFalconsTankDrive extends BTankDrive {
 				motors.getMotor(MotorRole.LeftMaster)::set,
 				motors.getMotor(MotorRole.RightMaster)::set);
 
-		m_kinematics = new DifferentialDriveKinematics(Config.data().hardware().wheelPerimeter());
+		m_kinematics = new DifferentialDriveKinematics(Config.data().hardware().wheelCircumference());
 
 		setDefaultCommand(new DriveCommand(this));
 	}
@@ -167,12 +170,12 @@ public class FourFalconsTankDrive extends BTankDrive {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-		builder.addDoubleProperty("LeftPosition", () -> motors.getMotor(MotorRole.LeftMaster).getEncoderTicks(), null);
-		builder.addDoubleProperty("RightPosition", () -> motors.getMotor(MotorRole.RightMaster).getEncoderTicks(),
-				null);
-		builder.addBooleanProperty("CoastMode",
-				() -> motors.getIdleMode() == IdleMode.kCoast,
-				val -> motors.setIdleMode(val ? IdleMode.kCoast : IdleMode.kBrake));
+		// builder.addDoubleProperty("LeftPosition", () -> motors.getMotor(MotorRole.LeftMaster).getEncoderTicks(), null);
+		// builder.addDoubleProperty("RightPosition", () -> motors.getMotor(MotorRole.RightMaster).getEncoderTicks(),
+		// 		null);
+		// builder.addBooleanProperty("CoastMode",
+		// 		() -> motors.getIdleMode() == IdleMode.kCoast,
+		// 		val -> motors.setIdleMode(val ? IdleMode.kCoast : IdleMode.kBrake));
 	}
 
 	// TODO: @Laurin: needs to be implemented correctly!

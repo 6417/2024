@@ -7,11 +7,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.abstraction.baseClasses.BShooter;
 
 public class ShooterSubsystem extends BShooter {
-    /* Ideal values:
-     *  - Intake        : -0.5
-     *  - Shoot AMP     : 0.3
-     *  - Shoot SPEAKER : 0.8 to 0.9
-     */
 	boolean enabled = true;
 
     final TalonSRX motor_left = new TalonSRX(22);

@@ -3,13 +3,16 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.Time;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.IJoystickId;
 import frc.fridowpi.joystick.joysticks.Logitech;
@@ -20,6 +23,7 @@ import frc.fridowpi.motors.FridolinsMotor.LimitSwitchPolarity;
 import frc.fridowpi.motors.utils.PidValues;
 import frc.robot.abstraction.RobotData;
 import frc.robot.abstraction.RobotData.AutoData;
+import frc.robot.abstraction.RobotData.DriveData;
 import frc.robot.abstraction.RobotData.HardwareData;
 import frc.robot.abstraction.RobotData.PidData;
 import frc.robot.subsystems.drive.swerve.SwerveModule;
@@ -32,13 +36,67 @@ public class Constants {
 		public static final IJoystickId id = () -> 0;
 	}
 
-	public static final class Testchassi {
+	public static final class Diplodocus {
 		public static final boolean driveEnabled = false;
 
+		public static final int mLeftFront = 11;
+		public static final int mRightFront = 10;
+		public static final int mLeftBack = 13;
+		public static final int mRightBack = 12;
+
+		public static final class Odometry {
+			public static final Measure<Distance> wheelCircumstance = Meters.of(0.47);
+			public static final Measure<Distance> trackWidth = Meters.of(0.5);
+
+			/* Transmission: denotes how many revolution the motor makes compared to the wheel */
+			public static final double transmission = 10.71;
+			public static final int encoderResolution = 2048;
+
+			public static final double encoderToMeters = wheelCircumstance.in(Meters) / (transmission * encoderResolution);
+		}
+
+		public static final class Autonomous {
+
+			/* Values determined through testing */
+			public static final Measure<Velocity<Distance>> maxSpeed = MetersPerSecond.of(3.3);
+			public static final Measure<Velocity<Velocity<Distance>>> maxAcceleration = MetersPerSecondPerSecond.of(1.2);
+			public static final Measure<Velocity<Velocity<Distance>>> maxCentripetalAcceleration = MetersPerSecondPerSecond.of(1.2);
+
+			/* Values determined through SysId tuning */
+			public static final Measure<Distance> kS = Meters.of(0.14604);
+			public static final Measure<Velocity<Distance>> kV = MetersPerSecond.of(2.3639);
+			public static final Measure<Velocity<Velocity<Distance>>> kA = MetersPerSecondPerSecond.of(0.35094);
+		}
+
+		// RobotData data = new RobotData(
+		// 		new HardwareData(
+		// 			Odometry.wheelCircumstance,
+		// 				Odometry.trackWidth,
+		// 				Odometry.encoderToMeters),
+		// 		new DriveData(
+		// 			driveEnabled,
+		// 			List.of(mLeftFront, mRightFront, mLeftBack, mRightBack)),
+		// 		new AutoData(
+		// 				MetersPerSecond.of(PathWeaver.kMaxVMetersPerSecond),
+		// 				MetersPerSecondPerSecond.of(PathWeaver.kMaxAccMetersPerSecond),
+		// 				Meters.of(PathWeaver.ksMeters),
+		// 				MetersPerSecond.of(PathWeaver.kvMetersPerSecoond),
+		// 				MetersPerSecondPerSecond.of(PathWeaver.ka),
+		// 				Meters.of(PathWeaver.kRamsetB),
+		// 				Seconds.of(PathWeaver.kRamseteZeta)),
+		// 		new PidData(
+		// 				new PidValues(PathWeaver.kP, PathWeaver.kI, PathWeaver.kD),
+		// 				new PidValues(kPDriveVel, 0.0, 0.0),
+		// 				new PidValues(kPDriveVel, 0.0, 0.0)));
+	}
+
+	public static final class Testchassis {
+		public static final boolean driveEnabled = true;
+
+		final public static Integer idLeftfront = 12;
 		final public static int idRigthfront = 13;
-		final public static int idLeftfront = 12;
-		final public static int idRigthback = 11;
-		final public static int idLeftback = 0;
+		final public static Integer idLeftback = 0;
+		final public static Integer idRigthback = 11;
 
 		public static final class Odometry {
 			public static final double wheelPerimeterMeters = 0.47;
@@ -77,11 +135,14 @@ public class Constants {
 
 		final public static double ticsToMeter = 0.046;
 
-		RobotData data = new RobotData(
+		public static final RobotData robotData = new RobotData(
 				new HardwareData(
 						Meters.of(Odometry.wheelPerimeterMeters),
 						Meters.of(Odometry.trackWidthMeters),
 						Odometry.encoderToMetersConversion),
+				new DriveData(
+					driveEnabled,
+					List.of(idLeftfront, idRigthfront, idLeftback, idRigthback)),
 				new AutoData(
 						MetersPerSecond.of(PathWeaver.kMaxVMetersPerSecond),
 						MetersPerSecondPerSecond.of(PathWeaver.kMaxAccMetersPerSecond),
@@ -141,8 +202,7 @@ public class Constants {
 			maxSpeedOfDrive = 1;
 		}
 
-		@SuppressWarnings("all")
-		public static final boolean enabled = driveEnabled;
+		public static final boolean enabled = false;
 		public static final boolean rotateAllModulesInSameDirection = false;
 		public static final boolean joystickYinverted = true;
 		public static final boolean joystickXinverted = true;
