@@ -232,8 +232,10 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 	public void follow(FridolinsMotor master, DirectionType direction) {
 		if (master instanceof TalonFX) {
 			motorProxy.setControl(new Follower(((TalonFX)master).getDeviceID(), direction == DirectionType.invertMaster));
+		} else if (master instanceof FridoFalcon500v6) {
+			motorProxy.setControl(new Follower(((FridoFalcon500v6)master).asTalonFX().getDeviceID(), direction == DirectionType.invertMaster));
 		} else {
-			throw new Error("Can only follow 'com.ctre.phoenix6.hardware.TalonFX' motors");
+			throw new Error("Can only follow 'com.ctre.phoenix6.hardware.TalonFX' or FridoFalcon motors");
 		}
 	}
 

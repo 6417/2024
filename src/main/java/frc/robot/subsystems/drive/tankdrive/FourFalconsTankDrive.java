@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.fridowpi.motors.FridoFalcon500;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.robot.Config;
 import frc.robot.Controls;
@@ -29,6 +28,7 @@ import frc.robot.abstraction.baseClasses.BTankDrive;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 import frc.robot.subsystems.visionAutonomous.TankDrivePoseEstimator;
+import frc.fridowpi.motors.FridoFalcon500v6;
 
 public class FourFalconsTankDrive extends BTankDrive {
 
@@ -48,10 +48,10 @@ public class FourFalconsTankDrive extends BTankDrive {
 		var ids = Config.data().drive().motorIds();
 		assert ids.size() == 4;
 		motors = new MotorSet(
-				new FridoFalcon500(ids.get(0)),
-				new FridoFalcon500(ids.get(1)),
-				new FridoFalcon500(ids.get(2)),
-				new FridoFalcon500(ids.get(3)));
+				new FridoFalcon500v6(ids.get(0)),
+				new FridoFalcon500v6(ids.get(1)),
+				new FridoFalcon500v6(ids.get(2)),
+				new FridoFalcon500v6(ids.get(3)));
 
 		motors.invert(MotorRole.LeftMaster);
 
@@ -162,8 +162,8 @@ public class FourFalconsTankDrive extends BTankDrive {
 	@Override
 	public void drive(double v_x, double v_y, double rot) {
 		differentialDrive.arcadeDrive(
-				-rot * Controls.getTurnSensitivity(),
 				v_x * Controls.getAccelerationSensitivity(),
+				-rot * Controls.getTurnSensitivity(),
 				true);
 	}
 

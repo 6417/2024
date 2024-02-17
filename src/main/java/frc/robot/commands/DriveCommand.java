@@ -22,7 +22,8 @@ public class DriveCommand extends Command {
     double y = Controls.joystick.getLeftY();
     double rot = Controls.joystick.getRightX();
     // getRightY() somehow is always 0: Don't use
-    m_subsystem.drive(y, x, x);
+
+    m_subsystem.drive(y, x, rot);
   }
 
   @Override
