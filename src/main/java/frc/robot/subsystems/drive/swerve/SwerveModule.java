@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -164,6 +165,10 @@ public class SwerveModule implements Sendable {
         return motors.drive.getEncoderVelocity();
     }
 
+    public double getWheelDistMeter(){
+        return motors.drive.getEncoderTicks() / motors.driveMotorTicksPerRotation * motors.wheelCircumference;
+    }
+
     public void setDesiredState(SwerveModuleState state) {
 		var dst = Vector2.fromRad(state.angle.getRadians());
 		var src = getModuleRotation();
@@ -210,6 +215,10 @@ public class SwerveModule implements Sendable {
         motors.rotation.setPosition(angleToRotationMotorEncoderTicks(desiredState.angle.getRadians()));
         // motors.drive.setVelocity(desiredState.speedMetersPerSecond * speedFactor);
 		motors.drive.set(desiredState.speedMetersPerSecond * speedFactor);
+    }
+
+    public SwerveModulePosition getOdometryPos(){
+        return new SwerveModulePosition(getWheelDistMeter(), Rotation2d.fromRadians(getModuleRotationAngle()));
     }
 
     public boolean isHalSensorTriggered() {
