@@ -12,7 +12,7 @@ public class XBoxJoystick extends Joystick implements IJoystick {
 
     public XBoxJoystick(IJoystickId port) {
         super(port.getPort());
-        super.setZChannel(4);
+        super.setThrottleChannel(4);
         super.setTwistChannel(5);
         xboxController = new XboxController(port.getPort());
     }

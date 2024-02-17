@@ -99,8 +99,7 @@ public class Joystick2024 implements Sendable {
 }
 // getX() -> joystick left x
 // getY() -> joystick left y
-// getZ() -> joystick right x
+// getThrottle() -> joystick right x
 // getTwist() -> joystick right y
-// getThrottle() -> rt
 // getMagnitude() -> how close the joystick is to joystick centre
 // getDirection() -> direction from -180 to 180 Degrees, joystick left
