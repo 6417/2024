@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import frc.robot.joystick.Joystick2024;
 import frc.robot.subsystems.drive.Tankdrive;
 import frc.robot.subsystems.vision_autonomous.Bezier;
 import frc.robot.subsystems.vision_autonomous.Own_trajectory_generytor;
@@ -56,7 +57,6 @@ public class oBCommand extends Command {
         if(Math.abs(diffPos[1]) >= 1){
             diffPos[1] = 0;
         }
-
         double[] correction = Bezier.Utils.sub(rv,diffPos);
 
         correction = Bezier.Utils.mult(correction, 0.01);

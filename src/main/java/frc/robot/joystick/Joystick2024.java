@@ -2,8 +2,11 @@ package frc.robot.joystick;
 
 import java.util.List;
 
+import javax.sound.sampled.Port;
+
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.joystick.IJoystick;
@@ -26,6 +29,11 @@ public class Joystick2024 implements Sendable {
     private static Joystick2024 instance = new Joystick2024();
 
     IJoystickButtonId btnId = Xbox360.a;
+    private static final IJoystick primaryJoystick = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId);
+
+    public static IJoystick getPrimaryJoystick(){
+        return primaryJoystick;
+    }
 
     private Joystick2024() {
         JoystickHandler.getInstance().bindAll(List.of(
