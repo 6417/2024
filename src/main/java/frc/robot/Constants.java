@@ -27,14 +27,49 @@ import frc.robot.abstraction.RobotData.DriveData;
 import frc.robot.abstraction.RobotData.HardwareData;
 import frc.robot.abstraction.RobotData.PidData;
 import frc.robot.subsystems.drive.swerve.SwerveModule;
+import java.util.function.Supplier;
+
+import frc.fridowpi.joystick.IJoystickId;
+import frc.fridowpi.motors.utils.PidValues;
 
 public class Constants {
 
 	public static final boolean driveEnabled = true;
 
 	public static final class Joystick {
-		public static final IJoystickId id = () -> 0;
+        public static final IJoystickId primaryJoystickId = () -> 0;
+        public static int idCounterStart = 1000;
 	}
+
+	public static final class Global {
+		public static final int idShooterMotor = 0;
+	}
+
+	public static final class Sysid {
+		public static final boolean isTuning = false;
+	}
+
+	public static final class Shooter {
+		public static final double OptimalAmpSpeed = 0.3;
+		public static final double OptimalSpeakerSpeed = 0.9;
+		public static final double OptimalIntakeSpeed = -0.6;
+	}
+
+    public static final class Climber {
+        public static final int seilZiehMotorLinks = 1;
+        public static final int seilZiehMotorRechts = 2;
+        public static final int federLoslassMotorLinks = 2;
+        public static final int federLoslassMotorRechts = 4;
+
+        public static final PidValues pidValuesSlot0 = new PidValues(0, 0, 0);
+        public static final double toleranzDerHoheDerMotoren = 0.1;
+        public static final double runterZiehSpeed = 0.2;
+        public static final double ausfahrBereich = 24;
+        public static final double zielPosition = 2;
+
+        public static final double manualClimberMovementSpeed = 0.5;
+
+    }
 
 	public static final class Diplodocus {
 		public static final boolean driveEnabled = false;
@@ -157,29 +192,6 @@ public class Constants {
 						new PidValues(kPDriveVel, 0.0, 0.0)));
 	}
 
-	public static final class Swervedrive {
-		public static final class Drive {
-			public static final double kMaxSpeed = 0;
-			public static final double kMaxAcceleration = 0;
-
-			public static final double gearRatio = 1.0 / 5.192308;
-		}
-	}
-
-	public static final class Global {
-		public static final int idShooterMotor = 0;
-	}
-
-	public static final class Shooter {
-		public static final double OptimalAmpSpeed = 0.3;
-		public static final double OptimalSpeakerSpeed = 0.9;
-		public static final double OptimalIntakeSpeed = -0.6;
-	}
-
-	public static final class Sysid {
-		public static final boolean isTuning = false;
-	}
-
 	public static final class SwerveDrive {
 
 		public static enum MountingLocations {
@@ -201,6 +213,8 @@ public class Constants {
 			maxFineTuneOffsetForZeroEncodersCommand = 196608 / 100;
 			maxSpeedOfDrive = 1;
 		}
+
+		public static final double gearRatio = 1.0 / 5.192308;
 
 		public static final boolean enabled = false;
 		public static final boolean rotateAllModulesInSameDirection = false;

@@ -7,11 +7,12 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.abstraction.baseClasses.BShooter;
 
 public class ShooterSubsystem extends BShooter {
-	boolean enabled = true;
 
-    final TalonSRX motor_left = new TalonSRX(22);
+    final TalonSRX motor_left = new TalonSRX(22); // TODO: impove
     final TalonSRX motor_right = new TalonSRX(23);
     double speeds = 0.0;
+
+	boolean enabled = true;
 
     private ShooterSubsystem() {
         motor_right.setInverted(true);

@@ -1,13 +1,13 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
 import frc.fridolib.RobotPreset;
+import frc.fridowpi.joystick.IJoystick;
 import frc.robot.abstraction.RobotData;
 import frc.robot.abstraction.baseClasses.BDrive;
 
 public class Config {
 	public static final RobotPreset active = RobotPreset.TestChassisDrive;
-	public static final XboxController joystick = Controls.joystick; // Temporarily
+	public static final IJoystick joystick = Controls.joystick; // Temporarily
 	
 	// Drive should always exist
 	public static BDrive drive() {

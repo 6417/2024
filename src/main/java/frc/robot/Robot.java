@@ -10,19 +10,18 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.sensors.FridoNavx;
+import frc.robot.joystick.Joystick2024;
+import frc.robot.joystick.IdsWithState.State;
 
 public class Robot extends TimedRobot {
 
-    // Aliases for often used singleton instances
-    // ShooterSubsystem shooter = ShooterSubsystem.getInstance();
-    
     @Override
     public void robotInit() {
 
 		FridoNavx.setup(SPI.Port.kMXP);
 
 		// Setup joysticks
-        JoystickHandler.getInstance().setupJoysticks(List.of(Constants.Joystick.id));
+        JoystickHandler.getInstance().setupJoysticks(List.of(Constants.Joystick.primaryJoystickId));
         JoystickHandler.getInstance().init();
         JoystickHandler.getInstance().bind(Config.drive());
         JoystickHandler.getInstance().init();
@@ -31,31 +30,28 @@ public class Robot extends TimedRobot {
 
         // Shuffleboard //
         Shuffleboard.getTab("Drive").add(Config.drive());
+        Shuffleboard.getTab("Joystick").add("joystick", Joystick2024.getInstance());
         // Shuffleboard.getTab("Shooter").add(shooter);
-
-        // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
-        // Shuffleboard.getTab("Debug").add(drive.getDefaultCommand());
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
 
-        // SignalLogger.setPath("/media/sda1");
         SignalLogger.setPath("/home/lvuser/logs");
 
         // Tankdrive_odometry.getInstance().reset_odometry();
+        Joystick2024.getInstance().setup(State.SYSID_TUNING);
+        Joystick2024.getInstance().setState(State.SYSID_TUNING);
     }
 
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        // Tankdrive_poseestimator.getInstance().updatePoseEstimator();
-        // Tankdrive_odometry.getInstance().update_robot_pose();
     }
 
     @Override
     public void teleopInit() {
-        SignalLogger.setPath("test");
     }
 
     @Override
     public void teleopPeriodic() {
     }
+
 }

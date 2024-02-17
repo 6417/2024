@@ -194,7 +194,7 @@ public class SwerveDrive extends SwerveDriveBase {
 
 	@Override
 	public List<Binding> getMappings() {
-		var joystick = Constants.Joystick.id;
+		var joystick = Constants.Joystick.primaryJoystickId;
 		return List.of(
 				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroNavx, Trigger::onTrue,
 						new InstantCommand(FridoNavx.getInstance()::reset)),

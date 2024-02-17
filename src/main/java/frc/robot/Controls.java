@@ -1,8 +1,9 @@
 package frc.robot;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.fridowpi.joystick.IJoystick;
+import frc.fridowpi.joystick.JoystickHandler;
 
 /** 
  * Holds the data concerning input, which should be available
@@ -11,9 +12,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Controls extends SubsystemBase {
     private static Controls instance = new Controls();
     
-    final public static XboxController joystick = new XboxController(0);
+    
     private static double turnSensitivity = 0.6;
     private static double accelerationSensitivity = 0.6;
+    public static IJoystick joystick = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId);
 
     // Initialization
     private Controls() {}
@@ -38,12 +40,6 @@ public class Controls extends SubsystemBase {
                 val -> turnSensitivity = val);
         builder.addDoubleProperty("accelerationSensitivity", () -> accelerationSensitivity,
                 val -> accelerationSensitivity = val);
-
-        // Joystick controls
-        builder.addDoubleProperty("joystickLeftX", Controls.joystick::getLeftX, null);
-        builder.addDoubleProperty("joystickLeftY", Controls.joystick::getLeftY, null);
-        builder.addDoubleProperty("joystickRightX", Controls.joystick::getRightX, null);
-        builder.addDoubleProperty("joystickRightY", Controls.joystick::getRightY, null); // Not working: wtf?!?
     }
 
 }

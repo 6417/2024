@@ -276,6 +276,10 @@ public class FridoCanSparkMax extends CANSparkMax implements FridolinsMotor {
 
     @Override
     public boolean pidAtTarget() {
+            if (pidControlType == null) {
+                return true;
+            }
+
         switch (pidControlType) {
             case kDutyCycle:
             case kVelocity:
