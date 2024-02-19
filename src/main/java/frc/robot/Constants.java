@@ -41,7 +41,10 @@ public class Constants {
 	public static final class Joystick {
         public static final IJoystickId primaryJoystickId = () -> 0;
         public static int idCounterStart = 1000;
-	}
+        public static double treshold = 0.2;
+    }
+
+	public static final double maxServoPos = 130;
 
 	public static final class Global {
 		public static final int idShooterMotor = 0;
@@ -66,7 +69,7 @@ public class Constants {
 
         public static final int seilZiehMotorLinks = 1;
         public static final int seilZiehMotorRechts = 2;
-        public static final int federLoslassMotorLinks = 2;
+        public static final int federLoslassMotorLinks = 0;
         public static final int federLoslassMotorRechts = 4;
 
         public static final PidValues pidValuesSlot0 = new PidValues(0, 0, 0);

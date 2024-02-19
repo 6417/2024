@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import frc.robot.Controls;
+import frc.robot.Config;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.abstraction.baseClasses.BDrive;
 
@@ -18,11 +18,10 @@ public class DriveCommand extends Command {
 
   @Override
   public void execute() {
-    double x = Controls.joystick.getThrottle();
-    double y = Controls.joystick.getTwist();
-    double rot = Controls.joystick.getX();
+    double x = Config.joystick.getX();
+    double y = Config.joystick.getY();
+    double rot = Config.joystick.getTwist();
     // getRightY() somehow is always 0: Don't use
-
     m_subsystem.drive(y, x, rot);
   }
 
