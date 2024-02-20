@@ -46,14 +46,13 @@ public class MotorSet extends BMotorSet {
 			// If master, invert it but revert direction of the follower
 			case LeftMaster:
 				m.setInverted(true);
-				leftFollower.follow(m, DirectionType.invertMaster);
-			case RightMaster:
-				m.setInverted(true);
-				rightFollower.follow(m, DirectionType.invertMaster);
-				break;
+				/* Fallthrough */
 			case LeftFollower:
 				leftFollower.follow(m, DirectionType.invertMaster);
 				break;
+			case RightMaster:
+				m.setInverted(true);
+				/* Fallthrough */
 			case RightFollower:
 				rightFollower.follow(m, DirectionType.invertMaster);
 				break;

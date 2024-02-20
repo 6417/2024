@@ -44,8 +44,6 @@ public class Constants {
         public static double treshold = 0.2;
     }
 
-	public static final double maxServoPos = 130;
-
 	public static final class Global {
 		public static final int idShooterMotor = 0;
 	}
@@ -55,17 +53,14 @@ public class Constants {
 	}
 
 	public static final class Shooter {
-		public static final boolean enabled = false;
 		public static final double OptimalAmpSpeed = 0.3;
 		public static final double OptimalSpeakerSpeed = 0.9;
 		public static final double OptimalIntakeSpeed = -0.6;
 
-		public static final ShooterData data = new ShooterData(
-				enabled, List.of(-1, -1));
+		public static final ShooterData data = new ShooterData(List.of(-1, -1));
 	}
 
     public static final class Climber {
-		public static boolean enabled = false;
 
         public static final int seilZiehMotorLinks = 1;
         public static final int seilZiehMotorRechts = 2;
@@ -79,10 +74,11 @@ public class Constants {
         public static final double zielPosition = 2;
 
         public static final double manualClimberMovementSpeed = 0.5;
+
+		public static final double maxServoPos = 130;
     }
 
 	public static final class Diplodocus {
-		public static final boolean driveEnabled = false;
 
 		public static final int mLeftFront = 11;
 		public static final int mRightFront = 10;
@@ -118,7 +114,7 @@ public class Constants {
 			public static final Measure<Time> ramseteZeta = Seconds.of(0.7);
 
 			public static final PidValues pathWeaverPid = new PidValues(0.36205, 0.0, 0.0);
-			public static final PidValues drivePid = new PidValues(0.01, 0.0, 0.0);
+			public static final PidValues drivePid = new PidValues(0.1, 0.0, 0.0);
 		}
 
 		public static final RobotData robotData = new RobotData(
@@ -145,12 +141,11 @@ public class Constants {
 	}
 
 	public static final class Testchassis {
-		public static final boolean driveEnabled = true;
 
-		final public static Integer idLeftfront = 12;
-		final public static int idRigthfront = 13;
-		final public static Integer idLeftback = 0;
-		final public static Integer idRigthback = 11;
+		final public static int idLeftfront = 12;
+		final public static int idRightfront = 13;
+		final public static int idLeftback = 0;
+		final public static int idRightback = 11;
 
 		public static final List<MotorRole> invertedMotors = List.of(MotorRole.LeftMaster);
 
@@ -162,8 +157,7 @@ public class Constants {
 			public static final double transmission = 10.71;
 			public static final int encoderResolution = 2048;
 
-			public static final double encoderToMetersConversion = 1
-					/ ((1 / wheelPerimeterMeters) * transmission * encoderResolution);
+			public static final double encoderToMetersConversion =  wheelPerimeterMeters / transmission * encoderResolution;
 		}
 
 		public static final class PathWeaver {
@@ -198,7 +192,7 @@ public class Constants {
 						Odometry.encoderToMetersConversion),
 				new DriveData(
 					driveEnabled,
-					List.of(idLeftfront, idRigthfront, idLeftback, idRigthback),
+					List.of(idLeftfront, idRightfront, idLeftback, idRightback),
 					invertedMotors),
 				new AutoData(
 						MetersPerSecond.of(PathWeaver.kMaxVMetersPerSecond),

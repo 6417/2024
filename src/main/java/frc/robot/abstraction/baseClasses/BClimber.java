@@ -12,11 +12,9 @@ import frc.fridowpi.module.Module;
 public abstract class BClimber extends Module implements IClimber {
 
 	public class ClimberData {
-		public boolean enabled;
 		public final List<Integer> motorIds;
 
-		public ClimberData(boolean enabled, List<Integer> motorIds) {
-			this.enabled = enabled;
+		public ClimberData(List<Integer> motorIds) {
 			this.motorIds = motorIds;
 		}
 	}

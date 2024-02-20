@@ -1,14 +1,11 @@
 package frc.robot;
 
-import java.util.List;
-
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.joystick.Joystick2024;
 import frc.robot.joystick.IdsWithState.State;
@@ -20,13 +17,10 @@ public class Robot extends TimedRobot {
 
 		FridoNavx.setup(SPI.Port.kMXP);
 
-		// Setup joysticks
-        JoystickHandler.getInstance().setupJoysticks(List.of(Constants.Joystick.primaryJoystickId));
-        JoystickHandler.getInstance().init();
-        JoystickHandler.getInstance().bind(Config.drive());
-        JoystickHandler.getInstance().init();
-
 		Config.active.initAll();
+
+		// Setup joysticks
+		Joystick2024.getInstance().setup(State.DEFAULT);
 
         // Shuffleboard //
         Shuffleboard.getTab("Drive").add(Config.drive());
@@ -35,10 +29,6 @@ public class Robot extends TimedRobot {
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
 
         SignalLogger.setPath("/home/lvuser/logs");
-
-        // Tankdrive_odometry.getInstance().reset_odometry();
-        Joystick2024.getInstance().setup(State.SYSID_TUNING);
-        Joystick2024.getInstance().setState(State.SYSID_TUNING);
     }
 
     @Override

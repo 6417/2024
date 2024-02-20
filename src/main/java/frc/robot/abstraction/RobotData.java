@@ -13,34 +13,33 @@ public record RobotData(
 		HardwareData hardware,
 		DriveData drive,
 		AutoData auto,
-		PidData pid
-		) {
+		PidData pid) {
 
 	public record DriveData(
 			boolean enabled,
 			List<Integer> motorIds,
-			List<MotorRole> inverted
-			) { }
+			List<MotorRole> inverted) {
+	}
 
 	public record HardwareData(
-		Measure<Distance> wheelCircumference,
-		Measure<Distance> trackWidth,
-		double encoderToMeters
-	) { }
+			Measure<Distance> wheelCircumference,
+			Measure<Distance> trackWidth,
+			double encoderToMeters) {
+	}
 
 	public record AutoData(
-		Measure<Velocity<Distance>> maxVelocity,
-		Measure<Velocity<Velocity<Distance>>> maxAcceleration,
-		Measure<Distance> ksVolts,
-		Measure<Velocity<Distance>> kvVolts,
-		Measure<Velocity<Velocity<Distance>>> kaVolts,
-		Measure<Distance> kRamseteB,
-		Measure<Time> kRamseteZeta
-		) { }
+			Measure<Velocity<Distance>> maxVelocity,
+			Measure<Velocity<Velocity<Distance>>> maxAcceleration,
+			Measure<Distance> ksVolts,
+			Measure<Velocity<Distance>> kvVolts,
+			Measure<Velocity<Velocity<Distance>>> kaVolts,
+			Measure<Distance> kRamseteB,
+			Measure<Time> kRamseteZeta) {
+	}
 
 	public record PidData(
 			PidValues pathWeaver,
 			PidValues driveLeft,
-			PidValues driveRight
-	) { }
+			PidValues driveRight) {
+	}
 }

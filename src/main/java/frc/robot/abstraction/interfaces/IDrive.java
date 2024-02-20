@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.fridowpi.joystick.JoystickBindable;
 import frc.fridowpi.module.IModule;
+import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 
 public interface IDrive extends IModule, Sendable, JoystickBindable {
@@ -32,6 +33,8 @@ public interface IDrive extends IModule, Sendable, JoystickBindable {
     public Command sysIdDynamic(SysIdRoutine.Direction direction);
 
     // Getters
+	public <T> FridolinsMotor getMotor(T motor);
+
     public Pose2d getPos();
 
     public double getLeftEncoderPos();

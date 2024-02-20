@@ -11,11 +11,9 @@ import frc.robot.abstraction.interfaces.IShooter;
 public abstract class BShooter extends Module implements IShooter {
 
 	public static class ShooterData {
-		public boolean enabled;
 		public final List<Integer> motorIds;
 
-		public ShooterData(boolean enabled, List<Integer> motorIds) {
-			this.enabled = enabled;
+		public ShooterData(List<Integer> motorIds) {
 			this.motorIds = motorIds;
 		}
 	}

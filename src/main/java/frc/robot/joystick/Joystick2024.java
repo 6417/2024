@@ -9,6 +9,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.fridowpi.joystick.Binding;
+import frc.fridowpi.joystick.IJoystick;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.joystick.joysticks.Xbox360;
@@ -18,27 +19,24 @@ import frc.robot.Constants;
 import frc.robot.commands.climber.ClimberManuel;
 import frc.robot.commands.climber.ClimberRelease;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.joystick.ControllerWithState;
 import frc.robot.subsystems.ClimberSubsystem;
 
 public class Joystick2024 implements Sendable {
     private static Joystick2024 instance = new Joystick2024();
 
     IJoystickButtonId btnId = Xbox360.a;
-    private static final IJoystick primaryJoystick = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId);
 
-    public static IJoystick getPrimaryJoystick(){
-        return primaryJoystick;
+    public IJoystick getPrimaryJoystick(){
+        return JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId);
     }
 
     private Joystick2024() {
-        JoystickHandler.getInstance().bindAll(List.of(
-                new Binding(() -> 0, Xbox360.y, Trigger::toggleOnTrue, new ClimberManuel(true)),
-                new Binding(() -> 0, Xbox360.a, Trigger::toggleOnTrue, new ClimberManuel(false))));
-        JoystickHandler.getInstance().getJoystick(() -> 0);
     }
 
     public void setup(State state) {
-        JoystickHandler.getInstance().setJoystickFactory(XBoxJoystick::new);
+        JoystickHandler.getInstance().setJoystickFactory(ControllerWithState::new);
+        JoystickHandler.getInstance().init(); // Don't ask, it works ;)
         JoystickHandler.getInstance().setupJoysticks(List.of(
                 Constants.Joystick.primaryJoystickId));
         switch (state) {
@@ -61,8 +59,8 @@ public class Joystick2024 implements Sendable {
     }
 
     private void bindButtonsDefault() {
-        Config.active.getShooter().ifPresent(s -> JoystickHandler.getInstance().bind(s));
         JoystickHandler.getInstance().bind(Config.drive());
+        Config.active.getShooter().ifPresent(s -> JoystickHandler.getInstance().bind(s));
 
     }
 
@@ -76,23 +74,11 @@ public class Joystick2024 implements Sendable {
                 Xbox360.rb,
                 Trigger::onTrue,
                 new ClimberRelease(ClimberSubsystem.getInstance())));
-        JoystickHandler.getInstance().bind(new Binding(
-                Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.Lt,
-                Trigger::onTrue,
-                new SimplePrintCommand("lt pressed")));
-        JoystickHandler.getInstance().bind(new Binding(
-                Constants.Joystick.primaryJoystickId,
-                Xbox360Extended.Rt,
-                Trigger::onTrue,
-                new SimplePrintCommand("rt pressed")));
         
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("YrightJoystick",
-                () -> JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getTwist(), null);
     }
 }
 // getX() -> joystick left x

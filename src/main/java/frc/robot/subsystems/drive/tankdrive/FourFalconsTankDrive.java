@@ -20,21 +20,19 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.robot.Config;
 import frc.robot.Controls;
-import frc.robot.abstraction.baseClasses.BMotorSet;
 import frc.robot.abstraction.baseClasses.BTankDrive;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 import frc.robot.subsystems.visionAutonomous.TankDrivePoseEstimator;
-import frc.fridowpi.motors.FridoFalcon500v6;
 
 public class FourFalconsTankDrive extends BTankDrive {
 
 	SysIdRoutineLog log;
 
-	public BMotorSet motors;
 	public DifferentialDriveKinematics m_kinematics;
 	private DifferentialDrive differentialDrive;
 
@@ -43,17 +41,22 @@ public class FourFalconsTankDrive extends BTankDrive {
 
 	@Override
 	public void init() {
+		if (!Config.data().drive().enabled())
+			return;
 		super.init();
 
 		// Assign ids //
 		var ids = Config.data().drive().motorIds();
 		assert ids.size() == 4;
 
+		// Motors (inherited from BDrive) //
 		motors = new MotorSet(
 				new FridoFalcon500v6(ids.get(0)),
 				new FridoFalcon500v6(ids.get(1)),
 				new FridoFalcon500v6(ids.get(2)),
 				new FridoFalcon500v6(ids.get(3)));
+
+		System.out.println("Motor ids: " + ids);
 
 		// Invert if necessary //
 		Config.data().drive().inverted().forEach(m -> motors.invert(m));
@@ -65,6 +68,14 @@ public class FourFalconsTankDrive extends BTankDrive {
 		m_kinematics = new DifferentialDriveKinematics(Config.data().hardware().wheelCircumference());
 
 		setDefaultCommand(new DriveCommand(this));
+	}
+
+	@Override
+	public void drive(double v_x, double v_y, double rot) {
+		differentialDrive.arcadeDrive(
+				rot * Controls.getTurnSensitivity(),
+				v_x * Controls.getAccelerationSensitivity(),
+				true);
 	}
 
 	// Mutable holders for unit-safe values, persisted to avoid reallocation.
@@ -114,10 +125,6 @@ public class FourFalconsTankDrive extends BTankDrive {
 	}
 
 	@Override
-	public void periodic() {
-	}
-
-	@Override
 	public double getLeftEncoderPos() {
 		return motors.getMotor(MotorRole.LeftMaster).getEncoderTicks();
 	}
@@ -163,22 +170,16 @@ public class FourFalconsTankDrive extends BTankDrive {
 	}
 
 	@Override
-	public void drive(double v_x, double v_y, double rot) {
-		differentialDrive.arcadeDrive(
-				v_x * Controls.getAccelerationSensitivity(),
-				-rot * Controls.getTurnSensitivity(),
-				true);
-	}
-
-	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-		// builder.addDoubleProperty("LeftPosition", () -> motors.getMotor(MotorRole.LeftMaster).getEncoderTicks(), null);
-		// builder.addDoubleProperty("RightPosition", () -> motors.getMotor(MotorRole.RightMaster).getEncoderTicks(),
-		// 		null);
+		// builder.addDoubleProperty("LeftPosition", () ->
+		// motors.getMotor(MotorRole.LeftMaster).getEncoderTicks(), null);
+		// builder.addDoubleProperty("RightPosition", () ->
+		// motors.getMotor(MotorRole.RightMaster).getEncoderTicks(),
+		// null);
 		// builder.addBooleanProperty("CoastMode",
-		// 		() -> motors.getIdleMode() == IdleMode.kCoast,
-		// 		val -> motors.setIdleMode(val ? IdleMode.kCoast : IdleMode.kBrake));
+		// () -> motors.getIdleMode() == IdleMode.kCoast,
+		// val -> motors.setIdleMode(val ? IdleMode.kCoast : IdleMode.kBrake));
 	}
 
 	// TODO: @Laurin: needs to be implemented correctly!

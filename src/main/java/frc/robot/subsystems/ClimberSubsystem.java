@@ -51,9 +51,7 @@ public class ClimberSubsystem extends BClimber {
 		var motorLeft = 22;
 		var motorRight = 21;
 		var servo = -1;
-		return new ClimberData(
-				Constants.Climber.enabled,
-				List.of(motorLeft, motorRight, servo));
+		return new ClimberData(List.of(motorLeft, motorRight, servo));
 	}
 
 }
