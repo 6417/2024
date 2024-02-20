@@ -21,6 +21,7 @@ public enum Xbox360 implements IJoystickButtonId {
     private Xbox360(int id) {
         buttonId = id;
     }
+
     @Override
     public int getButtonId() {
         return buttonId;

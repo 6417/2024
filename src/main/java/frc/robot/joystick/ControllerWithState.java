@@ -1,8 +1,6 @@
 package frc.robot.joystick;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.fridowpi.joystick.IJoystick;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.IJoystickId;
 import frc.fridowpi.joystick.XBoxJoystick;

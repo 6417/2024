@@ -5,7 +5,7 @@ import java.util.Optional;
 import frc.fridolib.Directions.Pov;
 import frc.fridowpi.joystick.IJoystickButtonId;
 
-public enum Xbox360Extended implements IJoystickButtonId {
+public enum POV implements IJoystickButtonId {
     DPadUp(100, Pov.UP),
     DPadUpRight(101, Pov.UP_RIGHT),
     DPadRight(102, Pov.RIGHT),
@@ -20,11 +20,11 @@ public enum Xbox360Extended implements IJoystickButtonId {
     private final int buttonId;
     public final Optional<Pov> pov;
 
-    private Xbox360Extended(int id, Pov pov) {
+    private POV(int id, Pov pov) {
         buttonId = id;
         this.pov = Optional.of(pov);
     }
-    private Xbox360Extended(int id) {
+    private POV(int id) {
         buttonId = id;
         pov = Optional.empty();
     }

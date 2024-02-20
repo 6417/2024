@@ -18,10 +18,13 @@ public class DriveCommand extends Command {
 
   @Override
   public void execute() {
-    double x = Config.joystick().getX();
-    double y = Config.joystick().getY();
-    double rot = Config.joystick().getTwist();
+    // double x = Config.joystick().getX();
+    // double y = Config.joystick().getY();
+    // double rot = Config.joystick().getTwist();
     // getRightY() somehow is always 0: Don't use
+	var x = 0;
+	var y = 0;
+	var rot = 0;
     m_subsystem.drive(y, x, rot);
   }
 

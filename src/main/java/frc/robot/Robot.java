@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.fridowpi.sensors.FridoNavx;
-import frc.robot.joystick.Joystick2024;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.joystick.Joystick2024;
 
 public class Robot extends TimedRobot {
 
@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
+		Joystick2024.getInstance().run();
     }
 
 }

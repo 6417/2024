@@ -2,84 +2,117 @@ package frc.robot.joystick;
 
 import java.util.List;
 
-import javax.sound.sampled.Port;
-
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.joystick.IJoystick;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.JoystickHandler;
-import frc.fridowpi.joystick.joysticks.Xbox360;
-import frc.fridowpi.joystick.joysticks.Xbox360Extended;
-import frc.robot.Config;
+import frc.fridowpi.joystick.joysticks.Logitech;
+import frc.fridowpi.joystick.joysticks.POV;
 import frc.robot.Constants;
-import frc.robot.commands.climber.ClimberManuel;
-import frc.robot.commands.climber.ClimberRelease;
 import frc.robot.joystick.IdsWithState.State;
-import frc.robot.joystick.ControllerWithState;
-import frc.robot.subsystems.ClimberSubsystem;
 
+// Singleton that manages the joystick configuration of 2024 //
 public class Joystick2024 implements Sendable {
-    private static Joystick2024 instance = new Joystick2024();
+	private static Joystick2024 instance = new Joystick2024();
 
-    IJoystickButtonId btnId = Xbox360.a;
+	public IJoystick getPrimaryJoystick() {
+		return JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId);
+	}
 
-    public IJoystick getPrimaryJoystick(){
-        return JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId);
-    }
+	private Joystick2024() {
+	}
 
-    private Joystick2024() {
-    }
+	public static Joystick2024 getInstance() {
+		return instance;
+	}
 
-    public void setup(State state) {
-        JoystickHandler.getInstance().setJoystickFactory(ControllerWithState::new);
-        JoystickHandler.getInstance().init(); // Don't ask, it works ;)
-        JoystickHandler.getInstance().setupJoysticks(List.of(
-                Constants.Joystick.primaryJoystickId));
-        switch (state) {
-            case DEFAULT:
-                bindButtonsDefault();
-                break;
-            case SYSID_TUNING:
-                bindButtonsForSysid();
-                break;
-            case ENDGAME:
-                break;
-            default:
-                System.out.println("Errrrrr: joystick wrong");
-        }
-        JoystickHandler.getInstance().init();
-    }
+	public void setup(State state) {
+		// JoystickHandler.getInstance().setJoystickFactory(ControllerWithState::new);
+		JoystickHandler.getInstance().init(); // Don't ask, it works ;)
+		JoystickHandler.getInstance().setupJoysticks(List.of(
+				Constants.Joystick.primaryJoystickId));
+		JoystickHandler.getInstance().init();
 
-    public static Joystick2024 getInstance() {
-        return instance;
-    }
+		// Set active state //
+		IdsWithState.activeState = state;
 
-    private void bindButtonsDefault() {
-        JoystickHandler.getInstance().bind(Config.drive());
-        Config.active.getShooter().ifPresent(s -> JoystickHandler.getInstance().bind(s));
+		// Create bindings //
+		// JoystickHandler.getInstance().bind(Config.drive());
+		// Config.active.getShooter().ifPresent(s ->
+		// JoystickHandler.getInstance().bind(s));
+		//
 
-    }
+		quickBind(Logitech.a, () -> System.out.println("a"));
+		quickBind(Logitech.b, () -> System.out.println("b"));
+		quickBind(Logitech.x, () -> System.out.println("x"));
+		quickBind(Logitech.y, () -> System.out.println("y"));
+		quickBind(Logitech.start, () -> System.out.println("start"));
+		quickBind(Logitech.back, () -> System.out.println("back"));
+		quickBind(Logitech.lb, () -> System.out.println("lb"));
+		quickBind(Logitech.rb, () -> System.out.println("rb"));
+		quickBind(Logitech.lt, () -> System.out.println("lt"));
+		quickBind(Logitech.rt, () -> System.out.println("rt"));
 
-    public void setState(State state) {
-        IdsWithState.state = state;
-    }
+		quickBind(POV.DPadUp, () -> System.out.println("dpad up"));
+		quickBind(POV.DPadUpRight, () -> System.out.println("dpad up right"));
+		quickBind(POV.DPadRight, () -> System.out.println("dpad right"));
+		quickBind(POV.DPadDownRight, () -> System.out.println("dpad down right"));
+		quickBind(POV.DPadDown, () -> System.out.println("dpad down"));
+		quickBind(POV.DPadDownLeft, () -> System.out.println("dpad down left"));
+		quickBind(POV.DPadLeft, () -> System.out.println("dpad left"));
+		quickBind(POV.DPadUpLeft, () -> System.out.println("dpad up left"));
 
-    private void bindButtonsForSysid() {
-        JoystickHandler.getInstance().bind(new Binding(
-                Constants.Joystick.primaryJoystickId,
-                Xbox360.rb,
-                Trigger::onTrue,
-                new ClimberRelease(ClimberSubsystem.getInstance())));
-        
-    }
+		quickBind(POV.Lt, () -> System.out.println("POV lt"));
+		quickBind(POV.Rt, () -> System.out.println("POV rt"));
+	}
 
-    @Override
-    public void initSendable(SendableBuilder builder) {
-    }
+	public void run() {
+		if (JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId) != null) {
+			var js = getPrimaryJoystick();
+			if (js.getX() > 0.1) {
+				System.out.println("X: " + js.getX());
+			}
+			if (js.getY() > 0.1) {
+				System.out.println("Y: " + js.getY());
+			}
+			if (js.getThrottle() > 0.1) {
+				System.out.println("Throttle: " + js.getThrottle());
+			}
+			if (js.getTwist() > 0.1) {
+				System.out.println("Twist: " + js.getTwist());
+			}
+		}
+	}
+
+	public void quickBind(IJoystickButtonId button, Runnable fn) {
+		JoystickHandler.getInstance()
+				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue,
+						new InstantCommand(fn)));
+	}
+
+	public void quickBind(IJoystickButtonId button, Command cmd) {
+		JoystickHandler.getInstance()
+				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue, cmd));
+	}
+
+	public void quickBindWhileHeld(IJoystickButtonId button, Command cmd) {
+		JoystickHandler.getInstance()
+				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::whileTrue, cmd));
+	}
+
+	// Setters //
+	public void setState(State state) {
+		IdsWithState.activeState = state;
+	}
+
+	@Override
+	public void initSendable(SendableBuilder builder) {
+	}
 }
 // getX() -> joystick left x
 // getY() -> joystick left y
@@ -87,3 +120,4 @@ public class Joystick2024 implements Sendable {
 // getTwist() -> joystick right y
 // getMagnitude() -> how close the joystick is to joystick centre
 // getDirection() -> direction from -180 to 180 Degrees, joystick left
+
