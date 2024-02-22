@@ -15,7 +15,7 @@ public class ControllerWithState extends XBoxJoystick {
     @Override
     public Trigger getButton(IJoystickButtonId id) {
         if (id.getButtonId() >= Constants.Joystick.idCounterStart) {
-            var idNew = (IdsWithState) id;
+            var idNew = IdsWithState.from(id);
             return idNew.toButtonOnJoystick(this);
         }
         return super.getButton(id);

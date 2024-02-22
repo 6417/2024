@@ -7,7 +7,7 @@ import frc.robot.abstraction.RobotData;
 import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.abstraction.interfaces.ISwerveModule;
-// import frc.robot.subsystems.drive.swerve_2024.SwerveModulePhoenixSparkMax;
+import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
 import frc.robot.subsystems.drive.tankdrive.FourFalconsTankDrive;
 
 /** Preset robot configurations
@@ -36,6 +36,7 @@ public enum RobotPreset {
 
 	Diplodocus(Constants.Diplodocus.robotData, new FourFalconsTankDrive()),
 	TestChassisDrive(Constants.Testchassis.robotData, new FourFalconsTankDrive()),
+	Swerve2024(null, SwerveDrive2024.getInstance()),
 	// TestChassisShooter(new FourFalconTankDrive(-1, -1, -1, -1), new ShooterTwoPhoenix(-1, -1)),
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))
 	// DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),

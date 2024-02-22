@@ -1,6 +1,7 @@
 package frc.robot.joystick;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.fridowpi.joystick.IJoystick;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.robot.Constants;
 
@@ -43,11 +44,15 @@ public class IdsWithState implements IJoystickButtonId {
         return id;
     }
     
-    Trigger toButtonOnJoystick(ControllerWithState j) {
+    Trigger toButtonOnJoystick(IJoystick j) {
         return new Trigger(() -> isActivated(j));
     }
 
-    private boolean isActivated(ControllerWithState j) {
-        return j.getButton(button).getAsBoolean() && activeState == state;
+    private boolean isActivated(IJoystick j) {
+        return j.getButton(button).getAsBoolean() && activeState == state || activeState == State.ALL;
     }
+
+	public static IdsWithState from(IJoystickButtonId id2) {
+		return new IdsWithState(highestId++, id2, State.ALL);
+	}
 }

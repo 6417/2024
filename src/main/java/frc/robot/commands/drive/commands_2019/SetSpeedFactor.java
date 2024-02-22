@@ -1,8 +1,8 @@
-package frc.robot.commands.drive;
+package frc.robot.commands.drive.commands_2019;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.drive.swerve.SwerveDrive;
+import frc.robot.subsystems.drive.swerve_2019.SwerveDrive2019;
 
 public class SetSpeedFactor extends Command {
     private double speedFactor;
@@ -14,7 +14,7 @@ public class SetSpeedFactor extends Command {
 
     @Override
     public void initialize() {
-        SwerveDrive.getInstance().setSpeedFactor(speedFactor);
+        SwerveDrive2019.getInstance().setSpeedFactor(speedFactor);
     }
 
     @Override

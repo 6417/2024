@@ -21,4 +21,6 @@ public interface IMotorSet extends IModule {
 	public IdleMode getIdleMode();
 
 	public void setVolts(Measure<Voltage> leftVolts, Measure<Voltage> rightVolts);
+
+	public void stopAll();
 }

@@ -93,4 +93,10 @@ public class MotorSet extends BMotorSet {
 		leftMaster.set(leftVolts.in(Volts));
 		rightMaster.set(rightVolts.in(Volts));
 	}
+
+	@Override
+	public void stopAll() {
+		leftMaster.set(0);
+		rightMaster.set(0);
+	}
 }

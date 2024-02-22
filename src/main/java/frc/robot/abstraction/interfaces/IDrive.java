@@ -24,7 +24,9 @@ public interface IDrive extends IModule, Sendable, JoystickBindable {
 
     public void driveToPos(Pose2d pos);
 
-    // Braking Mode
+    // Brake
+	public void stopAllMotors();
+
     public void setIdleMode(IdleMode mode);
 
     // Sysid tuning (not really necessary)

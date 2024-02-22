@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive.swerve;
+package frc.robot.subsystems.drive.swerve_2019;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.joystick.JoystickBindable;
-import frc.robot.Constants;
+import frc.robot.abstraction.baseClasses.BSwerveDrive.MountingLocations;
 
 public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
     public enum DriveOrientation {
@@ -33,9 +33,9 @@ public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
 
     }
 
-    public Map<Constants.SwerveDrive.MountingLocations, Boolean> areHalSensoredOfMoudlesTriggered() {
-        Map<Constants.SwerveDrive.MountingLocations, Boolean> defaultReturn = new HashMap<>();
-        for (var location : Constants.SwerveDrive.MountingLocations.values())
+    public Map<MountingLocations, Boolean> areHalSensoredOfMoudlesTriggered() {
+        Map<MountingLocations, Boolean> defaultReturn = new HashMap<>();
+        for (var location : MountingLocations.values())
             defaultReturn.put(location, false);
         return defaultReturn;
     }
@@ -44,11 +44,11 @@ public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
 
     }
 
-    public void setCurrentModuleRotatoinToHome(Constants.SwerveDrive.MountingLocations moduleLocation) {
+    public void setCurrentModuleRotatoinToHome(MountingLocations moduleLocation) {
 
     }
 
-    public void setModuleRotationEncoderTicks(Constants.SwerveDrive.MountingLocations mountingLocation, double ticks) {
+    public void setModuleRotationEncoderTicks(MountingLocations mountingLocation, double ticks) {
 
     }
 
@@ -61,14 +61,14 @@ public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
     }
 
     public void forEachModuleEntry(
-            Consumer<Map.Entry<Constants.SwerveDrive.MountingLocations, SwerveModule>> consumer) {
+            Consumer<Map.Entry<MountingLocations, SwerveModule>> consumer) {
     }
 
-    public boolean isModuleZeroed(Constants.SwerveDrive.MountingLocations mountingLocation) {
+    public boolean isModuleZeroed(MountingLocations mountingLocation) {
         return false;
     }
 
-    public void withModule(Constants.SwerveDrive.MountingLocations mountingLocation, Consumer<SwerveModule> consumer) {
+    public void withModule(MountingLocations mountingLocation, Consumer<SwerveModule> consumer) {
 
     }
 

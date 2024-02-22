@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive.swerve;
+package frc.robot.subsystems.drive.swerve_2019;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -20,50 +20,45 @@ import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.fridowpi.utils.Algorithms;
 import frc.robot.Constants;
-import frc.robot.Constants.SwerveDrive.MountingLocations;
-import frc.robot.commands.drive.DefaultDriveCommand;
-import frc.robot.commands.drive.SetSpeedFactor;
-import frc.robot.commands.drive.ZeroEncoders;
+import frc.robot.Constants.SwerveDrive.Swerve2019;
+import frc.robot.abstraction.baseClasses.BSwerveDrive.MountingLocations;
+import frc.robot.commands.drive.commands_2019.DriveCommand2019;
+import frc.robot.commands.drive.commands_2019.SetSpeedFactor;
+import frc.robot.commands.drive.commands_2019.ZeroEncoders;
 
-public class SwerveDrive extends SwerveDriveBase {
+public class SwerveDrive2019 extends SwerveDriveBase {
 	private DriveOrientation driveMode = DriveOrientation.ShooterBack;
 	private static SwerveDriveBase instance = null;
-	private SwerveKinematics<Constants.SwerveDrive.MountingLocations> kinematics;
-	private Map<Constants.SwerveDrive.MountingLocations, SwerveModule> modules = new HashMap<>();
-	// private
-	// SwerveLimiter.RotationDirectionCorrectorGetter<Constants.SwerveDrive.MountingLocations>
-	// directionCorectorGetter;
+	private SwerveKinematics<MountingLocations> kinematics;
+	private Map<MountingLocations, SwerveModule> modules = new HashMap<>();
 	private ChassisSpeeds currentChassisSpeeds = new ChassisSpeeds();
-	private double speedFactor = Constants.SwerveDrive.defaultSpeedFactor;
+	private double speedFactor = Swerve2019.defaultSpeedFactor;
 
 	private void setUpSwerveKinematics() {
-		Map<Constants.SwerveDrive.MountingLocations, Translation2d> mountingPoints = Constants.SwerveDrive.swerveModuleConfigs
+		Map<MountingLocations, Translation2d> mountingPoints = Swerve2019.swerveModuleConfigs
 				.entrySet().stream().map(Algorithms.mapEntryFunction(config -> config.mountingPoint))
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-		kinematics = new SwerveKinematics<Constants.SwerveDrive.MountingLocations>(mountingPoints);
+		kinematics = new SwerveKinematics<MountingLocations>(mountingPoints);
 	}
 
 	private void setUpSwerveModules() {
-		modules = Constants.SwerveDrive.swerveModuleConfigs.entrySet().stream()
+		modules = Swerve2019.swerveModuleConfigs.entrySet().stream()
 				.map(Algorithms.mapEntryFunction(SwerveModule::new))
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		forEachModuleEntry(moduleEntry -> Shuffleboard.getTab("Drive")
 				.add("SwerveModule" + moduleEntry.getKey().toString(), moduleEntry.getValue()));
 	}
 
-	private SwerveDrive() {
+	private SwerveDrive2019() {
 		setUpSwerveModules();
 		setUpSwerveKinematics();
-		// directionCorectorGetter = Constants.SwerveDrive.directionCorectorGetter;
 	}
 
 	public static SwerveDriveBase getInstance() {
 		if (instance == null)
-			if (Constants.SwerveDrive.enabled) {
-				instance = new SwerveDrive();
-				instance.setDefaultCommand(new DefaultDriveCommand());
-				// if (!Constants.MecanumDrive.IS_ENABLED)
-				// throw new Error("Tank drive can't be enabled while swerve drive is anabled");
+			if (Constants.SwerveDrive.Swerve2019.enabled) {
+				instance = new SwerveDrive2019();
+				instance.setDefaultCommand(new DriveCommand2019());
 			} else {
 				instance = new SwerveDriveBase();
 			}
@@ -71,23 +66,23 @@ public class SwerveDrive extends SwerveDriveBase {
 	}
 
 	@Override
-	public boolean isModuleZeroed(Constants.SwerveDrive.MountingLocations mountingLocation) {
+	public boolean isModuleZeroed(MountingLocations mountingLocation) {
 		return modules.get(mountingLocation).hasEncoderBeenZeroed();
 	}
 
 	@Override
-	public void withModule(Constants.SwerveDrive.MountingLocations mountingLocation, Consumer<SwerveModule> consumer) {
+	public void withModule(MountingLocations mountingLocation, Consumer<SwerveModule> consumer) {
 		consumer.accept(modules.get(mountingLocation));
 	}
 
-	private double getMaxSpeed(Map<Constants.SwerveDrive.MountingLocations, SwerveModuleState> states) {
+	private double getMaxSpeed(Map<MountingLocations, SwerveModuleState> states) {
 		return states.values().stream().max(Comparator.comparing(state -> state.speedMetersPerSecond))
 				.get().speedMetersPerSecond;
 	}
 
-	private Map<Constants.SwerveDrive.MountingLocations, SwerveModuleState> normalizeStates(
-			Map<Constants.SwerveDrive.MountingLocations, SwerveModuleState> states) {
-		if (getMaxSpeed(states) > Constants.SwerveDrive.maxSpeedOfDrive * speedFactor)
+	private Map<MountingLocations, SwerveModuleState> normalizeStates(
+			Map<MountingLocations, SwerveModuleState> states) {
+		if (getMaxSpeed(states) > Constants.SwerveDrive.Swerve2019.maxSpeedOfDrive * speedFactor)
 			return states.entrySet().stream()
 					.map(Algorithms.mapEntryFunction(
 							Algorithms.mapSwerveModuleStateSpeed(speed -> speed / getMaxSpeed(states))))
@@ -100,12 +95,12 @@ public class SwerveDrive extends SwerveDriveBase {
 	@Override
 	public void drive(ChassisSpeeds requestedMovement) {
 		currentChassisSpeeds = requestedMovement;
-		Map<Constants.SwerveDrive.MountingLocations, SwerveModuleState> states = kinematics
+		Map<MountingLocations, SwerveModuleState> states = kinematics
 				.toLabledSwerveModuleStates(currentChassisSpeeds);
 		states = normalizeStates(states);
 
 		states.entrySet().forEach(
-				(Entry<Constants.SwerveDrive.MountingLocations, SwerveModuleState> labeledState) -> modules
+				(Entry<MountingLocations, SwerveModuleState> labeledState) -> modules
 						.get(labeledState.getKey()).setDesiredState(labeledState.getValue()));
 
 		forEachModule(module -> module.drive(speedFactor));
@@ -117,8 +112,8 @@ public class SwerveDrive extends SwerveDriveBase {
 	}
 
 	@Override
-	public Map<Constants.SwerveDrive.MountingLocations, Boolean> areHalSensoredOfMoudlesTriggered() {
-		Map<Constants.SwerveDrive.MountingLocations, Boolean> result = new HashMap<>();
+	public Map<MountingLocations, Boolean> areHalSensoredOfMoudlesTriggered() {
+		Map<MountingLocations, Boolean> result = new HashMap<>();
 		forEachModuleEntry(
 				labeledModule -> result.put(
 						labeledModule.getKey(),
@@ -132,11 +127,11 @@ public class SwerveDrive extends SwerveDriveBase {
 	}
 
 	public static double joystickInputToMetersPerSecond(double joystickValue) {
-		return joystickValue * Constants.SwerveDrive.maxSpeedOfDrive;
+		return joystickValue * Constants.SwerveDrive.Swerve2019.maxSpeedOfDrive;
 	}
 
 	public static double joystickInputToRadPerSecond(double joystickValue) {
-		return joystickValue * Constants.SwerveDrive.maxRotationSpeed;
+		return joystickValue * Constants.SwerveDrive.Swerve2019.maxRotationSpeed;
 	}
 
 	@Override
@@ -163,7 +158,7 @@ public class SwerveDrive extends SwerveDriveBase {
 
 	@Override
 	public void forEachModuleEntry(
-			Consumer<Map.Entry<Constants.SwerveDrive.MountingLocations, SwerveModule>> consumer) {
+			Consumer<Map.Entry<MountingLocations, SwerveModule>> consumer) {
 		modules.entrySet().stream().forEach(consumer);
 	}
 
@@ -201,14 +196,14 @@ public class SwerveDrive extends SwerveDriveBase {
 				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroEncoders, Trigger::onTrue,
 						new ZeroEncoders()),
 				new Binding(joystick, Constants.SwerveDrive.ButtounIds.fullSpeed, Trigger::toggleOnTrue,
-						new SetSpeedFactor(Constants.SwerveDrive.fullSpeed)),
+						new SetSpeedFactor(Constants.SwerveDrive.Swerve2019.fullSpeed)),
 				new Binding(joystick, Constants.SwerveDrive.ButtounIds.slowSpeed, Trigger::toggleOnTrue,
-						new SetSpeedFactor(Constants.SwerveDrive.slowSpeedFactor)),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.fieldOriented, Trigger::onTrue,
+						new SetSpeedFactor(Constants.SwerveDrive.Swerve2019.slowSpeedFactor)),
+				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveFieldOriented, Trigger::onTrue,
 						new InstantCommand(() -> setDriveMode(DriveOrientation.FieldOriented))),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.shooterFrontOriented, Trigger::onTrue,
+				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveForwards, Trigger::onTrue,
 						new InstantCommand(() -> setDriveMode(DriveOrientation.ShooterFront))),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.shooterBackOriented, Trigger::onTrue,
+				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveBackwards, Trigger::onTrue,
 						new InstantCommand(() -> setDriveMode(DriveOrientation.ShooterBack))));
 	}
 }

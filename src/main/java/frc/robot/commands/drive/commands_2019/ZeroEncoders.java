@@ -1,4 +1,4 @@
-package frc.robot.commands.drive;
+package frc.robot.commands.drive.commands_2019;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.subsystems.drive.swerve.SwerveDrive;
-import frc.robot.subsystems.drive.swerve.SwerveModule;
+import frc.robot.subsystems.drive.swerve_2019.SwerveDrive2019;
+import frc.robot.subsystems.drive.swerve_2019.SwerveModule;
 
 public class ZeroEncoders extends ParallelCommandGroup {
     public ZeroEncoders() {
-        addRequirements(SwerveDrive.getInstance());
+        addRequirements(SwerveDrive2019.getInstance());
         List<SequentialCommandGroup> commands = new ArrayList<>();
-        SwerveDrive.getInstance().forEachModule((module) -> {
+        SwerveDrive2019.getInstance().forEachModule((module) -> {
             SequentialCommandGroup commandGroup = new SequentialCommandGroup(new GoToHalSensor(module));
             commandGroup.addCommands(new Finetune(module, commandGroup));
             commands.add(commandGroup);
@@ -35,13 +35,13 @@ public class ZeroEncoders extends ParallelCommandGroup {
             module.setEncoderZeroedFalse();
             module.stopAllMotors();
             module.enableLimitSwitch();
-            currentSetPoint = module.getRotationEncoderTicks() + Constants.SwerveDrive.zeroingSpeed;
+            currentSetPoint = module.getRotationEncoderTicks() + Constants.SwerveDrive.Swerve2019.zeroingSpeed;
         }
 
         @Override
         public void execute() {
             module.setDesiredRotationMotorTicks(currentSetPoint);
-            currentSetPoint += Constants.SwerveDrive.zeroingSpeed;
+            currentSetPoint += Constants.SwerveDrive.Swerve2019.zeroingSpeed;
         }
 
         @Override
@@ -72,10 +72,10 @@ public class ZeroEncoders extends ParallelCommandGroup {
             module.stopAllMotors();
             module.enableLimitSwitch();
             currentSetPoint = module.getRotationEncoderTicks()
-                    - Constants.SwerveDrive.zeroingSpeed * Constants.SwerveDrive.finetuningZeroFactor;
+                    - Constants.SwerveDrive.Swerve2019.zeroingSpeed * Constants.SwerveDrive.Swerve2019.finetuningZeroFactor;
             while (module.isHalSensorTriggered()) {
                 module.setDesiredRotationMotorTicks(currentSetPoint);
-                currentSetPoint -= Constants.SwerveDrive.zeroingSpeed * Constants.SwerveDrive.finetuningZeroFactor;
+                currentSetPoint -= Constants.SwerveDrive.Swerve2019.zeroingSpeed * Constants.SwerveDrive.Swerve2019.finetuningZeroFactor;
             }
             currentSetPoint = module.getRotationEncoderTicks();
             startingPosition = module.getRotationEncoderTicks();
@@ -84,7 +84,7 @@ public class ZeroEncoders extends ParallelCommandGroup {
         @Override
         public void execute() {
             module.setDesiredRotationMotorTicks(currentSetPoint);
-            currentSetPoint += Constants.SwerveDrive.zeroingSpeed * Constants.SwerveDrive.finetuningZeroFactor;
+            currentSetPoint += Constants.SwerveDrive.Swerve2019.zeroingSpeed * Constants.SwerveDrive.Swerve2019.finetuningZeroFactor;
             if (module.isHalSensorTriggered())
                 module.setRotationEncoderTicks(module.halSensorPosition);
 

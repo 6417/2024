@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.tankdrive;
 
 import frc.robot.Config;
 import edu.wpi.first.wpilibj2.command.Command;
