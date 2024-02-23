@@ -3,6 +3,8 @@ package frc.robot.subsystems.drive.swerve_2024;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.revrobotics.AbsoluteEncoder;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -17,8 +19,7 @@ import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 
 public class SwerveModule extends BSwerveModule {
-	private boolean isEncoderZeroed = false;
-
+	// Set variables (TODO: Intergrate into RobotData)
 	public static class Config implements Cloneable {
 		public int absoluteEncoderChannel;
 		public double absoluteEncoderZeroPosition;
@@ -58,62 +59,63 @@ public class SwerveModule extends BSwerveModule {
 		}
 	}
 
-	private static class Motors {
+	private class Motors {
 		public FridolinsMotor drive;
 		public FridolinsMotor rotation;
-		public double rotationMotorTicksPerRotation;
-		public double driveMotorTicksPerRotation;
-		public double wheelCircumference;
-		public double maxVelocity;
+		public AnalogEncoder absoluteEncoder;
 
 		public Motors(Config config) {
-			// Create motors
 			drive = config.driveMotorInitializer.get();
-			rotation = config.rotationMotorInitializer.get();
-
-			// Set variables (TODO: Intergrate into RobotData)
-			driveMotorTicksPerRotation = config.driveMotorTicksPerRotation;
-			rotationMotorTicksPerRotation = config.rotationMotorTicksPerRotation;
-			wheelCircumference = config.wheelCircumference;
-			maxVelocity = config.maxVelocity;
-
-			// Configure motors
-			drive.configEncoder(config.driveEncoderType, (int) driveMotorTicksPerRotation);
-			rotation.configEncoder(config.rotationEncoderType, (int) rotationMotorTicksPerRotation);
+			drive.configEncoder(config.driveEncoderType, (int) config.driveMotorTicksPerRotation);
 			config.driveSensorInverted.ifPresent(this.drive::setEncoderDirection);
 			drive.setInverted(config.driveMotorInverted);
 			drive.setIdleMode(IdleMode.kCoast);
-			rotation.setIdleMode(IdleMode.kBrake);
 			drive.setPID(config.drivePID);
+
+			rotation = config.rotationMotorInitializer.get();
+			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);
+			rotation.setIdleMode(IdleMode.kBrake);
 			rotation.setPID(config.rotationPID);
+
+			absoluteEncoder = new AnalogEncoder(config.absoluteEncoderChannel);
+			absoluteEncoder.setPositionOffset(config.absoluteEncoderZeroPosition);
+			zeroRelativeEncoder();
+		}
+
+		public void zeroRelativeEncoder() {
+			var pos = absoluteEncoder.get();
+			var newPos = pos * config.rotationMotorTicksPerRotation;
+			rotation.setEncoderPosition(newPos);
 		}
 	}
 
 	private Motors motors;
-	private Config config;
+	public Config config;
 	private SwerveModuleState desiredState = new SwerveModuleState();
 	public boolean currentRotationInverted = false;
-	public AnalogEncoder absoluteEncoder;
 
 	public SwerveModule(Config config) {
-		motors = new Motors(config);
 		this.config = config;
-		absoluteEncoder = new AnalogEncoder(config.absoluteEncoderChannel);
+		motors = new Motors(this.config);
 	}
 
 	public Vector2 getModuleRotation() {
 		return Vector2.fromRad(getModuleRotationAngle());
 	}
 
+	public void zeroRelativeEncoder() {
+		motors.zeroRelativeEncoder();
+	}
+
 	public double getModuleRotationAngle() {
 		return Vector2
-				.fromRad(((motors.rotation.getEncoderTicks() / motors.rotationMotorTicksPerRotation) * Math.PI * 2)
+				.fromRad(((motors.rotation.getEncoderTicks() / config.rotationMotorTicksPerRotation) * Math.PI * 2)
 						% (Math.PI * 2))
 				.toRadians();
 	}
 
 	public double getRawModuleRotationAngle() {
-		return (motors.rotation.getEncoderTicks() / motors.rotationMotorTicksPerRotation) * Math.PI * 2;
+		return (motors.rotation.getEncoderTicks() / config.rotationMotorTicksPerRotation) * Math.PI * 2;
 	}
 
 	public Vector2 getTargetVector() {
@@ -126,15 +128,15 @@ public class SwerveModule extends BSwerveModule {
 			angleDelta = Math.PI * 2 + angleDelta;
 		double steeringDirection = Math.signum(getModuleRotation().cross(Vector2.fromRad(angle)));
 		return motors.rotation.getEncoderTicks()
-				+ steeringDirection * (angleDelta / (Math.PI * 2)) * motors.rotationMotorTicksPerRotation;
+				+ steeringDirection * (angleDelta / (Math.PI * 2)) * config.rotationMotorTicksPerRotation;
 	}
 
 	private double meterPerSecondToDriveMotorEncoderVelocityUnits(double speedMs) {
-		return (speedMs / motors.wheelCircumference) * motors.driveMotorTicksPerRotation;
+		return (speedMs / config.wheelCircumference) * config.driveMotorTicksPerRotation;
 	}
 
 	private double driveMotorEncoderVelocityToPercent(double encoderSpeed) {
-		return encoderSpeed / meterPerSecondToDriveMotorEncoderVelocityUnits(motors.maxVelocity);
+		return encoderSpeed / meterPerSecondToDriveMotorEncoderVelocityUnits(config.maxVelocity);
 	}
 
 	public double getSpeed() {
@@ -154,7 +156,7 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public void driveForward(double speedFactor) {
 		motors.rotation.setPosition(angleToRotationMotorEncoderTicks(desiredState.angle.getRadians()));
-		motors.drive.setVelocity(desiredState.speedMetersPerSecond * speedFactor);
+		motors.drive.set(desiredState.speedMetersPerSecond * speedFactor);
 	}
 
 	public void setDriveMotorSpeed(double velocity) {
@@ -175,7 +177,7 @@ public class SwerveModule extends BSwerveModule {
 	}
 
 	public double getAbsoluteEncoderTicks() {
-		return absoluteEncoder.get();
+		return motors.absoluteEncoder.get();
 	}
 
 	public void stopAllMotors() {
@@ -183,13 +185,9 @@ public class SwerveModule extends BSwerveModule {
 		motors.rotation.set(0.0);
 	}
 
-	public boolean hasEncoderBeenZeroed() {
-		return isEncoderZeroed;
-	}
-
 	public void setCurrentRotationToEncoderHome() {
-		isEncoderZeroed = true;
 		motors.rotation.setEncoderPosition(0);
+		motors.absoluteEncoder.setPositionOffset(motors.absoluteEncoder.getAbsolutePosition());
 	}
 
 	public void invertRotationDirection() {
@@ -197,24 +195,8 @@ public class SwerveModule extends BSwerveModule {
 	}
 
 	// Getters and setters
-	public void setEncoderZeroedFalse() {
-		isEncoderZeroed = false;
-	}
-
 	public SwerveModuleState getDesiredModuleState() {
 		return desiredState;
-	}
-
-	@Override
-	public void setRotationEncoderTicks(double ticks) {
-		isEncoderZeroed = true;
-		motors.rotation.setEncoderPosition(ticks);
-	}
-
-	@Override
-	public void zeroEncoder() {
-		var pos = absoluteEncoder.getAbsolutePosition() * Constants.SwerveDrive.Swerve2024.absoluteEncoderToMeters;
-		motors.rotation.setEncoderPosition(pos * Constants.SwerveDrive.Swerve2024.metersToRelativeEncoder * Constants.SwerveDrive.Swerve2024.gearRatio);
 	}
 
 	@Override
@@ -229,8 +211,8 @@ public class SwerveModule extends BSwerveModule {
 		builder.addDoubleProperty("Current speed", this::getSpeed, null);
 		builder.addDoubleProperty("Current angel", () -> getModuleRotationAngle() * 180 / Math.PI, null);
 		builder.addDoubleProperty("Rotation Encoder Ticks", motors.rotation::getEncoderTicks, null);
-		builder.addDoubleProperty("Absolute Encoder Ticks", absoluteEncoder::getAbsolutePosition, null);
-		builder.addBooleanProperty("Module Zeroed", this::hasEncoderBeenZeroed, null);
+		builder.addDoubleProperty("Absolute Encoder", motors.absoluteEncoder::get, null);
+		builder.addBooleanProperty("Zero Module", () -> false, (ignored) -> zeroRelativeEncoder());
 
 		builder.addDoubleProperty("Target", motors.rotation::getPidTarget, null);
 	}

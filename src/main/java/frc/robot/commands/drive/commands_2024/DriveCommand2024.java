@@ -39,8 +39,8 @@ public class DriveCommand2024 extends Command {
 
 	private Vector2 getXYvectorWithAppliedDeadBandFromJoystick() {
 		var joystick = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId);
-		var x = joystick.getX();
-		var y = joystick.getY();
+		var y = -joystick.getX();
+		var x = joystick.getY();
 		if (Math.abs(x) < Constants.SwerveDrive.Swerve2024.deadBand) {
 			x = 0;
 		} else {

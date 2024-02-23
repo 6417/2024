@@ -41,14 +41,14 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	@Override
 	public void init() {
 		super.init();
-		zeroEncoders();
 		setUpSwerveModules();
 		setUpSwerveKinematics();
+		zeroEncoders();
 		setDefaultCommand(new DriveCommand2024());
 	}
 
 	private void zeroEncoders() {
-		forEachModuleEntry(moduleEntry -> moduleEntry.getValue().zeroEncoder());
+		forEachModuleEntry(moduleEntry -> moduleEntry.getValue().zeroRelativeEncoder());
 	}
 
 	private void setUpSwerveKinematics() {
@@ -68,7 +68,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 
 	@Override
 	public boolean isModuleZeroed(MountingLocations mountingLocation) {
-		return modules.get(mountingLocation).hasEncoderBeenZeroed();
+		return true;
 	}
 
 	@Override
@@ -139,11 +139,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	public void forEachModuleEntry(
 			Consumer<Map.Entry<MountingLocations, BSwerveModule>> consumer) {
 		modules.entrySet().stream().forEach(consumer);
-	}
-
-	@Override
-	public void setRotationEncoderTicks(MountingLocations mountingLocation, double ticks) {
-		modules.get(mountingLocation).setRotationEncoderTicks(ticks);
 	}
 
 	@Override

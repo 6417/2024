@@ -235,7 +235,7 @@ public class Constants {
 			private static void setSwerveDriveConstants() {
 			}
 
-			public static final double gearRatio = 1.0 / 5.192308;
+			public static final double gearRatio = 1.0;// / 5.192308;
 
 			public static final boolean enabled = false;
 			public static final double absoluteEncoderZeroPositionTolerance = 0.01;
@@ -243,19 +243,17 @@ public class Constants {
 			public static final boolean joystickYinverted = true;
 			public static final boolean joystickXinverted = true;
 			public static double zeroingSpeed = 100; // used to be 500
-			public static final double deadBand = 0.015;
+			public static final double deadBand = 0.055;
 			public static final double yOffsetMapperMaxVoltage = 12.5;
 			public static final double yOffsetMapperMinVoltage = 9;
 			public static final double finetuningZeroFactor = 0.1;
 			public static final double maxFineTuneOffsetForZeroEncodersCommand = 196608 / 100;
-			public static final double maxSpeedOfDrive = 0.2; // TODO: normally set to 1
-			public static final double maxRotationSpeed = 15 * Math.PI / 16; // at full rotation speed the robot
-																				// will turn by 180 degrees, in rad per
-																				// second
+			public static final double maxSpeedOfDrive = 1;
+			public static final double maxRotationSpeed = 1;
 			public static final Map<MountingLocations, frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config> swerveModuleConfigs = new HashMap<>();
 
 			public static frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config commonConfigurations = new frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config();
-			public static double defaultSpeedFactor = 0.75;
+			public static double defaultSpeedFactor = 0.3;
 			public static double slowSpeedFactor = 0.35;
 			public static double fullSpeed = 1.0;
 
@@ -269,11 +267,11 @@ public class Constants {
 			}
 
 			private static void addCommonModuleConfigurarions() {
-				commonConfigurations.driveMotorTicksPerRotation = 11_564.0;
-				commonConfigurations.rotationMotorTicksPerRotation = 196_608.0;
+				commonConfigurations.driveMotorTicksPerRotation = 2048.0;
+				commonConfigurations.rotationMotorTicksPerRotation = 47.691;
 				commonConfigurations.drivePID = new PidValues(0.015, 0.0, 0.0, 0.03375);
 				commonConfigurations.drivePID.slotIdX = Optional.of(0);
-				commonConfigurations.rotationPID = new PidValues(0.04, 0.0, 0.5);
+				commonConfigurations.rotationPID = new PidValues(2.42, 0.07, 3.0);
 				commonConfigurations.rotationPID.slotIdX = Optional.of(0);
 				commonConfigurations.wheelCircumference = 0.1 * Math.PI;
 				commonConfigurations.maxVelocity = maxSpeedOfDrive;
@@ -290,6 +288,8 @@ public class Constants {
 			private static FridolinsMotor angleMotorInitializer(int id, MotorType motorType) {
 				var motor = new FridoCanSparkMax(id, MotorType.kBrushless);
 				motor.factoryDefault();
+				motor.setSmartCurrentLimit(20, 20);
+				((CANSparkMax) motor).getPIDController().setIZone(1.0);
 				return motor;
 			}
 
@@ -299,7 +299,8 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontLeftConfig = commonConfigurations
 						.clone();
-				frontLeftConfig.mountingPoint = new Translation2d(xOffset, yOffset);
+				frontLeftConfig.absoluteEncoderZeroPosition = 0.688;
+				frontLeftConfig.mountingPoint = new Translation2d(-xOffset, yOffset);
 				frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(1);
 				frontLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(11, MotorType.kBrushless);
 				frontLeftConfig.driveMotorInverted = true;
@@ -308,7 +309,8 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontRightConfig = commonConfigurations
 						.clone();
-				frontRightConfig.mountingPoint = new Translation2d(-xOffset, yOffset);
+				frontRightConfig.absoluteEncoderZeroPosition = 0.457 + 0.5;
+				frontRightConfig.mountingPoint = new Translation2d(-xOffset, -yOffset);
 				frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(2);
 				frontRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(12, MotorType.kBrushless);
 				frontRightConfig.driveMotorInverted = false;
@@ -318,7 +320,8 @@ public class Constants {
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backLeftConfig = commonConfigurations
 
 						.clone();
-				backLeftConfig.mountingPoint = new Translation2d(xOffset, -yOffset);
+				backLeftConfig.absoluteEncoderZeroPosition = 0.845;
+				backLeftConfig.mountingPoint = new Translation2d(xOffset, yOffset);
 				backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(3);
 				backLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(13, MotorType.kBrushless);
 				backLeftConfig.driveMotorInverted = true;
@@ -327,7 +330,8 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backRightConfig = commonConfigurations
 						.clone();
-				backRightConfig.mountingPoint = new Translation2d(-xOffset, -yOffset);
+				backRightConfig.absoluteEncoderZeroPosition = 0.113 + 0.5;
+				backRightConfig.mountingPoint = new Translation2d(xOffset, -yOffset);
 				backRightConfig.driveMotorInitializer = () -> driveMotorInitializer(4);
 				backRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(14, MotorType.kBrushless);
 				backRightConfig.driveMotorInverted = false;

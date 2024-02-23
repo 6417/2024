@@ -15,11 +15,9 @@ public abstract class BSwerveModule implements Sendable {
 
 	abstract public void rotate(double speed);
 
-	abstract public void setEncoderZeroedFalse();
-
-	abstract public void setRotationEncoderTicks(double ticks);
-
 	abstract public void stopAllMotors();
+
+	abstract public void setCurrentRotationToEncoderHome();
 
 	abstract public double getRotationEncoderTicks();
 
@@ -27,13 +25,9 @@ public abstract class BSwerveModule implements Sendable {
 
 	abstract public void setDesiredRotationMotorTicks(double position);
 
-	abstract public void setCurrentRotationToEncoderHome();
-
 	abstract public void setIdleMode(IdleMode mode);
-
-	abstract public boolean hasEncoderBeenZeroed();
 
 	abstract public Config getConfig();
 
-	abstract public void zeroEncoder();
+	abstract public void zeroRelativeEncoder();
 }

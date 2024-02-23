@@ -62,8 +62,7 @@ public abstract class BSwerveDrive extends BDrive {
 		Map<MountingLocations, Boolean> result = new HashMap<>();
 		forEachModuleEntry(
 				labeledModule -> result.put(
-						labeledModule.getKey(),
-						labeledModule.getValue().isAtZero()));
+						labeledModule.getKey(), true));
 		return result;
 	}
 
