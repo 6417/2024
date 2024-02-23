@@ -1,5 +1,6 @@
 package frc.robot.commands.drive.commands_2024;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,9 +14,11 @@ import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
 
 public class DriveCommand2024 extends Command {
 	private final SwerveDrive2024 drive;
+	private final SlewRateLimiter xtranslation = new SlewRateLimiter(1.2);
+	private final SlewRateLimiter ytranslation = new SlewRateLimiter(1.2);
 
 	public DriveCommand2024() {
-		assert Config.drive() instanceof SwerveDrive2024: "Not implemented for " + Config.drive().getClass();
+		assert Config.drive() instanceof SwerveDrive2024 : "Not implemented for " + Config.drive().getClass();
 		drive = (SwerveDrive2024) Config.drive();
 		addRequirements(Config.drive());
 	}
@@ -39,8 +42,8 @@ public class DriveCommand2024 extends Command {
 
 	private Vector2 getXYvectorWithAppliedDeadBandFromJoystick() {
 		var joystick = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId);
-		var y = -joystick.getX();
-		var x = joystick.getY();
+		var y = joystick.getX();
+		var x = -joystick.getY();
 		if (Math.abs(x) < Constants.SwerveDrive.Swerve2024.deadBand) {
 			x = 0;
 		} else {
@@ -119,11 +122,17 @@ public class DriveCommand2024 extends Command {
 		}
 	}
 
+	private void applySkewLimit(Vector2 vec) {
+		vec.x = xtranslation.calculate(vec.x);
+		vec.y = ytranslation.calculate(vec.y);
+	}
+
 	@Override
 	public void execute() {
 		if (drive.areAllModulesZeroed() && joystickNotInDeadBand()) {
 			JoystickInput xyr = applyDeadBandToJoystickInput();
 			Vector2 xyVector = convertJoystickInputToVector(xyr);
+			applySkewLimit(xyVector);
 			double rotationSpeed = xyr.r * Constants.SwerveDrive.Swerve2024.maxRotationSpeed;
 			setChassisSpeeds(xyVector, rotationSpeed);
 		} else {

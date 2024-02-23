@@ -28,6 +28,7 @@ import frc.robot.abstraction.baseClasses.BSwerveModule;
 import frc.robot.commands.drive.commands_2024.DriveCommand2024;
 import frc.robot.commands.drive.commands_2024.SetSpeedFactor;
 
+// TODO: use velocity PIDs
 public class SwerveDrive2024 extends BSwerveDrive {
 
 	private SwerveKinematics<MountingLocations> kinematics;

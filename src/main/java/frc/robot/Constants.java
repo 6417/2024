@@ -225,10 +225,10 @@ public class Constants {
 			public static final IJoystickButtonId zeroEncoders = Logitech.back;
 			public static final IJoystickButtonId fullSpeed = Logitech.x;
 			public static final IJoystickButtonId slowSpeed = Logitech.y;
-			public static IJoystickButtonId driveFieldOriented = Logitech.b;
-			public static IJoystickButtonId driveForwards = Logitech.a;
-			public static IJoystickButtonId driveBackwards = Logitech.a;
-			public static IJoystickButtonId zeroNavx = Logitech.start;
+			public static final IJoystickButtonId driveFieldOriented = Logitech.b;
+			public static final IJoystickButtonId driveForwards = Logitech.a;
+			public static final IJoystickButtonId driveBackwards = Logitech.a;
+			public static final IJoystickButtonId zeroNavx = Logitech.start;
 		}
 
 		public static final class Swerve2024 {
@@ -242,7 +242,6 @@ public class Constants {
 			public static final boolean rotateAllModulesInSameDirection = false;
 			public static final boolean joystickYinverted = true;
 			public static final boolean joystickXinverted = true;
-			public static double zeroingSpeed = 100; // used to be 500
 			public static final double deadBand = 0.055;
 			public static final double yOffsetMapperMaxVoltage = 12.5;
 			public static final double yOffsetMapperMinVoltage = 9;
@@ -253,7 +252,7 @@ public class Constants {
 			public static final Map<MountingLocations, frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config> swerveModuleConfigs = new HashMap<>();
 
 			public static frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config commonConfigurations = new frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config();
-			public static double defaultSpeedFactor = 0.3;
+			public static double defaultSpeedFactor = 0.7;
 			public static double slowSpeedFactor = 0.35;
 			public static double fullSpeed = 1.0;
 
@@ -288,7 +287,7 @@ public class Constants {
 			private static FridolinsMotor angleMotorInitializer(int id, MotorType motorType) {
 				var motor = new FridoCanSparkMax(id, MotorType.kBrushless);
 				motor.factoryDefault();
-				motor.setSmartCurrentLimit(20, 20);
+				// motor.setSmartCurrentLimit(20, 20);
 				((CANSparkMax) motor).getPIDController().setIZone(1.0);
 				return motor;
 			}

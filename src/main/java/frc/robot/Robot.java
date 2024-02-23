@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -14,6 +15,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+		var pdp = new PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
+
+		Shuffleboard.getTab("PDP").add(pdp);
 
 		FridoNavx.setup(SPI.Port.kMXP);
 

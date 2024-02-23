@@ -3,8 +3,6 @@ package frc.robot.subsystems.drive.swerve_2024;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.revrobotics.AbsoluteEncoder;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -15,7 +13,6 @@ import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.motors.utils.PidValues;
 import frc.fridowpi.utils.Vector2;
-import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 
 public class SwerveModule extends BSwerveModule {
@@ -156,7 +153,11 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public void driveForward(double speedFactor) {
 		motors.rotation.setPosition(angleToRotationMotorEncoderTicks(desiredState.angle.getRadians()));
-		motors.drive.set(desiredState.speedMetersPerSecond * speedFactor);
+		// if (Math.abs(motors.rotation.getPidTarget() - motors.rotation.getEncoderTicks()) > 0.1) {
+		// 	motors.drive.set(0.0);
+		// } else {
+			motors.drive.set(desiredState.speedMetersPerSecond * speedFactor);
+		// }
 	}
 
 	public void setDriveMotorSpeed(double velocity) {
