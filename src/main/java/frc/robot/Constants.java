@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,6 +21,8 @@ import edu.wpi.first.units.Velocity;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.IJoystickId;
 import frc.fridowpi.joystick.joysticks.Logitech;
+import frc.fridowpi.motors.FridoCanSparkMax;
+import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridoTalonSRX;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
@@ -275,8 +278,14 @@ public class Constants {
 				commonConfigurations.rotationEncoderType = FridoFeedBackDevice.kRelative;
 			}
 
-			private static FridoTalonSRX angleMotorInitializer(int id, MotorType motorType) {
-				FridoTalonSRX motor = new FridoTalonSRX(id);
+			private static FridolinsMotor driveMotorInitializer(int id) {
+				var motor = new FridoFalcon500v6(id);
+				motor.factoryDefault();
+				return motor;
+			}
+
+			private static FridolinsMotor angleMotorInitializer(int id, MotorType motorType) {
+				var motor = new FridoCanSparkMax(id, MotorType.kBrushless);
 				motor.factoryDefault();
 				return motor;
 			}
@@ -288,7 +297,7 @@ public class Constants {
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontLeftConfig = commonConfigurations
 						.clone();
 				frontLeftConfig.mountingPoint = new Translation2d(xOffset, yOffset);
-				frontLeftConfig.driveMotorInitializer = () -> angleMotorInitializer(1, MotorType.kBrushless);
+				frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(1);
 				frontLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(11, MotorType.kBrushless);
 				frontLeftConfig.driveMotorInverted = true;
 				frontLeftConfig.absoluteEncoderChannel = 0;
@@ -297,7 +306,7 @@ public class Constants {
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontRightConfig = commonConfigurations
 						.clone();
 				frontRightConfig.mountingPoint = new Translation2d(-xOffset, yOffset);
-				frontRightConfig.driveMotorInitializer = () -> angleMotorInitializer(2, MotorType.kBrushless);
+				frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(2);
 				frontRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(12, MotorType.kBrushless);
 				frontRightConfig.driveMotorInverted = false;
 				frontRightConfig.absoluteEncoderChannel = 1;
@@ -307,7 +316,7 @@ public class Constants {
 
 						.clone();
 				backLeftConfig.mountingPoint = new Translation2d(xOffset, -yOffset);
-				backLeftConfig.driveMotorInitializer = () -> angleMotorInitializer(3, MotorType.kBrushless);
+				backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(3);
 				backLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(13, MotorType.kBrushless);
 				backLeftConfig.driveMotorInverted = true;
 				backLeftConfig.absoluteEncoderChannel = 2;
@@ -316,7 +325,7 @@ public class Constants {
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backRightConfig = commonConfigurations
 						.clone();
 				backRightConfig.mountingPoint = new Translation2d(-xOffset, -yOffset);
-				backRightConfig.driveMotorInitializer = () -> angleMotorInitializer(4, MotorType.kBrushless);
+				backRightConfig.driveMotorInitializer = () -> driveMotorInitializer(4);
 				backRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(14, MotorType.kBrushless);
 				backRightConfig.driveMotorInverted = false;
 				backRightConfig.absoluteEncoderChannel = 3;

@@ -37,7 +37,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	private double speedFactor = Constants.SwerveDrive.Swerve2024.defaultSpeedFactor;
 
 	public SwerveDrive2024() {
-		setDefaultCommand(new DriveCommand2024());
 	}
 
 	@Override
@@ -45,6 +44,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 		super.init();
 		setUpSwerveModules();
 		setUpSwerveKinematics();
+		setDefaultCommand(new DriveCommand2024());
 	}
 
 	private void setUpSwerveKinematics() {
