@@ -31,9 +31,9 @@ public abstract class BSwerveModule implements Sendable {
 
 	abstract public void setIdleMode(IdleMode mode);
 
-	abstract public boolean isAtZero();
-
 	abstract public boolean hasEncoderBeenZeroed();
 
 	abstract public Config getConfig();
+
+	abstract public void zeroEncoder();
 }

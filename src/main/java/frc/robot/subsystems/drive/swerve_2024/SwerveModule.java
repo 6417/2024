@@ -212,10 +212,9 @@ public class SwerveModule extends BSwerveModule {
 	}
 
 	@Override
-	public boolean isAtZero() {
-		var min = config.absoluteEncoderZeroPosition - Constants.SwerveDrive.Swerve2024.absoluteEncoderZeroPositionTolerance;
-		var max = config.absoluteEncoderZeroPosition + Constants.SwerveDrive.Swerve2024.absoluteEncoderZeroPositionTolerance;
-		return absoluteEncoder.getAbsolutePosition() > min && absoluteEncoder.getAbsolutePosition() < max;
+	public void zeroEncoder() {
+		var pos = absoluteEncoder.getAbsolutePosition() * Constants.SwerveDrive.Swerve2024.absoluteEncoderToMeters;
+		motors.rotation.setEncoderPosition(pos * Constants.SwerveDrive.Swerve2024.metersToRelativeEncoder * Constants.SwerveDrive.Swerve2024.gearRatio);
 	}
 
 	@Override
@@ -231,7 +230,6 @@ public class SwerveModule extends BSwerveModule {
 		builder.addDoubleProperty("Current angel", () -> getModuleRotationAngle() * 180 / Math.PI, null);
 		builder.addDoubleProperty("Rotation Encoder Ticks", motors.rotation::getEncoderTicks, null);
 		builder.addDoubleProperty("Absolute Encoder Ticks", absoluteEncoder::getAbsolutePosition, null);
-		builder.addBooleanProperty("Is around zero", this::isAtZero, null);
 		builder.addBooleanProperty("Module Zeroed", this::hasEncoderBeenZeroed, null);
 
 		builder.addDoubleProperty("Target", motors.rotation::getPidTarget, null);

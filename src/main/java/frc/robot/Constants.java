@@ -259,6 +259,9 @@ public class Constants {
 			public static double slowSpeedFactor = 0.35;
 			public static double fullSpeed = 1.0;
 
+			public static final double absoluteEncoderToMeters = 1;
+			public static final double metersToRelativeEncoder = 1;
+
 			static {
 				setSwerveDriveConstants();
 				addCommonModuleConfigurarions();
@@ -274,8 +277,8 @@ public class Constants {
 				commonConfigurations.rotationPID.slotIdX = Optional.of(0);
 				commonConfigurations.wheelCircumference = 0.1 * Math.PI;
 				commonConfigurations.maxVelocity = maxSpeedOfDrive;
-				commonConfigurations.driveEncoderType = FridoFeedBackDevice.kRelative;
-				commonConfigurations.rotationEncoderType = FridoFeedBackDevice.kRelative;
+				commonConfigurations.driveEncoderType = FridoFeedBackDevice.kBuildin;
+				commonConfigurations.rotationEncoderType = FridoFeedBackDevice.kBuildin;
 			}
 
 			private static FridolinsMotor driveMotorInitializer(int id) {

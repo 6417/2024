@@ -27,7 +27,6 @@ import frc.robot.abstraction.baseClasses.BSwerveDrive;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 import frc.robot.commands.drive.commands_2024.DriveCommand2024;
 import frc.robot.commands.drive.commands_2024.SetSpeedFactor;
-import frc.robot.commands.drive.commands_2024.ZeroAngleMotors;
 
 public class SwerveDrive2024 extends BSwerveDrive {
 
@@ -42,9 +41,14 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	@Override
 	public void init() {
 		super.init();
+		zeroEncoders();
 		setUpSwerveModules();
 		setUpSwerveKinematics();
 		setDefaultCommand(new DriveCommand2024());
+	}
+
+	private void zeroEncoders() {
+		forEachModuleEntry(moduleEntry -> moduleEntry.getValue().zeroEncoder());
 	}
 
 	private void setUpSwerveKinematics() {
@@ -155,7 +159,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroNavx, Trigger::onTrue,
 						new InstantCommand(FridoNavx.getInstance()::reset)),
 				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroEncoders, Trigger::onTrue,
-						new ZeroAngleMotors()),
+						new InstantCommand(this::zeroEncoders)),
 
 				new Binding(joystick, Constants.SwerveDrive.ButtounIds.fullSpeed, Trigger::toggleOnTrue,
 						new SetSpeedFactor(Constants.SwerveDrive.Swerve2024.fullSpeed)),

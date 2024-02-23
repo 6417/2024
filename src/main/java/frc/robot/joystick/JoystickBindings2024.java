@@ -22,7 +22,7 @@ public class JoystickBindings2024 {
 	}
 
 	public void bindAllLogitech() {
-		quickBind(Logitech.a, () -> System.out.println("a"));
+		quickBindWhileHeld(Logitech.a, () -> System.out.println("a"));
 		quickBind(Logitech.b, () -> System.out.println("b"));
 		quickBind(Logitech.x, () -> System.out.println("x"));
 		quickBind(Logitech.y, () -> System.out.println("y"));
@@ -55,6 +55,12 @@ public class JoystickBindings2024 {
 	public void quickBind(IJoystickButtonId button, Command cmd) {
 		JoystickHandler.getInstance()
 				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue, cmd));
+	}
+
+	public void quickBindWhileHeld(IJoystickButtonId button, Runnable fn) {
+		JoystickHandler.getInstance()
+				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::whileTrue,
+						new InstantCommand(fn)));
 	}
 
 	public void quickBindWhileHeld(IJoystickButtonId button, Command cmd) {
