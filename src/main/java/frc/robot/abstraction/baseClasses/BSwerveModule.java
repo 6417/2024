@@ -3,6 +3,7 @@ package frc.robot.abstraction.baseClasses;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
+import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config;
 
 /**
@@ -28,10 +29,11 @@ public abstract class BSwerveModule implements Sendable {
 
 	abstract public void setCurrentRotationToEncoderHome();
 
+	abstract public void setIdleMode(IdleMode mode);
+
 	abstract public boolean isAtZero();
 
 	abstract public boolean hasEncoderBeenZeroed();
 
 	abstract public Config getConfig();
-
 }

@@ -7,15 +7,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.fridowpi.command.FridoCommand;
+import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
 
 public class ZeroAngleMotors extends ParallelCommandGroup {
+	private final SwerveDrive2024 drive;
+
 	public ZeroAngleMotors() {
-		addRequirements(SwerveDrive2024.getInstance());
+		assert Config.drive() instanceof SwerveDrive2024: "Not implemented for " + Config.drive().getClass();
+		drive = (SwerveDrive2024) Config.drive();
+		addRequirements(Config.drive());
+
+		// Build sequential command group
 		List<SequentialCommandGroup> commands = new ArrayList<>();
-		SwerveDrive2024.getInstance().forEachModule(module -> {
+		drive.forEachModule(module -> {
 			SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 					new ZeroEncodersApprox(module),
 					new ZeroEncodersFineTune(module));

@@ -31,7 +31,7 @@ import frc.robot.abstraction.RobotData.DriveData;
 import frc.robot.abstraction.RobotData.HardwareData;
 import frc.robot.abstraction.RobotData.PidData;
 import frc.robot.abstraction.baseClasses.BShooter.ShooterData;
-import frc.robot.abstraction.baseClasses.BSwerveDrive.MountingLocations;
+import frc.robot.abstraction.baseClasses.BDrive.MountingLocations;
 import frc.robot.subsystems.drive.swerve_2019.SwerveModule;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 

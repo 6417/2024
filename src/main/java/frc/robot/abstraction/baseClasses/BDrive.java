@@ -9,13 +9,37 @@ import frc.robot.abstraction.interfaces.IDrive;
 
 /**
  * BDrive: Abstract base class for all drive subsystems
- * Can't just be a interface because it needs the methods of SybsystemBase
- */
+ **/
 public abstract class BDrive extends Module implements IDrive {
+
+	public enum DriveOrientation {
+		FieldOriented, Forwards, Backwards
+	}
+
+	public enum MountingLocations {
+		FrontRight, FrontLeft, BackRight, BackLeft
+	}
+
+	protected DriveOrientation driveOrientation = DriveOrientation.Forwards;
+
+	@Override
+	public final DriveOrientation getOrientation() {
+		return driveOrientation;
+	}
+
+	@Override
+	public void setOrientation(DriveOrientation driveMode) {
+		this.driveOrientation = driveMode;
+	}
 
 	@Override
 	public List<Binding> getMappings() {
 		return List.of();
+	}
+
+	@Override
+	public void init() {
+		super.init();
 	}
 
 }

@@ -24,8 +24,8 @@ import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.robot.Config;
 import frc.robot.Controls;
-import frc.robot.commands.tankdrive.DriveCommand;
 import frc.robot.abstraction.baseClasses.BTankDrive;
+import frc.robot.commands.tankdrive.DriveCommand;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 import frc.robot.subsystems.visionAutonomous.TankDrivePoseEstimator;
 
@@ -37,6 +37,10 @@ public class FourFalconsTankDrive extends BTankDrive {
 	private DifferentialDrive differentialDrive;
 
 	public FourFalconsTankDrive() {
+	}
+
+	public void setSpeedFactor(double speedFactor) {
+		throw new UnsupportedOperationException("Unimplemented method 'setSpeedFactor'");
 	}
 
 	@Override

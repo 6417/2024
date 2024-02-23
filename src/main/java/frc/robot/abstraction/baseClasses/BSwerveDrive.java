@@ -11,13 +11,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 public abstract class BSwerveDrive extends BDrive {
-	public enum DriveOrientation {
-		FieldOriented, Forwards, Backwards
-	}
-
-	public enum MountingLocations {
-		FrontRight, FrontLeft, BackRight, BackLeft
-	}
+	// TODO: clean up here
 
 	public DriveOrientation getDriveMode() {
 		return DriveOrientation.Backwards;
@@ -31,7 +25,7 @@ public abstract class BSwerveDrive extends BDrive {
 
 	@Override
 	public void drive(double v_x, double v_y, double rot) {
-		// TODO Auto-generated method stub
+		// TODO convert call to drive(ChassisSpeeds)
 		throw new UnsupportedOperationException("Unimplemented method 'drive'");
 	}
 
@@ -78,9 +72,6 @@ public abstract class BSwerveDrive extends BDrive {
 	}
 
 	public void withModule(MountingLocations mountingLocation, Consumer<BSwerveModule> consumer) {
-	}
-
-	public void setSpeedFactor(double speedFactor) {
 	}
 
 	@Override

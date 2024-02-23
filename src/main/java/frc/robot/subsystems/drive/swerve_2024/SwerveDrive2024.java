@@ -30,13 +30,22 @@ import frc.robot.commands.drive.commands_2024.SetSpeedFactor;
 import frc.robot.commands.drive.commands_2024.ZeroAngleMotors;
 
 public class SwerveDrive2024 extends BSwerveDrive {
-	private static BSwerveDrive instance = null;
 
-	private DriveOrientation driveMode = DriveOrientation.Forwards;
 	private SwerveKinematics<MountingLocations> kinematics;
 	private Map<MountingLocations, BSwerveModule> modules = new HashMap<>();
 	private ChassisSpeeds currentChassisSpeeds = new ChassisSpeeds();
 	private double speedFactor = Constants.SwerveDrive.Swerve2024.defaultSpeedFactor;
+
+	public SwerveDrive2024() {
+		setDefaultCommand(new DriveCommand2024());
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		setUpSwerveModules();
+		setUpSwerveKinematics();
+	}
 
 	private void setUpSwerveKinematics() {
 		Map<MountingLocations, Translation2d> mountingPoints = Constants.SwerveDrive.Swerve2024.swerveModuleConfigs
@@ -51,18 +60,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		forEachModuleEntry(moduleEntry -> Shuffleboard.getTab("Drive")
 				.add("SwerveModule" + moduleEntry.getKey().toString(), moduleEntry.getValue()));
-	}
-
-	private SwerveDrive2024() {
-		setUpSwerveModules();
-		setUpSwerveKinematics();
-	}
-
-	public static BSwerveDrive getInstance() {
-		if (instance == null) {
-			instance.setDefaultCommand(new DriveCommand2024());
-		}
-		return instance;
 	}
 
 	@Override
@@ -152,16 +149,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	}
 
 	@Override
-	public DriveOrientation getDriveMode() {
-		return driveMode;
-	}
-
-	@Override
-	public void setDriveMode(DriveOrientation driveMode) {
-		this.driveMode = driveMode;
-	}
-
-	@Override
 	public List<Binding> getMappings() {
 		var joystick = Constants.Joystick.primaryJoystickId;
 		return List.of(
@@ -176,11 +163,11 @@ public class SwerveDrive2024 extends BSwerveDrive {
 						new SetSpeedFactor(Constants.SwerveDrive.Swerve2024.slowSpeedFactor)),
 
 				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveFieldOriented, Trigger::onTrue,
-						new InstantCommand(() -> setDriveMode(DriveOrientation.FieldOriented))),
+						new InstantCommand(() -> setOrientation(DriveOrientation.FieldOriented))),
 				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveForwards, Trigger::onTrue,
-						new InstantCommand(() -> setDriveMode(DriveOrientation.Forwards))),
+						new InstantCommand(() -> setOrientation(DriveOrientation.Forwards))),
 				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveBackwards, Trigger::onTrue,
-						new InstantCommand(() -> setDriveMode(DriveOrientation.Backwards))));
+						new InstantCommand(() -> setOrientation(DriveOrientation.Backwards))));
 	}
 
 	@Override
@@ -197,43 +184,39 @@ public class SwerveDrive2024 extends BSwerveDrive {
 
 	@Override
 	public void setIdleMode(IdleMode mode) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'setIdleMode'");
+		forEachModule(m -> m.setIdleMode(mode));
 	}
 
 	@Override
 	public Command sysIdQuasistatic(Direction direction) {
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'sysIdQuasistatic'");
 	}
 
 	@Override
 	public Command sysIdDynamic(Direction direction) {
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'sysIdDynamic'");
 	}
 
+	// TODO: abstraction over motorrole
 	@Override
 	public <T> FridolinsMotor getMotor(T motor) {
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'getMotor'");
 	}
 
+	// TODO: Laurin
 	@Override
 	public Pose2d getPos() {
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'getPos'");
 	}
 
+	// TODO: Is it needed for Swerve?
 	@Override
 	public double getLeftEncoderPos() {
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'getLeftEncoderPos'");
 	}
 
 	@Override
 	public double getRightEncoderPos() {
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'getRightEncoderPos'");
 	}
 }

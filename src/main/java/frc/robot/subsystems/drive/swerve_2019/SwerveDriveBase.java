@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.joystick.JoystickBindable;
-import frc.robot.abstraction.baseClasses.BSwerveDrive.MountingLocations;
+import frc.robot.abstraction.baseClasses.BDrive.MountingLocations;
 
 public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
     public enum DriveOrientation {

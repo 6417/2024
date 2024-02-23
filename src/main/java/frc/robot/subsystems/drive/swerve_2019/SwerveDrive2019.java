@@ -21,7 +21,7 @@ import frc.fridowpi.sensors.FridoNavx;
 import frc.fridowpi.utils.Algorithms;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveDrive.Swerve2019;
-import frc.robot.abstraction.baseClasses.BSwerveDrive.MountingLocations;
+import frc.robot.abstraction.baseClasses.BDrive.MountingLocations;
 import frc.robot.commands.drive.commands_2019.DriveCommand2019;
 import frc.robot.commands.drive.commands_2019.SetSpeedFactor;
 import frc.robot.commands.drive.commands_2019.ZeroEncoders;

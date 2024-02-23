@@ -2,6 +2,7 @@ package frc.robot.abstraction.baseClasses;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.robot.subsystems.drive.tankdrive.MotorSet;
@@ -13,6 +14,13 @@ import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 public abstract class BTankDrive extends BDrive {
 
 	protected MotorSet motors;
+
+	@Override
+	public void drive(ChassisSpeeds chassisSpeeds) {
+		var x = chassisSpeeds.vxMetersPerSecond;
+		var y = chassisSpeeds.vyMetersPerSecond;
+		drive(x, 0, y);
+	}
 
 	@Override
 	public <T> FridolinsMotor getMotor(T motor) {

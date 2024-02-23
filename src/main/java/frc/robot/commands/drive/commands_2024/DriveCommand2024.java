@@ -7,13 +7,17 @@ import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.fridowpi.utils.MathUtilities;
 import frc.fridowpi.utils.Vector2;
+import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
 
 public class DriveCommand2024 extends Command {
+	private final SwerveDrive2024 drive;
 
 	public DriveCommand2024() {
-		addRequirements(SwerveDrive2024.getInstance());
+		assert Config.drive() instanceof SwerveDrive2024: "Not implemented for " + Config.drive().getClass();
+		drive = (SwerveDrive2024) Config.drive();
+		addRequirements(Config.drive());
 	}
 
 	private boolean joystickNotInDeadBand() {
@@ -99,17 +103,17 @@ public class DriveCommand2024 extends Command {
 	}
 
 	private void setChassisSpeeds(Vector2 xyVector, double rotationSpeed) {
-		switch (SwerveDrive2024.getInstance().getDriveMode()) {
+		switch (Config.drive().getOrientation()) {
 			case Forwards:
-				SwerveDrive2024.getInstance().drive(ChassisSpeeds.fromFieldRelativeSpeeds(xyVector.x, xyVector.y,
+				Config.drive().drive(ChassisSpeeds.fromFieldRelativeSpeeds(xyVector.x, xyVector.y,
 						rotationSpeed, new Rotation2d(0.0)));
 				break;
 			case Backwards:
-				SwerveDrive2024.getInstance().drive(ChassisSpeeds.fromFieldRelativeSpeeds(xyVector.x, xyVector.y,
+				Config.drive().drive(ChassisSpeeds.fromFieldRelativeSpeeds(xyVector.x, xyVector.y,
 						rotationSpeed, new Rotation2d(Math.PI)));
 				break;
 			case FieldOriented:
-				SwerveDrive2024.getInstance().drive(ChassisSpeeds.fromFieldRelativeSpeeds(xyVector.x, xyVector.y,
+				Config.drive().drive(ChassisSpeeds.fromFieldRelativeSpeeds(xyVector.x, xyVector.y,
 						rotationSpeed, Rotation2d.fromDegrees(FridoNavx.getInstance().getAngle())));
 				break;
 		}
@@ -117,13 +121,13 @@ public class DriveCommand2024 extends Command {
 
 	@Override
 	public void execute() {
-		if (SwerveDrive2024.getInstance().areAllModulesZeroed() && joystickNotInDeadBand()) {
+		if (drive.areAllModulesZeroed() && joystickNotInDeadBand()) {
 			JoystickInput xyr = applyDeadBandToJoystickInput();
 			Vector2 xyVector = convertJoystickInputToVector(xyr);
 			double rotationSpeed = xyr.r * Constants.SwerveDrive.Swerve2024.maxRotationSpeed;
 			setChassisSpeeds(xyVector, rotationSpeed);
 		} else {
-			SwerveDrive2024.getInstance().stopAllMotors();
+			Config.drive().stopAllMotors();
 		}
 	}
 }

@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
-import frc.fridowpi.motors.FridolinsMotor.LimitSwitchPolarity;
 import frc.fridowpi.motors.utils.PidValues;
 import frc.fridowpi.utils.Vector2;
 import frc.robot.Constants;
@@ -236,5 +235,10 @@ public class SwerveModule extends BSwerveModule {
 		builder.addBooleanProperty("Module Zeroed", this::hasEncoderBeenZeroed, null);
 
 		builder.addDoubleProperty("Target", motors.rotation::getPidTarget, null);
+	}
+
+	@Override
+	public void setIdleMode(IdleMode mode) {
+		motors.drive.setIdleMode(mode);
 	}
 }
