@@ -26,17 +26,12 @@ public class ShooterSubsystem extends BShooter {
 	public List<Double> speedsMapFeeder;
 	public List<Double> speedsMapShooter;
 
-
 	/**
 	 * Left follows right
 	 * Right is inverted
 	 **/
 
-	public static final int SHOOTER_CONFIG_INTAKE = 0;
-	public static final int SHOOTER_CONFIG_AMP = 1;
-	public static final int SHOOTER_CONFIG_SPEAKER = 2;
-
-	public static enum ShooterConfig {
+	public static enum ShooterConfig implements IShooterConfig {
 		INTAKE(0),
 		AMP(1),
 		SPEAKER(2);
@@ -47,6 +42,7 @@ public class ShooterSubsystem extends BShooter {
 			this.id = id;
 		}
 
+		@Override
 		public int asInt() {
 			return id;
 		}
@@ -95,19 +91,13 @@ public class ShooterSubsystem extends BShooter {
 	}
 
 	@Override
-	public void shoot(int configuration) {
-		switch (configuration) {
-			case SHOOTER_CONFIG_INTAKE:
-				CommandScheduler.getInstance().schedule(new IntakeCommand());
-				break;
-			case SHOOTER_CONFIG_AMP:
-				CommandScheduler.getInstance().schedule(new ShootAmp());
-				break;
-			case SHOOTER_CONFIG_SPEAKER:
-				CommandScheduler.getInstance().schedule(new ShootSpeaker());
-				break;
-			default:
-				throw new Error("Unknown configuration: " + configuration);
+	public void shoot(IShooterConfig configuration) {
+		if (configuration.asInt() == ShooterConfig.INTAKE.asInt()) {
+			CommandScheduler.getInstance().schedule(new IntakeCommand());
+		} else if (configuration.asInt() == ShooterConfig.AMP.asInt()) {
+			CommandScheduler.getInstance().schedule(new ShootAmp());
+		} else if (configuration.asInt() == ShooterConfig.SPEAKER.asInt()) {
+			CommandScheduler.getInstance().schedule(new ShootSpeaker());
 		}
 	}
 
@@ -213,4 +203,3 @@ public class ShooterSubsystem extends BShooter {
 		return Constants.Shooter.data;
 	}
 }
-

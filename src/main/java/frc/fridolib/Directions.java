@@ -22,7 +22,7 @@ public class Directions {
 			this.direction = direction;
 		}
 
-		public int getDirection() {
+		public int getInt() {
 			return direction;
 		}
 	}

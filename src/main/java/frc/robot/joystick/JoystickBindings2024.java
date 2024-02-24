@@ -15,6 +15,7 @@ import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
 
 /**
  * JoystickBindings2024
@@ -63,9 +64,9 @@ public class JoystickBindings2024 {
 
 		// TODO: make better CONFIG
 		Config.active.getShooter().ifPresent(s -> {
-			quickBind(Logitech.a, () -> s.shoot(ShooterSubsystem.SHOOTER_CONFIG_INTAKE));
-			quickBind(Logitech.b, () -> s.shoot(ShooterSubsystem.SHOOTER_CONFIG_AMP));
-			quickBind(Logitech.y, () -> s.shoot(ShooterSubsystem.SHOOTER_CONFIG_SPEAKER));
+			quickBind(Logitech.a, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBind(Logitech.b, () -> s.shoot(ShooterConfig.AMP));
+			quickBind(Logitech.y, () -> s.shoot(ShooterConfig.SPEAKER));
 			quickBind(Logitech.x, () -> s.setSpeedPercent(0));
 		});
 
