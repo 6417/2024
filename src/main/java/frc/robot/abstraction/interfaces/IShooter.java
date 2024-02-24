@@ -8,7 +8,7 @@ import frc.fridowpi.module.IModule;
 public interface IShooter extends IModule {
 
 	// Executes one shooting cycle, if defined
-	public void shoot();
+	public void shoot(int configuration);
 
 	// Sets the motor speed of the shooter
 	public void setSpeedPercent(double speed);
@@ -22,7 +22,5 @@ public interface IShooter extends IModule {
 
 
 	// GETTERS
-
 	public double getSpeedPercent();
-	
 }

@@ -2,7 +2,6 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -15,9 +14,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-		var pdp = new PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
-
-		Shuffleboard.getTab("PDP").add(pdp);
 
 		FridoNavx.setup(SPI.Port.kMXP);
 
@@ -29,7 +25,7 @@ public class Robot extends TimedRobot {
         // Shuffleboard //
         Shuffleboard.getTab("Drive").add(Config.drive());
         Shuffleboard.getTab("Joystick").add("joystick", Joystick2024.getInstance());
-        // Shuffleboard.getTab("Shooter").add(shooter);
+        Config.active.getShooter().ifPresent(shooter -> Shuffleboard.getTab("Shooter").add(shooter));
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
 
         SignalLogger.setPath("/home/lvuser/logs");
@@ -47,6 +43,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 		Joystick2024.getInstance().run();
+		Config.active.getShooter().ifPresent(shooter -> shooter.run());
     }
 
 }

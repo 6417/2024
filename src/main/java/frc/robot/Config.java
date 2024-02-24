@@ -7,7 +7,7 @@ import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.joystick.Joystick2024;
 
 public class Config {
-	public static final RobotPreset active = RobotPreset.Swerve2024;
+	public static final RobotPreset active = RobotPreset.ShooterTester;
 	
 	// Drive should always exist
 	public static BDrive drive() {

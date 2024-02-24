@@ -3,14 +3,18 @@ package frc.fridowpi.motors;
 import java.util.Collection;
 import java.util.Optional;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
@@ -138,8 +142,16 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 
 	@Override
 	public void setPidTarget(double value, PidType type) {
-		// TODO: implement this function
-		assert false : "Not implemented";
+		switch (type) {
+			case position:
+				motorProxy.setControl(new PositionDutyCycle(value));
+				break;
+			case velocity:
+				motorProxy.setControl(new VelocityDutyCycle(value));
+				break;
+			default:
+				throw new Error("Not implemented: " + type);
+		}
 	}
 
 	@Override

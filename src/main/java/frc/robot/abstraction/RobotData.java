@@ -1,9 +1,11 @@
 package frc.robot.abstraction;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.wpi.first.units.*;
 import frc.fridowpi.motors.utils.PidValues;
+import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 
 /**
@@ -18,7 +20,8 @@ public record RobotData(
 	public record DriveData(
 			boolean enabled,
 			List<Integer> motorIds,
-			List<MotorRole> inverted) {
+			List<MotorRole> inverted,
+			Map<SpeedFactor, Double> speedFactors) {
 	}
 
 	public record HardwareData(

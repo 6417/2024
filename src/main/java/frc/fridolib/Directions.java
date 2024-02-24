@@ -1,10 +1,5 @@
 package frc.fridolib;
 
-import org.opencv.core.Mat.Tuple2;
-
-import edu.wpi.first.math.Pair;
-import frc.robot.Constants;
-
 public class Directions {
     // public enum RawDirection {
     // NONE(0, 0),
@@ -16,6 +11,21 @@ public class Directions {
     // public Direction(int x, int y) {
     // }
     // }
+	
+	public static enum Direction1D {
+		FORWARD(1),
+		BACKWARD(-1);
+
+		private final int direction;
+
+		private Direction1D(int direction) {
+			this.direction = direction;
+		}
+
+		public int getDirection() {
+			return direction;
+		}
+	}
 
     public static enum Pov {
         UP(0),

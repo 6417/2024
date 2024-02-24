@@ -1,10 +1,13 @@
 package frc.robot.abstraction.baseClasses;
 
+import java.util.List;
 import java.util.Optional;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.motors.FridolinsMotor;
+import frc.robot.joystick.JoystickBindings2024;
 import frc.robot.subsystems.drive.tankdrive.MotorSet;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 
@@ -35,5 +38,10 @@ public abstract class BTankDrive extends BDrive {
 
     public boolean isSwerve() {
 		return false;
+	}
+
+	@Override
+	public List<Binding> getMappings() {
+		return JoystickBindings2024.getBindingsTankdriveLogitech();
 	}
 }

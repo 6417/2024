@@ -35,6 +35,7 @@ import frc.robot.abstraction.RobotData.HardwareData;
 import frc.robot.abstraction.RobotData.PidData;
 import frc.robot.abstraction.baseClasses.BShooter.ShooterData;
 import frc.robot.abstraction.baseClasses.BDrive.MountingLocations;
+import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.subsystems.drive.swerve_2019.SwerveModule;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 
@@ -58,10 +59,17 @@ public class Constants {
 
 	public static final class Shooter {
 		public static final double OptimalAmpSpeed = 0.3;
-		public static final double OptimalSpeakerSpeed = 0.9;
-		public static final double OptimalIntakeSpeed = -0.6;
+		public static final double FeedAmp = OptimalAmpSpeed;
 
-		public static final ShooterData data = new ShooterData(List.of(-1, -1));
+		public static final double OptimalSpeakerSpeed = 0.9;
+		public static final double FeedSpeaker = OptimalSpeakerSpeed;
+
+		public static final double OptimalIntakeSpeed = -0.6;
+		public static final double FeedIntake = 0;
+
+		public static final ShooterData data = new ShooterData(List.of(20, 21, 22),
+				List.of(OptimalIntakeSpeed, OptimalAmpSpeed, OptimalSpeakerSpeed,
+					FeedIntake, FeedAmp, FeedSpeaker));
 	}
 
 	public static final class Climber {
@@ -80,6 +88,13 @@ public class Constants {
 		public static final double manualClimberMovementSpeed = 0.5;
 
 		public static final double maxServoPos = 130;
+	}
+
+	public static final class DriveCommon {
+		public static final Map<SpeedFactor, Double> defaultSpeedFactors = Map.of(
+				SpeedFactor.Default, 0.75,
+				SpeedFactor.Fast, 1.0,
+				SpeedFactor.Default, 0.4);
 	}
 
 	public static final class Diplodocus {
@@ -135,7 +150,8 @@ public class Constants {
 				new DriveData(
 						driveEnabled,
 						List.of(mLeftFront, mRightFront, mLeftBack, mRightBack),
-						invertedMotors),
+						invertedMotors,
+						DriveCommon.defaultSpeedFactors),
 				new AutoData(
 						Autonomous.maxSpeed,
 						Autonomous.maxAcceleration,
@@ -204,7 +220,8 @@ public class Constants {
 				new DriveData(
 						driveEnabled,
 						List.of(idLeftfront, idRightfront, idLeftback, idRightback),
-						invertedMotors),
+						invertedMotors,
+						DriveCommon.defaultSpeedFactors),
 				new AutoData(
 						MetersPerSecond.of(PathWeaver.kMaxVMetersPerSecond),
 						MetersPerSecondPerSecond.of(PathWeaver.kMaxAccMetersPerSecond),

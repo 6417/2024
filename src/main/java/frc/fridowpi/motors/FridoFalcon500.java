@@ -116,8 +116,16 @@ public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 
 	@Override
 	public void setPidTarget(double value, PidType type) {
-		// TODO: implement this function
-		assert false : "Not implemented";
+		switch (type) {
+			case position:
+				super.set(TalonFXControlMode.Position, value);
+				break;
+			case velocity:
+				super.set(TalonFXControlMode.Velocity, value);
+				break;
+			default:
+				throw new Error("Not implemented: " + type);
+		}
 	}
 
 	@Override

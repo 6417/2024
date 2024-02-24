@@ -7,6 +7,7 @@ import frc.robot.abstraction.RobotData;
 import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.abstraction.interfaces.ISwerveModule;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
 import frc.robot.subsystems.drive.tankdrive.FourFalconsTankDrive;
 
@@ -34,12 +35,14 @@ public enum RobotPreset {
 
 	// Enum variants //
 
-	Diplodocus(Constants.Diplodocus.robotData, new FourFalconsTankDrive()),
 	TestChassisDrive(Constants.Testchassis.robotData, new FourFalconsTankDrive()),
+	Diplodocus(Constants.Diplodocus.robotData, new FourFalconsTankDrive()),
 	Swerve2024(null, new SwerveDrive2024()),
-	// TestChassisShooter(new FourFalconTankDrive(-1, -1, -1, -1), new ShooterTwoPhoenix(-1, -1)),
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))
+
 	// DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),
+	ShooterTester(Constants.Diplodocus.robotData, new FourFalconsTankDrive(), new ShooterSubsystem()),
+	// TestChassisShooter(new FourFalconTankDrive(-1, -1, -1, -1), new ShooterTwoPhoenix(-1, -1)),
 	;
 
 
@@ -53,11 +56,9 @@ public enum RobotPreset {
 
 	// Functions //
 	public void initAll() {
-		if (DRIVE.isPresent()) { DRIVE.get().init(); }
-		if (SHOOTER.isPresent()) { SHOOTER.get().init(); }
-		if (SINGLE_SWERVE_MODULE.isPresent()) {
-			SINGLE_SWERVE_MODULE.get().init();
-		}
+		DRIVE.ifPresent(d -> d.init());
+		SHOOTER.ifPresent(s -> s.init());
+		SINGLE_SWERVE_MODULE.ifPresent(s -> s.init());
 	}
 
 	// Getters / Accessors //

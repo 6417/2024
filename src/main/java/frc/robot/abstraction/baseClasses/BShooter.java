@@ -10,11 +10,18 @@ import frc.robot.abstraction.interfaces.IShooter;
  */
 public abstract class BShooter extends Module implements IShooter {
 
+	@Override
+	public void init() {
+		super.init();
+	}
+
 	public static class ShooterData {
+		public final List<Double> speeds;
 		public final List<Integer> motorIds;
 
-		public ShooterData(List<Integer> motorIds) {
+		public ShooterData(List<Integer> motorIds, List<Double> speeds) {
 			this.motorIds = motorIds;
+			this.speeds = speeds;
 		}
 	}
 

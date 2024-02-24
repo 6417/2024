@@ -1,5 +1,7 @@
 package frc.robot.joystick;
 
+import java.util.List;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -8,20 +10,25 @@ import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.joysticks.Logitech;
 import frc.fridowpi.joystick.joysticks.POV;
+import frc.robot.Config;
 import frc.robot.Constants;
+import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * JoystickBindings2024
  */
 public class JoystickBindings2024 {
 	private static JoystickBindings2024 instance = new JoystickBindings2024();
+	private static List<Binding> tmp_bindings = List.of();
 
 	public static JoystickBindings2024 getInstance() {
 		return instance;
 	}
 
-	public void bindAllLogitech() {
+	public static List<Binding> getBindingsLogitechTest() {
+		tmp_bindings = List.of();
 		quickBindWhileHeld(Logitech.a, () -> System.out.println("a"));
 		quickBind(Logitech.b, () -> System.out.println("b"));
 		quickBind(Logitech.x, () -> System.out.println("x"));
@@ -44,32 +51,51 @@ public class JoystickBindings2024 {
 
 		quickBind(POV.Lt, () -> System.out.println("POV lt"));
 		quickBind(POV.Rt, () -> System.out.println("POV rt"));
+		return tmp_bindings;
 	}
 
-	public void quickBind(IJoystickButtonId button, Runnable fn) {
-		JoystickHandler.getInstance()
-				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue,
-						new InstantCommand(fn)));
+	public static List<Binding> getBindingsTankdriveLogitech() {
+		tmp_bindings = List.of();
+		quickBindWhileHeld(Logitech.lt, () -> Config.drive().setSpeedFactor(
+				Config.data().drive().speedFactors().get(SpeedFactor.Fast)));
+		quickBindWhileHeld(Logitech.rt, () -> Config.drive().setSpeedFactor(
+				Config.data().drive().speedFactors().get(SpeedFactor.Slow)));
+
+		// TODO: make better CONFIG
+		Config.active.getShooter().ifPresent(s -> {
+			quickBind(Logitech.a, () -> s.shoot(ShooterSubsystem.SHOOTER_CONFIG_INTAKE));
+			quickBind(Logitech.b, () -> s.shoot(ShooterSubsystem.SHOOTER_CONFIG_AMP));
+			quickBind(Logitech.y, () -> s.shoot(ShooterSubsystem.SHOOTER_CONFIG_SPEAKER));
+			quickBind(Logitech.x, () -> s.setSpeedPercent(0));
+		});
+
+		return tmp_bindings;
 	}
 
-	public void quickBind(IJoystickButtonId button, Command cmd) {
-		JoystickHandler.getInstance()
-				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue, cmd));
+	// Bind fn on button press
+	public static void quickBind(IJoystickButtonId button, Runnable fn) {
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button,
+				Trigger::onTrue, new InstantCommand(fn)));
 	}
 
-	public void quickBindWhileHeld(IJoystickButtonId button, Runnable fn) {
-		JoystickHandler.getInstance()
-				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::whileTrue,
-						new InstantCommand(fn)));
+	// Bind cmd on button press
+	public static void quickBind(IJoystickButtonId button, Command cmd) {
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue, cmd));
 	}
 
-	public void quickBindWhileHeld(IJoystickButtonId button, Command cmd) {
-		JoystickHandler.getInstance()
-				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::whileTrue, cmd));
+	// Bind fn on button hold
+	public static void quickBindWhileHeld(IJoystickButtonId button, Runnable fn) {
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button,
+				Trigger::whileTrue, new InstantCommand(fn)));
 	}
 
-	// Setters //
-	public void setState(State state) {
+	// Bind cmd on button hold
+	public static void quickBindWhileHeld(IJoystickButtonId button, Command cmd) {
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::whileTrue, cmd));
+	}
+
+	// If using different States
+	public static void setState(State state) {
 		IdsWithState.activeState = state;
 	}
 
