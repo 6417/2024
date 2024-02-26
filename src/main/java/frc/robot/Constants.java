@@ -58,18 +58,23 @@ public class Constants {
 	}
 
 	public static final class Shooter {
-		public static final double OptimalAmpSpeed = 0.3;
-		public static final double FeedAmp = OptimalAmpSpeed;
+		public static final double shooterIntakeSpeed = -0.6;
+		public static final double brushesIntakeSpeed = 0.6;
+		public static final double feedIntakeSpeed = 0;
 
-		public static final double OptimalSpeakerSpeed = 0.9;
-		public static final double FeedSpeaker = OptimalSpeakerSpeed;
+		public static final double shooterAmpSpeed = 0.3;
+		public static final double feedAmpSpeed = shooterAmpSpeed;
+		public static final double brushesAmpSpeed = 0.4;
 
-		public static final double OptimalIntakeSpeed = -0.6;
-		public static final double FeedIntake = 0;
+		public static final double shooterSpeakerSpeed = 0.7;
+		public static final double feedSpeakerSpeed = shooterSpeakerSpeed;
+		public static final double brushesSpeakerSpeed = 0.0;
+
 
 		public static final ShooterData data = new ShooterData(List.of(20, 21, 22),
-				List.of(OptimalIntakeSpeed, OptimalAmpSpeed, OptimalSpeakerSpeed,
-					FeedIntake, FeedAmp, FeedSpeaker));
+				List.of(shooterIntakeSpeed, shooterAmpSpeed, shooterSpeakerSpeed,
+					feedIntakeSpeed, feedAmpSpeed, feedSpeakerSpeed,
+					brushesIntakeSpeed, brushesAmpSpeed, brushesSpeakerSpeed));
 	}
 
 	public static final class Climber {

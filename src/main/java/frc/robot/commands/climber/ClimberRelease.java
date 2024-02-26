@@ -4,49 +4,23 @@
 
 package frc.robot.commands.climber;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.fridowpi.command.ParallelCommandGroup;
+import frc.fridowpi.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.ClimberSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
 
-/** An example command that uses an example subsystem. */
-public class ClimberRelease extends Command {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ClimberSubsystem m_subsystem;
-  private double winkel = Constants.Climber.maxServoPos;
+/** Releases the climber through the servo motor. */
+public class ClimberRelease extends SequentialCommandGroup {
 
-  
-  public ClimberRelease(ClimberSubsystem subsystem) {
-    m_subsystem = subsystem;
-    addRequirements(subsystem);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    if (winkel == Constants.Climber.maxServoPos){
-      winkel = 0; 
-    }
-    else{
-      winkel = Constants.Climber.maxServoPos;
-    }
-    m_subsystem.federLoslassMotorLinks.setAngle(winkel);
-    System.out.println("Value: " + m_subsystem.federLoslassMotorLinks.getAngle());
-    
-    // m_subsystem.federLoslassMotorLinks.setAngle(m_subsystem.federLoslassMotorLinks.getAngle() + 180);
-    //m_subsystem.federLoslassMotorRechts.setAngle(m_subsystem.federLoslassMotorRechts.getAngle() + 180);
-}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return true;
-  }
+	public ClimberRelease(ClimberSubsystem subsystem) {
+		addRequirements(subsystem);
+		addCommands(
+			new ParallelCommandGroup(
+				new InstantCommand(() -> subsystem.federLoslassMotorLinks.setAngle(Constants.Climber.maxServoPos)),
+				new InstantCommand(() -> subsystem.federLoslassMotorRechts.setAngle(Constants.Climber.maxServoPos))
+			),
+			new ClimberPid(subsystem, Constants.Climber.ausfahrBereich)
+		);
+	}
 }

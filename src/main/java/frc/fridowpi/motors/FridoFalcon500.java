@@ -1,9 +1,10 @@
 package frc.fridowpi.motors;
 
+import static java.lang.Math.abs;
+
 import java.util.Collection;
 import java.util.Optional;
 
-import frc.fridowpi.motors.utils.PidValues;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.IMotorController;
@@ -16,8 +17,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import frc.fridowpi.module.IModule;
 import frc.fridowpi.module.Module;
-
-import static java.lang.Math.abs;
+import frc.fridowpi.motors.utils.PidValues;
 
 public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 	Module moduleProxy = new Module();
