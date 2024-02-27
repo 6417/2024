@@ -6,45 +6,95 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
-import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.fridowpi.command.FridoCommand;
+import frc.fridowpi.command.ParallelCommandGroup;
+import frc.fridowpi.command.SequentialCommandGroup;
 import frc.fridowpi.motors.FridoFalcon500;
 import frc.fridowpi.motors.FridoServoMotor;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
+import frc.fridowpi.motors.FridolinsMotor.LimitSwitchPolarity;
+import frc.fridowpi.motors.FridolinsMotor.PidType;
+import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BClimber;
 
 public class ClimberSubsystem extends BClimber {
-    private static ClimberSubsystem instance;
+	private FridolinsMotor seilMotorLinks = new FridoFalcon500(Constants.Climber.seilZiehMotorLinks);
+	private FridolinsMotor seilMotorRechts = new FridoFalcon500(Constants.Climber.seilZiehMotorRechts);
+	private FridoServoMotor servoLinks = new FridoServoMotor(Constants.Climber.federLoslassMotorLinks);
+	private FridoServoMotor servoRechts = new FridoServoMotor(Constants.Climber.federLoslassMotorRechts);
 
-    public FridolinsMotor seilZiehMotorLinks = new FridoFalcon500(Constants.Climber.seilZiehMotorLinks);
-    public FridolinsMotor seilZiehMotorRechts = new FridoFalcon500(Constants.Climber.seilZiehMotorRechts);
-    public FridoServoMotor federLoslassMotorLinks = new FridoServoMotor(Constants.Climber.federLoslassMotorLinks);
-    public FridoServoMotor federLoslassMotorRechts = new FridoServoMotor(Constants.Climber.federLoslassMotorRechts);
-    
-    /** Creates a new ClimberSubsystem. */
-    private ClimberSubsystem() {
-        seilZiehMotorLinks.setPID(Constants.Climber.pidValuesSlot0);
-        seilZiehMotorRechts.setPID(Constants.Climber.pidValuesSlot0);
-        seilZiehMotorRechts.follow(seilZiehMotorLinks, DirectionType.followMaster);
-        seilZiehMotorLinks.setIdleMode(IdleMode.kBrake);
-        federLoslassMotorLinks.setBoundsMicroseconds(2200, 1499, 1500, 1501, 800);
-        federLoslassMotorLinks.setMaxAngle(130);
-    }
+	/** Creates a new ClimberSubsystem. */
+	public ClimberSubsystem() {
+		seilMotorLinks.setPID(Constants.Climber.pidValuesSlot0);
+		seilMotorRechts.setPID(Constants.Climber.pidValuesSlot0);
+		seilMotorLinks.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen, true);
+		seilMotorRechts.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen, true);
+		seilMotorRechts.follow(seilMotorLinks, DirectionType.followMaster);
+		seilMotorLinks.setIdleMode(IdleMode.kBrake);
+		servoLinks.setBoundsMicroseconds(2200, 1499, 1500, 1501, 800);
+		servoLinks.setMaxAngle(130);
+	}
 
-    public void run() {
-    }
+	@Override
+	public void run() {
+	}
 
-    public static ClimberSubsystem getInstance() {
-        if (instance == null) {
-            instance = new ClimberSubsystem();
-        }
-        return instance;
-    }
+	@Override
+	public void release() {
+		new SequentialCommandGroup(
+				new ParallelCommandGroup(
+						new InstantCommand(
+								() -> this.servoLinks.setAngle(Constants.Climber.maxServoPos)),
+						new InstantCommand(
+								() -> this.servoRechts.setAngle(Constants.Climber.maxServoPos))),
+				new ClimberPid(this, Constants.Climber.ausfahrBereich)).schedule();
+	}
 
-    public void federnFreilassenOderFangen() {
-    }
+	@Override
+	public void retract() {
+		new ClimberPid(this, Constants.Climber.zielPosition).schedule();
+	}
+
+	public class ClimberPid extends FridoCommand {
+		private ClimberSubsystem subsystem;
+		private double target;
+
+		public ClimberPid(ClimberSubsystem subsystem, double target) {
+			if (target > Constants.Climber.ausfahrBereich) {
+				target = Constants.Climber.ausfahrBereich;
+				System.err.println("<ClimberSubsystem::ClimberPid> ausfahrBereich ueberschritten");
+			}
+			if (target < Constants.Climber.minimumAusfahrBereich) {
+				target = Constants.Climber.minimumAusfahrBereich;
+				System.err.println("<ClimberSubsystem::ClimberPid> minimaler ausfahrBereich ueberschritten");
+			}
+			this.target = target;
+			this.subsystem = subsystem;
+			addRequirements(subsystem);
+		}
+
+		@Override
+		public void initialize() {
+			subsystem.seilMotorLinks.setPidTarget(target, PidType.position);
+			subsystem.seilMotorRechts.setPidTarget(target, PidType.position);
+			Config.data().drive().motorIds();
+		}
+
+		@Override
+		public boolean isFinished() {
+			return subsystem.seilMotorLinks.pidAtTarget() && subsystem.seilMotorRechts.pidAtTarget();
+		}
+	}
+
+	@Override
+	public void stop() {
+		seilMotorLinks.stopMotor();
+		seilMotorRechts.stopMotor();
+	}
 
 	@Override
 	public ClimberData getData() {
@@ -54,4 +104,24 @@ public class ClimberSubsystem extends BClimber {
 		return new ClimberData(List.of(motorLeft, motorRight, servo));
 	}
 
+	@Override
+	public void oneStepUp() {
+		if (servoLinks.getAngle() <= 0 + Constants.Climber.servoZeroTollerance
+				|| servoRechts.getAngle() <= 0 + Constants.Climber.servoZeroTollerance) {
+			System.err.println("Cannot move climber if servo isn't retracted");
+			return;
+		}
+		if (seilMotorLinks.getEncoderTicks() > Constants.Climber.ausfahrBereich) {
+			System.err.println("Cannot move climber: Already fully released");
+			return;
+		}
+		seilMotorLinks.set(Constants.Climber.manualClimberMovementSpeed);
+		seilMotorRechts.set(Constants.Climber.manualClimberMovementSpeed);
+	}
+
+	@Override
+	public void oneStepDown() {
+		seilMotorLinks.set(-Constants.Climber.manualClimberMovementSpeed);
+		seilMotorRechts.set(-Constants.Climber.manualClimberMovementSpeed);
+	}
 }

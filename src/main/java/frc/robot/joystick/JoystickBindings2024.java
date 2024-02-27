@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.fridowpi.joystick.Binding;
-import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.joysticks.Logitech;
 import frc.fridowpi.joystick.joysticks.POV;
@@ -14,7 +13,6 @@ import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
 
 /**
@@ -58,22 +56,34 @@ public class JoystickBindings2024 {
 	public static List<Binding> getBindingsTankdriveLogitech() {
 		tmp_bindings = List.of();
 		quickBindWhileHeld(Logitech.lt, () -> Config.drive().setSpeedFactor(
-				Config.data().drive().speedFactors().get(SpeedFactor.Fast)));
+				Config.data().drive().speedFactors().get(SpeedFactor.FAST)));
 		quickBindWhileHeld(Logitech.rt, () -> Config.drive().setSpeedFactor(
-				Config.data().drive().speedFactors().get(SpeedFactor.Slow)));
+				Config.data().drive().speedFactors().get(SpeedFactor.SLOW)));
 
 		// TODO: make better CONFIG
 		Config.active.getShooter().ifPresent(s -> {
-			quickBind(Logitech.a, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBind(Logitech.b, () -> s.shoot(ShooterConfig.AMP));
-			quickBind(Logitech.y, () -> s.shoot(ShooterConfig.SPEAKER));
-			quickBind(Logitech.x, () -> s.setSpeedPercent(0));
+			quickBind(Logitech.a, State.DEFAULT, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBind(Logitech.b, State.DEFAULT, () -> s.shoot(ShooterConfig.AMP));
+			quickBind(Logitech.y, State.DEFAULT, () -> s.shoot(ShooterConfig.SPEAKER));
+			quickBind(Logitech.x, State.DEFAULT, () -> s.setSpeedPercent(0));
+		});
+
+		Config.active.getClimber().ifPresent(climber -> {
+			quickBind(Logitech.y, State.ENDGAME, climber::oneStepUp);
+			quickBind(Logitech.a, State.ENDGAME, climber::oneStepDown);
+			quickBind(Logitech.x, State.ENDGAME, climber::release);
+			quickBind(Logitech.b, State.ENDGAME, climber::retract);
 		});
 
 		return tmp_bindings;
 	}
 
 	// Bind fn on button press
+	public static void quickBind(IJoystickButtonId button, State state, Runnable fn) {
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button,
+				Trigger::onTrue, new InstantCommand(fn)));
+	}
+
 	public static void quickBind(IJoystickButtonId button, Runnable fn) {
 		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button,
 				Trigger::onTrue, new InstantCommand(fn)));

@@ -67,10 +67,7 @@ public class ShooterSubsystem extends BShooter {
 	}
 
 	public void init() {
-		speedsMapShooter = Map.of(
-				ShooterConfig.INTAKE, getData().speeds.get(0),
-				ShooterConfig.INTAKE, getData().speeds.get(0),
-				)
+		speedsMapShooter = getData().speeds;
 
 		motorLeft.setInverted(true);
 		motorRight.follow(motorLeft, DirectionType.invertMaster);

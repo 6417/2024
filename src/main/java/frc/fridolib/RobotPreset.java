@@ -4,9 +4,11 @@ import java.util.Optional;
 
 import frc.robot.Constants;
 import frc.robot.abstraction.RobotData;
+import frc.robot.abstraction.baseClasses.BClimber;
 import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.abstraction.interfaces.ISwerveModule;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
 import frc.robot.subsystems.drive.tankdrive.FourFalconsTankDrive;
@@ -37,7 +39,7 @@ public enum RobotPreset {
 
 	TestChassisDrive(Constants.Testchassis.robotData, new FourFalconsTankDrive()),
 	Diplodocus(Constants.Diplodocus.robotData, new FourFalconsTankDrive()),
-	Swerve2024(null, new SwerveDrive2024()),
+	Swerve2024(Constants.SwerveDrive.Swerve2024.robotData, new SwerveDrive2024(), new ShooterSubsystem(), new ClimberSubsystem()),
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))
 
 	// DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),
@@ -50,6 +52,7 @@ public enum RobotPreset {
 
 	public Optional<BDrive> DRIVE = Optional.empty();
 	// public final Optional<IArm> ARM = null;
+	public Optional<BClimber> CLIMBER = Optional.empty();
 	public Optional<BShooter> SHOOTER = Optional.empty();
 	public Optional<ISwerveModule> SINGLE_SWERVE_MODULE = Optional.empty();
 	public RobotData ROBOT_DATA = null;
@@ -65,6 +68,10 @@ public enum RobotPreset {
 
 	public Optional<BDrive> getDrive() {
 		return DRIVE;
+	}
+
+	public Optional<BClimber> getClimber() {
+		return CLIMBER;
 	}
 
 	public Optional<BShooter> getShooter() {
@@ -92,5 +99,12 @@ public enum RobotPreset {
 		ROBOT_DATA = data;
 		DRIVE = Optional.of(drive);
 		SHOOTER = Optional.of(shooter);
+	}
+
+	private RobotPreset(RobotData data, BDrive drive, BShooter shooter, BClimber climber) {
+		ROBOT_DATA = data;
+		DRIVE = Optional.of(drive);
+		SHOOTER = Optional.of(shooter);
+		CLIMBER = Optional.of(climber);
 	}
 }

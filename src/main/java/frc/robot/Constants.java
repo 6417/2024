@@ -88,18 +88,20 @@ public class Constants {
 		public static final double toleranzDerHoheDerMotoren = 0.1;
 		public static final double runterZiehSpeed = 0.2;
 		public static final double ausfahrBereich = 24;
+		public static final double minimumAusfahrBereich = 0;
 		public static final double zielPosition = 2;
 
 		public static final double manualClimberMovementSpeed = 0.5;
 
 		public static final double maxServoPos = 130;
+		public static final double servoZeroTollerance = 5.0;
 	}
 
 	public static final class DriveCommon {
 		public static final Map<SpeedFactor, Double> defaultSpeedFactors = Map.of(
-				SpeedFactor.Default, 0.75,
-				SpeedFactor.Fast, 1.0,
-				SpeedFactor.Default, 0.4);
+				SpeedFactor.DEFAULT, 0.75,
+				SpeedFactor.FAST, 1.0,
+				SpeedFactor.DEFAULT, 0.4);
 	}
 
 	public static final class Diplodocus {
@@ -280,6 +282,33 @@ public class Constants {
 
 			public static final double absoluteEncoderToMeters = 1;
 			public static final double metersToRelativeEncoder = 1;
+
+			private static final List<Integer> motorIds = List.of(
+					1, 2, 3, 4,
+					11, 12, 13, 14);
+
+			public static final RobotData robotData = new RobotData(
+					new HardwareData(
+						null,
+						Meters.of(0.75),
+						1 / metersToRelativeEncoder),
+					new DriveData(
+					 enabled,
+					 motorIds,
+					 List.of(),
+					 Map.of(SpeedFactor.DEFAULT, defaultSpeedFactor,
+							SpeedFactor.SLOW, fullSpeed,
+							SpeedFactor.FAST, slowSpeedFactor)),
+					new AutoData(
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null),
+					new PidData(null, null, null)
+					);
 
 			static {
 				setSwerveDriveConstants();

@@ -21,7 +21,7 @@ public abstract class BDrive extends Module implements IDrive {
 	}
 
 	public enum SpeedFactor {
-		Default, Slow, Fast;
+		DEFAULT, SLOW, FAST;
 	}
 
 	protected DriveOrientation driveOrientation = DriveOrientation.Forwards;

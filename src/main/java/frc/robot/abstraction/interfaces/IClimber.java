@@ -7,5 +7,15 @@ import frc.fridowpi.module.IModule;
  */
 public interface IClimber extends IModule {
 
+	public void release();
+
+	public void retract();
+
+	// Must be called periodically
 	public void run();
+
+	public void oneStepUp();
+	public void oneStepDown();
+
+	public void stop();
 }

@@ -17,17 +17,17 @@ public record RobotData(
 		AutoData auto,
 		PidData pid) {
 
+	public record HardwareData(
+			Measure<Distance> wheelCircumference,
+			Measure<Distance> trackWidth,
+			double encoderToMeters) {
+	}
+
 	public record DriveData(
 			boolean enabled,
 			List<Integer> motorIds,
 			List<MotorRole> inverted,
 			Map<SpeedFactor, Double> speedFactors) {
-	}
-
-	public record HardwareData(
-			Measure<Distance> wheelCircumference,
-			Measure<Distance> trackWidth,
-			double encoderToMeters) {
 	}
 
 	public record AutoData(
