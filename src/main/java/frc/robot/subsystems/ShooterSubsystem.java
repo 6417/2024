@@ -8,15 +8,16 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.fridowpi.command.FridoCommand;
 import frc.fridowpi.command.SequentialCommandGroup;
 import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
+import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.motors.FridolinsMotor.PidType;
+import frc.fridowpi.motors.utils.PidValues;
 import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BShooter;
@@ -24,10 +25,15 @@ import frc.robot.abstraction.baseClasses.BShooter;
 public class ShooterSubsystem extends BShooter {
 	private final double maxSpeedRpm = 5000.0;
 
-	private final FridolinsMotor motorLeft = new FridoCanSparkMax(getData().motorIds.get(0), MotorType.kBrushless);
-	private final FridolinsMotor motorRight = new FridoCanSparkMax(getData().motorIds.get(1), MotorType.kBrushless);
-	private final FridolinsMotor motorFeeder = new FridoCanSparkMax(getData().motorIds.get(2), MotorType.kBrushless);
-	private final FridolinsMotor motorBrushes = new FridoCanSparkMax(getData().motorIds.get(3), MotorType.kBrushless);
+	// private final FridolinsMotor motorLeft = new FridoCanSparkMax(getData().motorIds.get(0), MotorType.kBrushless);
+	// private final FridolinsMotor motorRight = new FridoCanSparkMax(getData().motorIds.get(1), MotorType.kBrushless);
+	// private final FridolinsMotor motorFeeder = new FridoCanSparkMax(getData().motorIds.get(2), MotorType.kBrushless);
+	// private final FridolinsMotor motorBrushes = new FridoCanSparkMax(getData().motorIds.get(3), MotorType.kBrushless);
+	private FridolinsMotor motorLeft;
+	private FridolinsMotor motorRight;
+	private FridolinsMotor motorFeeder;
+	private FridolinsMotor motorBrushes;
+
 	public ShooterSubsystem shooter;
 	private double speedRpm = 5000.0;
 	private boolean enabled = true;
@@ -68,13 +74,26 @@ public class ShooterSubsystem extends BShooter {
 
 	public void init() {
 		speedsMapShooter = getData().speeds;
+		motorLeft = new FridoCanSparkMax(getData().motorIds.get(0), MotorType.kBrushless);
+		motorRight = new FridoCanSparkMax(getData().motorIds.get(1), MotorType.kBrushless);
+		motorFeeder = new FridoCanSparkMax(getData().motorIds.get(2), MotorType.kBrushless);
+		// motorBrushes = new FridoCanSparkMax(getData().motorIds.get(3), MotorType.kBrushless);
+
+		motorLeft.factoryDefault();
+		motorRight.factoryDefault();
+		motorFeeder.factoryDefault();
 
 		motorLeft.setInverted(true);
 		motorRight.follow(motorLeft, DirectionType.invertMaster);
 
 		motorFeeder.setInverted(true);
 
+		motorRight.setPID(new PidValues(0, 0, 0));
+		motorLeft.setPID(new PidValues(0, 0, 0));
+
+		motorRight.configEncoder(FridoFeedBackDevice.kBuildin, getData().countsPerRevolution);
 		motorRight.selectPidSlot(0);
+		motorFeeder.configEncoder(FridoFeedBackDevice.kBuildin, getData().countsPerRevolution);
 		motorFeeder.selectPidSlot(0);
 
 		motorRight.setIdleMode(IdleMode.kCoast);
@@ -135,11 +154,11 @@ public class ShooterSubsystem extends BShooter {
 	@Override
 	public void shoot(IShooterConfig configuration) {
 		if (configuration.asInt() == ShooterConfig.INTAKE.asInt()) {
-			CommandScheduler.getInstance().schedule(new IntakeCommand());
+			new IntakeCommand().schedule();
 		} else if (configuration.asInt() == ShooterConfig.AMP.asInt()) {
-			CommandScheduler.getInstance().schedule(new ShootAmp());
+			new ShootAmp().schedule();
 		} else if (configuration.asInt() == ShooterConfig.SPEAKER.asInt()) {
-			CommandScheduler.getInstance().schedule(new ShootSpeaker());
+			new ShootSpeaker().schedule();
 		}
 	}
 
@@ -204,7 +223,7 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public void initialize() {
-			motorBrushes.set(targetSpeed);
+			// motorBrushes.set(targetSpeed);
 		}
 
 		@Override

@@ -61,26 +61,29 @@ public class JoystickBindings2024 {
 				Config.data().drive().speedFactors().get(SpeedFactor.SLOW)));
 
 		// TODO: make better CONFIG
-		Config.active.getShooter().ifPresent(s -> {
-			quickBind(Logitech.a, State.DEFAULT, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBind(Logitech.b, State.DEFAULT, () -> s.shoot(ShooterConfig.AMP));
-			quickBind(Logitech.y, State.DEFAULT, () -> s.shoot(ShooterConfig.SPEAKER));
-			quickBind(Logitech.x, State.DEFAULT, () -> s.setSpeedPercent(0));
-		});
+		// Config.active.getShooter().ifPresent(s -> {
+		// 	quickBind(Logitech.a, State.DEFAULT, () -> s.shoot(ShooterConfig.INTAKE));
+		// 	quickBind(Logitech.b, State.DEFAULT, () -> s.shoot(ShooterConfig.AMP));
+		// 	quickBind(Logitech.y, State.DEFAULT, () -> s.shoot(ShooterConfig.SPEAKER));
+		// 	quickBind(Logitech.x, State.DEFAULT, () -> s.setSpeedPercent(0));
+		// });
 
-		Config.active.getClimber().ifPresent(climber -> {
-			quickBind(Logitech.y, State.ENDGAME, climber::oneStepUp);
-			quickBind(Logitech.a, State.ENDGAME, climber::oneStepDown);
-			quickBind(Logitech.x, State.ENDGAME, climber::release);
-			quickBind(Logitech.b, State.ENDGAME, climber::retract);
-		});
+		// Config.active.getClimber().ifPresent(climber -> {
+		// 	quickBind(Logitech.y, State.ENDGAME, climber::oneStepUp);
+		// 	quickBind(Logitech.a, State.ENDGAME, climber::oneStepDown);
+		// 	quickBind(Logitech.x, State.ENDGAME, climber::release);
+		// 	quickBind(Logitech.b, State.ENDGAME, climber::retract);
+		// });
+		//
+		quickBind(Logitech.b, () -> Config.active.getClimber().get().getServo().setSpeed(-0.1));
+		quickBind(Logitech.a, () -> Config.active.getClimber().get().getServo().setSpeed(0.1));
 
 		return tmp_bindings;
 	}
 
-	// Bind fn on button press
+	// On single press
 	public static void quickBind(IJoystickButtonId button, State state, Runnable fn) {
-		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button,
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, IdsWithState.from(button),
 				Trigger::onTrue, new InstantCommand(fn)));
 	}
 
@@ -89,18 +92,21 @@ public class JoystickBindings2024 {
 				Trigger::onTrue, new InstantCommand(fn)));
 	}
 
-	// Bind cmd on button press
 	public static void quickBind(IJoystickButtonId button, Command cmd) {
 		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue, cmd));
 	}
 
-	// Bind fn on button hold
+	// While held
+	public static void quickBindWhileHeld(IJoystickButtonId button, State state, Runnable fn) {
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, IdsWithState.from(button),
+				Trigger::whileTrue, new InstantCommand(fn)));
+	}
+
 	public static void quickBindWhileHeld(IJoystickButtonId button, Runnable fn) {
 		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button,
 				Trigger::whileTrue, new InstantCommand(fn)));
 	}
 
-	// Bind cmd on button hold
 	public static void quickBindWhileHeld(IJoystickButtonId button, Command cmd) {
 		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::whileTrue, cmd));
 	}

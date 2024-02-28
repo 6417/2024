@@ -10,49 +10,50 @@ public class IdsWithState implements IJoystickButtonId {
 	/*
 	 * The state of the game:
 	 *
-	 *  ALL - always active					: Drive for example
-	 *  DEFAULT - default state				: Shooter
-	 *  ENDGAME - endgame state				: Climber
+	 * ALL - always active : Drive for example
+	 * DEFAULT - default state : Shooter
+	 * ENDGAME - endgame state : Climber
 	 *
-	 *  SYSID_TUNING - for sysid tuning only
+	 * SYSID_TUNING - for sysid tuning only
 	 */
-    public enum State {
+	public enum State {
 		ALL,
-        DEFAULT,
-        ENDGAME,
-        SYSID_TUNING
-    }
+		DEFAULT,
+		ENDGAME,
+		SYSID_TUNING
+	}
 
-    public static State activeState = State.DEFAULT;
-    public static int highestId = Constants.Joystick.idCounterStart;
+	public static State activeState = State.DEFAULT;
+	public static int highestId = Constants.Joystick.idCounterStart;
 
-    private int id;
-    private IJoystickButtonId button;
-	private State state = State.DEFAULT;
+	private IJoystickButtonId triggerButton;
+	private int triggerId;
+	private State triggerState = State.DEFAULT;
 
 	public static IdsWithState create(IJoystickButtonId button, State state) {
 		return new IdsWithState(highestId++, button, state);
 	}
 
-    private IdsWithState(int id, IJoystickButtonId button, State state) {
-        this.id = id;
-        this.button = button;
-    }
-
-    @Override
-    public int getButtonId() {
-        return id;
-    }
-    
-    Trigger toButtonOnJoystick(IJoystick j) {
-        return new Trigger(() -> isActivated(j));
-    }
-
-    private boolean isActivated(IJoystick j) {
-        return j.getButton(button).getAsBoolean() && activeState == state || activeState == State.ALL;
-    }
-
 	public static IdsWithState from(IJoystickButtonId id2) {
 		return new IdsWithState(highestId++, id2, State.ALL);
+	}
+
+	private IdsWithState(int id, IJoystickButtonId button, State state) {
+		this.triggerId = id;
+		this.triggerButton = button;
+		this.triggerState = state;
+	}
+
+	@Override
+	public int getButtonId() {
+		return triggerId;
+	}
+
+	Trigger toButtonOnJoystick(IJoystick j) {
+		return new Trigger(() -> isActivated(j));
+	}
+
+	private boolean isActivated(IJoystick j) {
+		return j.getButton(triggerButton).getAsBoolean() && activeState == triggerState || triggerState == State.ALL;
 	}
 }

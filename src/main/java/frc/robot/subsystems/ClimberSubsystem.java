@@ -6,11 +6,14 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.fridowpi.command.FridoCommand;
 import frc.fridowpi.command.ParallelCommandGroup;
 import frc.fridowpi.command.SequentialCommandGroup;
-import frc.fridowpi.motors.FridoFalcon500;
+import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridoServoMotor;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
@@ -22,13 +25,20 @@ import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BClimber;
 
 public class ClimberSubsystem extends BClimber {
-	private FridolinsMotor seilMotorLinks = new FridoFalcon500(Constants.Climber.seilZiehMotorLinks);
-	private FridolinsMotor seilMotorRechts = new FridoFalcon500(Constants.Climber.seilZiehMotorRechts);
-	private FridoServoMotor servoLinks = new FridoServoMotor(Constants.Climber.federLoslassMotorLinks);
-	private FridoServoMotor servoRechts = new FridoServoMotor(Constants.Climber.federLoslassMotorRechts);
+	private FridolinsMotor seilMotorLinks = new FridoCanSparkMax(Constants.Climber.seilZiehMotorLinks, MotorType.kBrushless);
+	private FridolinsMotor seilMotorRechts = new FridoCanSparkMax(Constants.Climber.seilZiehMotorRechts, MotorType.kBrushless);
+	private FridoServoMotor servoLinks = new FridoServoMotor(Constants.Climber.servoLinksId);
+	private FridoServoMotor servoRechts = new FridoServoMotor(Constants.Climber.servoRechtsId);
 
 	/** Creates a new ClimberSubsystem. */
 	public ClimberSubsystem() {
+	}
+
+	@Override
+	public void init() {
+		seilMotorLinks.factoryDefault();
+		seilMotorRechts.factoryDefault();
+
 		seilMotorLinks.setPID(Constants.Climber.pidValuesSlot0);
 		seilMotorRechts.setPID(Constants.Climber.pidValuesSlot0);
 		seilMotorLinks.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen, true);
@@ -123,5 +133,10 @@ public class ClimberSubsystem extends BClimber {
 	public void oneStepDown() {
 		seilMotorLinks.set(-Constants.Climber.manualClimberMovementSpeed);
 		seilMotorRechts.set(-Constants.Climber.manualClimberMovementSpeed);
+	}
+
+	@Override
+	public Servo getServo() {
+		return servoLinks;
 	}
 }

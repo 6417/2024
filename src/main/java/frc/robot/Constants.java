@@ -71,18 +71,20 @@ public class Constants {
 		public static final double brushesSpeakerSpeed = 0.0;
 
 
-		public static final ShooterData data = new ShooterData(List.of(20, 21, 22),
+		public static final ShooterData data = new ShooterData(
+				List.of(20, 21, 22, 23),
 				List.of(shooterIntakeSpeed, shooterAmpSpeed, shooterSpeakerSpeed,
 					feedIntakeSpeed, feedAmpSpeed, feedSpeakerSpeed,
-					brushesIntakeSpeed, brushesAmpSpeed, brushesSpeakerSpeed));
+					brushesIntakeSpeed, brushesAmpSpeed, brushesSpeakerSpeed),
+				2024);
 	}
 
 	public static final class Climber {
 
-		public static final int seilZiehMotorLinks = 1;
-		public static final int seilZiehMotorRechts = 2;
-		public static final int federLoslassMotorLinks = 0;
-		public static final int federLoslassMotorRechts = 4;
+		public static final int seilZiehMotorLinks = 31;
+		public static final int seilZiehMotorRechts = 30;
+		public static final int servoLinksId = 0;
+		public static final int servoRechtsId = 1;
 
 		public static final PidValues pidValuesSlot0 = new PidValues(0, 0, 0);
 		public static final double toleranzDerHoheDerMotoren = 0.1;
@@ -99,9 +101,9 @@ public class Constants {
 
 	public static final class DriveCommon {
 		public static final Map<SpeedFactor, Double> defaultSpeedFactors = Map.of(
-				SpeedFactor.DEFAULT, 0.75,
+				SpeedFactor.DEFAULT_SPEED, 0.75,
 				SpeedFactor.FAST, 1.0,
-				SpeedFactor.DEFAULT, 0.4);
+				SpeedFactor.SLOW, 0.4);
 	}
 
 	public static final class Diplodocus {
@@ -296,7 +298,7 @@ public class Constants {
 					 enabled,
 					 motorIds,
 					 List.of(),
-					 Map.of(SpeedFactor.DEFAULT, defaultSpeedFactor,
+					 Map.of(SpeedFactor.DEFAULT_SPEED, defaultSpeedFactor,
 							SpeedFactor.SLOW, fullSpeed,
 							SpeedFactor.FAST, slowSpeedFactor)),
 					new AutoData(

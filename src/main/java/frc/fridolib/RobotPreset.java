@@ -39,7 +39,10 @@ public enum RobotPreset {
 
 	TestChassisDrive(Constants.Testchassis.robotData, new FourFalconsTankDrive()),
 	Diplodocus(Constants.Diplodocus.robotData, new FourFalconsTankDrive()),
-	Swerve2024(Constants.SwerveDrive.Swerve2024.robotData, new SwerveDrive2024(), new ShooterSubsystem(), new ClimberSubsystem()),
+	Swerve2024(Constants.SwerveDrive.Swerve2024.robotData,
+			new SwerveDrive2024(),
+			new ShooterSubsystem()),
+			// new ClimberSubsystem()),
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))
 
 	// DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),
@@ -59,8 +62,9 @@ public enum RobotPreset {
 
 	// Functions //
 	public void initAll() {
-		DRIVE.ifPresent(d -> d.init());
+		DRIVE.ifPresent(s -> s.init());
 		SHOOTER.ifPresent(s -> s.init());
+		CLIMBER.ifPresent(s -> s.init());
 		SINGLE_SWERVE_MODULE.ifPresent(s -> s.init());
 	}
 

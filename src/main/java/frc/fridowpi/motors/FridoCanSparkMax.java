@@ -80,7 +80,7 @@ public class FridoCanSparkMax extends CANSparkMax implements FridolinsMotor {
     public void setVelocity(double velocity) {
         if (this.pidController != null) {
             selectedPIDSlotIdx.ifPresentOrElse(
-                    (slotIdx) -> pidController.setReference(velocity, ControlType.kVelocity, slotIdx),
+                    slotIdx -> pidController.setReference(velocity, ControlType.kVelocity, slotIdx),
                     () -> pidController.setReference(velocity, ControlType.kVelocity));
             setPoint = velocity;
             pidControlType = ControlType.kVelocity;

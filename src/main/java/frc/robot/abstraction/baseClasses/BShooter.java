@@ -18,10 +18,12 @@ public abstract class BShooter extends Module implements IShooter {
 	public static class ShooterData {
 		public final List<Double> speeds;
 		public final List<Integer> motorIds;
+		public final int countsPerRevolution;
 
-		public ShooterData(List<Integer> motorIds, List<Double> speeds) {
+		public ShooterData(List<Integer> motorIds, List<Double> speeds, int countsPerRevolution) {
 			this.motorIds = motorIds;
 			this.speeds = speeds;
+			this.countsPerRevolution = countsPerRevolution;
 		}
 	}
 
