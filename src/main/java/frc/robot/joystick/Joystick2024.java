@@ -49,6 +49,12 @@ public class Joystick2024 implements Sendable {
 	}
 
 	public void run() {
+		if (JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId) != null) {
+			var js = getPrimaryJoystick();
+			if (IdsWithState.activeState == State.ENDGAME && js.getY() > 0.1) {
+				Config.active.getClimber().ifPresent(climber -> {
+					climber.oneStepUp(js.getY());
+			});
 	}
 
 	public void quickBind(IJoystickButtonId button, Runnable fn) {
