@@ -105,23 +105,8 @@ public class ClimberSubsystem extends BClimber {
 	}
 
 	@Override
-	public void oneStepUp() {
-		if (servoLinks.getAngle() <= 0 + Constants.Climber.servoZeroTollerance
-				|| servoRechts.getAngle() <= 0 + Constants.Climber.servoZeroTollerance) {
-			System.err.println("Cannot move climber if servo isn't retracted");
-			return;
-		}
-		if (seilMotorLinks.getEncoderTicks() > Constants.Climber.ausfahrBereich) {
-			System.err.println("Cannot move climber: Already fully released");
-			return;
-		}
-		seilMotorLinks.set(Constants.Climber.manualClimberMovementSpeed);
-		seilMotorRechts.set(Constants.Climber.manualClimberMovementSpeed);
-	}
-
-	@Override
-	public void oneStepDown() {
-		seilMotorLinks.set(-Constants.Climber.manualClimberMovementSpeed);
-		seilMotorRechts.set(-Constants.Climber.manualClimberMovementSpeed);
+	public void oneStepUp(double speed) {
+		seilMotorLinks.set(-speed);
+		seilMotorRechts.set(-speed);
 	}
 }

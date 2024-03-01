@@ -13,6 +13,7 @@ import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
 
 /**
@@ -69,10 +70,7 @@ public class JoystickBindings2024 {
 		});
 
 		Config.active.getClimber().ifPresent(climber -> {
-			quickBind(Logitech.y, State.ENDGAME, climber::oneStepUp);
-			quickBind(Logitech.a, State.ENDGAME, climber::oneStepDown);
 			quickBind(Logitech.x, State.ENDGAME, climber::release);
-			quickBind(Logitech.b, State.ENDGAME, climber::retract);
 		});
 
 		return tmp_bindings;

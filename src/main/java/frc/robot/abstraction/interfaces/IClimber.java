@@ -14,8 +14,7 @@ public interface IClimber extends IModule {
 	// Must be called periodically
 	public void run();
 
-	public void oneStepUp();
-	public void oneStepDown();
+	public void oneStepUp(double speed);
 
 	public void stop();
 }

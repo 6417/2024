@@ -52,8 +52,10 @@ public class Joystick2024 implements Sendable {
 			if (js.getX() > 0.1) {
 				System.out.println("X: " + js.getX());
 			}
-			if (js.getY() > 0.1) {
-				System.out.println("Y: " + js.getY());
+			if (IdsWithState.activeState == State.ENDGAME && js.getY() > 0.1) {
+				Config.active.getClimber().ifPresent(climber -> {
+					climber.oneStepUp(js.getY());
+			});
 			}
 			if (js.getThrottle() > 0.1) {
 				System.out.println("Throttle: " + js.getThrottle());
@@ -61,6 +63,7 @@ public class Joystick2024 implements Sendable {
 			if (js.getTwist() > 0.1) {
 				System.out.println("Twist: " + js.getTwist());
 			}
+			if (State.valueOf("State")==State.ENDGAME);
 		}
 	}
 
