@@ -2,6 +2,10 @@ package frc.robot.abstraction;
 
 import java.util.List;
 import java.util.Map;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.units.*;
 import frc.fridowpi.motors.utils.PidValues;
@@ -44,5 +48,30 @@ public record RobotData(
 			PidValues pathWeaver,
 			PidValues driveLeft,
 			PidValues driveRight) {
+	}
+
+	/* Constructors */
+	public RobotData() {
+		this(new HardwareData(
+				Meters.of(0),
+				Meters.of(0),
+				0),
+				new DriveData(
+						false,
+						List.of(),
+						List.of(),
+						Map.of()),
+				new AutoData(
+						MetersPerSecond.of(0),
+						MetersPerSecondPerSecond.of(0),
+						Meters.of(0),
+						MetersPerSecond.of(0),
+						MetersPerSecondPerSecond.of(0),
+						Meters.of(0),
+						Seconds.of(0)),
+				new PidData(
+						new PidValues(0, 0, 0),
+						new PidValues(0, 0, 0),
+						new PidValues(0, 0, 0)));
 	}
 }

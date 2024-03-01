@@ -197,4 +197,14 @@ public class FourFalconsTankDrive extends BTankDrive {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'driveToPos'");
 	}
+
+	@Override
+	public void zeroAbsoluteEncoders() {
+		/* Nothing to do here */
+	}
+
+	@Override
+	public void zeroRelativeEncoders() {
+		motors.zeroEncoders();
+	}
 }

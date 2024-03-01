@@ -44,12 +44,18 @@ public class SwerveDrive2024 extends BSwerveDrive {
 		super.init();
 		setUpSwerveModules();
 		setUpSwerveKinematics();
-		zeroEncoders();
+		zeroRelativeEncoders();
 		setDefaultCommand(new DriveCommand2024());
 	}
 
-	private void zeroEncoders() {
+	@Override
+	public void zeroRelativeEncoders() {
 		forEachModuleEntry(moduleEntry -> moduleEntry.getValue().zeroRelativeEncoder());
+	}
+
+	@Override
+	public void zeroAbsoluteEncoders() {
+		forEachModuleEntry(moduleEntry -> moduleEntry.getValue().zeroAbsoluteEncoder());
 	}
 
 	private void setUpSwerveKinematics() {
@@ -149,28 +155,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	}
 
 	@Override
-	public List<Binding> getMappings() {
-		var joystick = Constants.Joystick.primaryJoystickId;
-		return List.of(
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroNavx, Trigger::onTrue,
-						new InstantCommand(FridoNavx.getInstance()::reset)),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroEncoders, Trigger::onTrue,
-						new InstantCommand(this::zeroEncoders)),
-
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.fullSpeed, Trigger::toggleOnTrue,
-						new SetSpeedFactor(Constants.SwerveDrive.Swerve2024.fullSpeed)),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.slowSpeed, Trigger::toggleOnTrue,
-						new SetSpeedFactor(Constants.SwerveDrive.Swerve2024.slowSpeedFactor)),
-
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveFieldOriented, Trigger::onTrue,
-						new InstantCommand(() -> setOrientation(DriveOrientation.FieldOriented))),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveForwards, Trigger::onTrue,
-						new InstantCommand(() -> setOrientation(DriveOrientation.Forwards))),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveBackwards, Trigger::onTrue,
-						new InstantCommand(() -> setOrientation(DriveOrientation.Backwards))));
-	}
-
-	@Override
 	public void setVolts(double leftvolts, double rigthvolts) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'setVolts'");
@@ -219,4 +203,27 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	public double getRightEncoderPos() {
 		throw new UnsupportedOperationException("Unimplemented method 'getRightEncoderPos'");
 	}
+
+	@Override
+	public List<Binding> getMappings() {
+		var joystick = Constants.Joystick.primaryJoystickId;
+		return List.of(
+				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroNavx, Trigger::onTrue,
+						new InstantCommand(FridoNavx.getInstance()::reset)),
+				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroEncoders, Trigger::onTrue,
+						new InstantCommand(this::zeroAbsoluteEncoders).andThen(() -> System.out.println("<<<[AbsEncs zeroed]>>>"))),
+
+				new Binding(joystick, Constants.SwerveDrive.ButtounIds.fullSpeed, Trigger::toggleOnTrue,
+						new SetSpeedFactor(Constants.SwerveDrive.Swerve2024.fullSpeed)),
+				new Binding(joystick, Constants.SwerveDrive.ButtounIds.slowSpeed, Trigger::toggleOnTrue,
+						new SetSpeedFactor(Constants.SwerveDrive.Swerve2024.slowSpeedFactor)),
+
+				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveFieldOriented, Trigger::onTrue,
+						new InstantCommand(() -> setOrientation(DriveOrientation.FieldOriented))),
+				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveForwards, Trigger::onTrue,
+						new InstantCommand(() -> setOrientation(DriveOrientation.Forwards))),
+				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveBackwards, Trigger::onTrue,
+						new InstantCommand(() -> setOrientation(DriveOrientation.Backwards))));
+	}
+
 }

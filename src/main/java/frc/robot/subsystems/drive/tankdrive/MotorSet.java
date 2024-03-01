@@ -99,4 +99,11 @@ public class MotorSet extends BMotorSet {
 		leftMaster.set(0);
 		rightMaster.set(0);
 	}
+
+	public void zeroEncoders() {
+		leftMaster.setEncoderPosition(0);
+		rightMaster.setEncoderPosition(0);
+		leftFollower.setEncoderPosition(0);
+		rightFollower.setEncoderPosition(0);
+	}
 }

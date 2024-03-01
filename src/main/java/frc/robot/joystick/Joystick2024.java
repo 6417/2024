@@ -42,26 +42,13 @@ public class Joystick2024 implements Sendable {
 
 		// Create bindings //
 		JoystickHandler.getInstance().bind(Config.drive());
+		JoystickHandler.getInstance().bindAll(JoystickBindings2024.getBindingsSwerve2024());
 		// Config.active.getShooter().ifPresent(s ->
 		// JoystickHandler.getInstance().bind(s));
+		JoystickHandler.getInstance().init();
 	}
 
 	public void run() {
-		if (JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId) != null) {
-			var js = getPrimaryJoystick();
-			if (js.getX() > 0.1) {
-				System.out.println("X: " + js.getX());
-			}
-			if (js.getY() > 0.1) {
-				System.out.println("Y: " + js.getY());
-			}
-			if (js.getThrottle() > 0.1) {
-				System.out.println("Throttle: " + js.getThrottle());
-			}
-			if (js.getTwist() > 0.1) {
-				System.out.println("Twist: " + js.getTwist());
-			}
-		}
 	}
 
 	public void quickBind(IJoystickButtonId button, Runnable fn) {

@@ -52,6 +52,9 @@ public interface IDrive extends IModule, Sendable, JoystickBindable {
 
     public double getRightEncoderPos();
 
+	public void zeroAbsoluteEncoders();
+	public void zeroRelativeEncoders();
+
 
     // Couldn't (yet) generalize these:
 	//

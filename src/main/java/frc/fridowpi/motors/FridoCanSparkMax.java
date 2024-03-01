@@ -268,9 +268,8 @@ public class FridoCanSparkMax extends CANSparkMax implements FridolinsMotor {
     public void setPID(PidValues pidValues) {
         this.pidController = super.getPIDController();
         tolerance = pidValues.tolerance;
-        pidValues.slotIdX.ifPresentOrElse((slotIdx) -> setPIDWithSlotIdx(pidValues),
+        pidValues.slotIdX.ifPresentOrElse(slotIdx -> setPIDWithSlotIdx(pidValues),
                 () -> setPIDWithOutSlotIdx(pidValues));
-
         setMotionMagicParametersIfNecessary(pidValues);
     }
 

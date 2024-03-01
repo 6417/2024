@@ -30,4 +30,6 @@ public abstract class BSwerveModule implements Sendable {
 	abstract public Config getConfig();
 
 	abstract public void zeroRelativeEncoder();
+
+	abstract public void zeroAbsoluteEncoder();
 }

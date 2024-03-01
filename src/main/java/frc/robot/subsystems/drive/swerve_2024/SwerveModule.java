@@ -71,7 +71,7 @@ public class SwerveModule extends BSwerveModule {
 
 			rotation = config.rotationMotorInitializer.get();
 			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);
-			rotation.setIdleMode(IdleMode.kBrake);
+			rotation.setIdleMode(IdleMode.kCoast);
 			rotation.setPID(config.rotationPID);
 
 			absoluteEncoder = new AnalogEncoder(config.absoluteEncoderChannel);
@@ -205,6 +205,9 @@ public class SwerveModule extends BSwerveModule {
 		return config;
 	}
 
+	IdleMode mode = IdleMode.kCoast;
+	double absPos = 0;
+
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		builder.addDoubleProperty("Desired speed", () -> desiredState.speedMetersPerSecond, null);
@@ -213,9 +216,19 @@ public class SwerveModule extends BSwerveModule {
 		builder.addDoubleProperty("Current angel", () -> getModuleRotationAngle() * 180 / Math.PI, null);
 		builder.addDoubleProperty("Rotation Encoder Ticks", motors.rotation::getEncoderTicks, null);
 		builder.addDoubleProperty("Absolute Encoder", motors.absoluteEncoder::get, null);
-		builder.addBooleanProperty("Zero Module", () -> false, (ignored) -> zeroRelativeEncoder());
+		builder.addDoubleProperty("Set abs enc", () -> absPos, val -> {
+			absPos = val;
+			motors.absoluteEncoder.reset();
+			motors.absoluteEncoder.setPositionOffset(val);});
+		builder.addBooleanProperty("Zero Module", () -> false, _ignore -> zeroRelativeEncoder());
 
 		builder.addDoubleProperty("Target", motors.rotation::getPidTarget, null);
+		builder.addBooleanProperty("Coast", () -> mode == IdleMode.kCoast, val -> mode = val? IdleMode.kCoast: IdleMode.kBrake);
+	}
+
+	@Override
+	public void zeroAbsoluteEncoder() {
+		motors.absoluteEncoder.reset();
 	}
 
 	@Override

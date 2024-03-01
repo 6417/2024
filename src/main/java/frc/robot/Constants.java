@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Distance;
@@ -33,9 +33,9 @@ import frc.robot.abstraction.RobotData.AutoData;
 import frc.robot.abstraction.RobotData.DriveData;
 import frc.robot.abstraction.RobotData.HardwareData;
 import frc.robot.abstraction.RobotData.PidData;
-import frc.robot.abstraction.baseClasses.BShooter.ShooterData;
 import frc.robot.abstraction.baseClasses.BDrive.MountingLocations;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
+import frc.robot.abstraction.baseClasses.BShooter.ShooterData;
 import frc.robot.subsystems.drive.swerve_2019.SwerveModule;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 
@@ -263,7 +263,7 @@ public class Constants {
 
 			public static final double gearRatio = 1.0;// / 5.192308;
 
-			public static final boolean enabled = false;
+			public static final boolean enabled = true;
 			public static final double absoluteEncoderZeroPositionTolerance = 0.01;
 			public static final boolean rotateAllModulesInSameDirection = false;
 			public static final boolean joystickYinverted = true;
@@ -323,7 +323,8 @@ public class Constants {
 				commonConfigurations.rotationMotorTicksPerRotation = 47.691;
 				commonConfigurations.drivePID = new PidValues(0.015, 0.0, 0.0, 0.03375);
 				commonConfigurations.drivePID.slotIdX = Optional.of(0);
-				commonConfigurations.rotationPID = new PidValues(2.42, 0.07, 3.0);
+				// commonConfigurations.rotationPID = new PidValues(2.42, 0.07, 3.0);
+				commonConfigurations.rotationPID = new PidValues(0.0242, 0., 0);
 				commonConfigurations.rotationPID.slotIdX = Optional.of(0);
 				commonConfigurations.wheelCircumference = 0.1 * Math.PI;
 				commonConfigurations.maxVelocity = maxSpeedOfDrive;
@@ -340,7 +341,7 @@ public class Constants {
 			private static FridolinsMotor angleMotorInitializer(int id, MotorType motorType) {
 				var motor = new FridoCanSparkMax(id, MotorType.kBrushless);
 				motor.factoryDefault();
-				// motor.setSmartCurrentLimit(20, 20);
+				motor.setSmartCurrentLimit(20, 20);
 				((CANSparkMax) motor).getPIDController().setIZone(1.0);
 				return motor;
 			}
@@ -462,28 +463,28 @@ public class Constants {
 				frontLeftConfig.mountingPoint = new Translation2d(0.32, 0.305);
 				frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(32, MotorType.kBrushless);
 				frontLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(33, MotorType.kBrushless);
-				frontLeftConfig.halSensorPosition = -187_149.0 - 10_431;
+				frontLeftConfig.halSensorPosition = -0;
 				swerveModuleConfigs.put(MountingLocations.FrontLeft, frontLeftConfig);
 
 				SwerveModule.Config frontRightConfig = commonConfigurations.clone();
 				frontRightConfig.mountingPoint = new Translation2d(-0.32, 0.305);
 				frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(38, MotorType.kBrushless);
 				frontRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(39, MotorType.kBrushless);
-				frontRightConfig.halSensorPosition = 195_605.0;
+				frontRightConfig.halSensorPosition = 0;
 				swerveModuleConfigs.put(MountingLocations.FrontRight, frontRightConfig);
 
 				SwerveModule.Config backLeftConfig = commonConfigurations.clone();
 				backLeftConfig.mountingPoint = new Translation2d(0.32, -0.305);
 				backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(34, MotorType.kBrushless);
 				backLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(35, MotorType.kBrushless);
-				backLeftConfig.halSensorPosition = 187_701.0;
+				backLeftConfig.halSensorPosition = 0;
 				swerveModuleConfigs.put(MountingLocations.BackLeft, backLeftConfig);
 
 				SwerveModule.Config backRightConfig = commonConfigurations.clone();
 				backRightConfig.mountingPoint = new Translation2d(-0.32, -0.305);
 				backRightConfig.driveMotorInitializer = () -> driveMotorInitializer(36, MotorType.kBrushless);
 				backRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(37, MotorType.kBrushless);
-				backRightConfig.halSensorPosition = 187_420.0;
+				backRightConfig.halSensorPosition = 0;
 				swerveModuleConfigs.put(MountingLocations.BackRight, backRightConfig);
 			}
 		}

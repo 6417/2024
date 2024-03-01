@@ -2,8 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -77,7 +77,7 @@ public class ShooterSubsystem extends BShooter {
 		motorLeft = new FridoCanSparkMax(getData().motorIds.get(0), MotorType.kBrushless);
 		motorRight = new FridoCanSparkMax(getData().motorIds.get(1), MotorType.kBrushless);
 		motorFeeder = new FridoCanSparkMax(getData().motorIds.get(2), MotorType.kBrushless);
-		// motorBrushes = new FridoCanSparkMax(getData().motorIds.get(3), MotorType.kBrushless);
+		motorBrushes = new FridoCanSparkMax(getData().motorIds.get(3), MotorType.kBrushless);
 
 		motorLeft.factoryDefault();
 		motorRight.factoryDefault();
@@ -223,7 +223,7 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public void initialize() {
-			// motorBrushes.set(targetSpeed);
+			motorBrushes.set(targetSpeed);
 		}
 
 		@Override

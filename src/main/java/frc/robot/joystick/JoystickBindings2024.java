@@ -1,5 +1,6 @@
 package frc.robot.joystick;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,21 +14,20 @@ import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
-import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
 
 /**
  * JoystickBindings2024
  */
 public class JoystickBindings2024 {
 	private static JoystickBindings2024 instance = new JoystickBindings2024();
-	private static List<Binding> tmp_bindings = List.of();
+	private static ArrayList<Binding> tmp_bindings = new ArrayList<Binding>();
 
 	public static JoystickBindings2024 getInstance() {
 		return instance;
 	}
 
 	public static List<Binding> getBindingsLogitechTest() {
-		tmp_bindings = List.of();
+		tmp_bindings.clear();
 		quickBindWhileHeld(Logitech.a, () -> System.out.println("a"));
 		quickBind(Logitech.b, () -> System.out.println("b"));
 		quickBind(Logitech.x, () -> System.out.println("x"));
@@ -54,11 +54,14 @@ public class JoystickBindings2024 {
 	}
 
 	public static List<Binding> getBindingsTankdriveLogitech() {
-		tmp_bindings = List.of();
+		tmp_bindings.clear();
 		quickBindWhileHeld(Logitech.lt, () -> Config.drive().setSpeedFactor(
 				Config.data().drive().speedFactors().get(SpeedFactor.FAST)));
 		quickBindWhileHeld(Logitech.rt, () -> Config.drive().setSpeedFactor(
 				Config.data().drive().speedFactors().get(SpeedFactor.SLOW)));
+
+		quickBind(Logitech.back, new InstantCommand(() -> Config.drive().zeroAbsoluteEncoders())
+				.andThen(() -> System.out.println("<<<[zeroing]>>>")));
 
 		// TODO: make better CONFIG
 		// Config.active.getShooter().ifPresent(s -> {
@@ -75,6 +78,39 @@ public class JoystickBindings2024 {
 		// 	quickBind(Logitech.b, State.ENDGAME, climber::retract);
 		// });
 		//
+		quickBind(Logitech.b, () -> Config.active.getClimber().get().getServo().setSpeed(-0.1));
+		quickBind(Logitech.a, () -> Config.active.getClimber().get().getServo().setSpeed(0.1));
+
+		return tmp_bindings;
+	}
+
+	public static List<Binding> getBindingsSwerve2024() {
+		tmp_bindings.clear();
+
+		// Drive
+		quickBindWhileHeld(Logitech.lt, () -> Config.drive().setSpeedFactor(
+				Config.data().drive().speedFactors().get(SpeedFactor.FAST)));
+		quickBindWhileHeld(Logitech.rt, () -> Config.drive().setSpeedFactor(
+				Config.data().drive().speedFactors().get(SpeedFactor.SLOW)));
+
+		quickBind(Logitech.back, new InstantCommand(() -> Config.drive().zeroAbsoluteEncoders())
+				.andThen(() -> System.out.println("<<<[zeroing]>>>")));
+
+		// TODO: make better CONFIG
+		// Config.active.getShooter().ifPresent(s -> {
+		// 	quickBind(Logitech.a, State.DEFAULT, () -> s.shoot(ShooterConfig.INTAKE));
+		// 	quickBind(Logitech.b, State.DEFAULT, () -> s.shoot(ShooterConfig.AMP));
+		// 	quickBind(Logitech.y, State.DEFAULT, () -> s.shoot(ShooterConfig.SPEAKER));
+		// 	quickBind(Logitech.x, State.DEFAULT, () -> s.setSpeedPercent(0));
+		// });
+
+		// Config.active.getClimber().ifPresent(climber -> {
+		// 	quickBind(Logitech.y, State.ENDGAME, climber::oneStepUp);
+		// 	quickBind(Logitech.a, State.ENDGAME, climber::oneStepDown);
+		// 	quickBind(Logitech.x, State.ENDGAME, climber::release);
+		// 	quickBind(Logitech.b, State.ENDGAME, climber::retract);
+		// });
+
 		quickBind(Logitech.b, () -> Config.active.getClimber().get().getServo().setSpeed(-0.1));
 		quickBind(Logitech.a, () -> Config.active.getClimber().get().getServo().setSpeed(0.1));
 
