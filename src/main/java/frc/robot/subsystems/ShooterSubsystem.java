@@ -25,10 +25,6 @@ import frc.robot.abstraction.baseClasses.BShooter;
 public class ShooterSubsystem extends BShooter {
 	private final double maxSpeedRpm = 5000.0;
 
-	// private final FridolinsMotor motorLeft = new FridoCanSparkMax(getData().motorIds.get(0), MotorType.kBrushless);
-	// private final FridolinsMotor motorRight = new FridoCanSparkMax(getData().motorIds.get(1), MotorType.kBrushless);
-	// private final FridolinsMotor motorFeeder = new FridoCanSparkMax(getData().motorIds.get(2), MotorType.kBrushless);
-	// private final FridolinsMotor motorBrushes = new FridoCanSparkMax(getData().motorIds.get(3), MotorType.kBrushless);
 	private FridolinsMotor motorLeft;
 	private FridolinsMotor motorRight;
 	private FridolinsMotor motorFeeder;
@@ -144,11 +140,6 @@ public class ShooterSubsystem extends BShooter {
 	@Override
 	public double getSpeedPercent() {
 		return speedRpm / maxSpeedRpm;
-	}
-
-	@Override
-	public void initSendable(SendableBuilder builder) {
-		builder.addDoubleProperty("shooterSpeeds", () -> speedRpm, val -> speedRpm = val);
 	}
 
 	@Override
@@ -294,5 +285,10 @@ public class ShooterSubsystem extends BShooter {
 	@Override
 	public ShooterData getData() {
 		return Constants.Shooter.data;
+	}
+
+	@Override
+	public void initSendable(SendableBuilder builder) {
+		builder.addDoubleProperty("shooterSpeeds", () -> speedRpm, val -> speedRpm = val);
 	}
 }

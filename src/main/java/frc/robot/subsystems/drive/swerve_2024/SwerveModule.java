@@ -71,7 +71,7 @@ public class SwerveModule extends BSwerveModule {
 
 			rotation = config.rotationMotorInitializer.get();
 			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);
-			rotation.setIdleMode(IdleMode.kCoast);
+			rotation.setIdleMode(IdleMode.kBrake);
 			rotation.setPID(config.rotationPID);
 
 			absoluteEncoder = new AnalogEncoder(config.absoluteEncoderChannel);
@@ -219,7 +219,8 @@ public class SwerveModule extends BSwerveModule {
 		builder.addDoubleProperty("Set abs enc", () -> absPos, val -> {
 			absPos = val;
 			motors.absoluteEncoder.reset();
-			motors.absoluteEncoder.setPositionOffset(val);});
+		});
+			// motors.absoluteEncoder.setPositionOffset(val);});
 		builder.addBooleanProperty("Zero Module", () -> false, _ignore -> zeroRelativeEncoder());
 
 		builder.addDoubleProperty("Target", motors.rotation::getPidTarget, null);

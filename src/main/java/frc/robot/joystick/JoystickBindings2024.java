@@ -20,7 +20,7 @@ import frc.robot.joystick.IdsWithState.State;
  */
 public class JoystickBindings2024 {
 	private static JoystickBindings2024 instance = new JoystickBindings2024();
-	private static ArrayList<Binding> tmp_bindings = new ArrayList<Binding>();
+	public static ArrayList<Binding> tmp_bindings = new ArrayList<Binding>();
 
 	public static JoystickBindings2024 getInstance() {
 		return instance;
