@@ -213,8 +213,8 @@ public class SwerveModule implements Sendable {
 
     public void drive(double speedFactor) {
         motors.rotation.setPosition(angleToRotationMotorEncoderTicks(desiredState.angle.getRadians()));
-        // motors.drive.setVelocity(desiredState.speedMetersPerSecond * speedFactor);
-		motors.drive.set(desiredState.speedMetersPerSecond * speedFactor);
+        motors.drive.setVelocity(desiredState.speedMetersPerSecond * speedFactor * motors.driveMotorTicksPerRotation / motors.wheelCircumference / 10);
+		//motors.drive.set(desiredState.speedMetersPerSecond * speedFactor);
     }
 
     public SwerveModulePosition getOdometryPos(){

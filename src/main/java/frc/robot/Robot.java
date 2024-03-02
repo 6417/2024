@@ -19,11 +19,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.joystick.joysticks.Logitech;
+import frc.fridowpi.motors.FridoCanSparkMax;
+import frc.fridowpi.motors.FridoTalonSRX;
+import frc.fridowpi.motors.FridolinsMotor.PidType;
+import frc.fridowpi.motors.utils.PidValues;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.vision_autonomous.Swervdrive_poseestimator;
 import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
 import frc.robot.subsystems.drive.Controls;
+import frc.robot.subsystems.drive.PidTuner;
 import frc.robot.subsystems.drive.Tankdrive;
 import frc.robot.subsystems.drive.getAutonomousTrajectory;
 import frc.robot.subsystems.drive.getRamsetCommand;
@@ -37,6 +42,7 @@ public class Robot extends TimedRobot {
     SwerveDriveBase drive = SwerveDrive.getInstance();
     // ShooterSubsystem shooter = ShooterSubsystem.getInstance();
     ShuffleboardTab tab;
+    PidTuner pidtuner = new PidTuner();
 
     @Override
     public void robotInit() {
@@ -45,14 +51,15 @@ public class Robot extends TimedRobot {
 
         JoystickHandler.getInstance().setupJoysticks(List.of(Constants.Joystick.id));
         JoystickHandler.getInstance().init();
-        JoystickHandler.getInstance().bind(SwerveDrive.getInstance());
+        //JoystickHandler.getInstance().bind(SwerveDrive.getInstance());
         JoystickHandler.getInstance().init();
 
-        SwerveDrive.getInstance();
+        //SwerveDrive.getInstance();
 
 
         // Add subsystems
         Shuffleboard.getTab("Drive").add(drive);
+        Shuffleboard.getTab("PidTuner").add(pidtuner);
         // Shuffleboard.getTab("Shooter").add(shooter);
 
         // Shuffleboard.getTab("Controls").add(Controls.getInstance()); // wtf nr. 2
@@ -69,7 +76,6 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
     }
-
     @Override
     public void teleopInit() {
         SignalLogger.setPath("test");
@@ -78,31 +84,19 @@ public class Robot extends TimedRobot {
 
     // AutoCommand aComand = null;
     Command auto_command = null;
-    Servo exampleServo = new Servo(0);
+    //Servo exampleServo = new Servo(0);
     //PWM pwm = new PWM(0);
 
     @Override
     public void teleopPeriodic() {
-
+        //pidTuner.periodic();
         //Tankdrive.getInstance().differentialDrive.feed();
         //exampleServo.setBoundsMicroseconds(2150, 1501, 1500, 1499, 850);
         //exampleServo.setPulseTimeMicroseconds((int) (000*Controls.joystick.getRightX()));
         //exampleServo.set(Controls.joystick.getRightX());
 
-        Tankdrive.getInstance().differentialDrive.feed();
+        //Tankdrive.getInstance().differentialDrive.feed();
         
-        if (Controls.joystick.getYButtonPressed()) {
-            System.out.println("start command");
-            auto_command = getRamsetCommand.getInstance().start_command();
-        }
-        
-        
-        if (Controls.joystick.getLeftBumperPressed()) {
-            Tankdrive.getInstance().brake();
-        }
-        if (Controls.joystick.getRightBumperPressed()) {
-            Tankdrive.getInstance().release_brake();
-        }
         
         //bindButtonsForSysid();
     }

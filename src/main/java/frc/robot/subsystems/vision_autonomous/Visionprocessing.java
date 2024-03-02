@@ -78,11 +78,13 @@ public class Visionprocessing extends SubsystemBase {
 
     public double[] getFieldPos(){
         double[] pos = getFieldPos_raw();
+        /* 
         if (Tankdrive.getInstance().getWeelSpeeds().leftMetersPerSecond == 0 && Tankdrive.getInstance().getWeelSpeeds().rightMetersPerSecond == 0 || true){
             double x = filter_x.calculate(pos[0]);
             double y = filter_y.calculate(pos[1]);
             return new double[] {x,y,pos[2],pos[3],pos[4],pos[5]};
         }
+        */
         return pos;
     }
 

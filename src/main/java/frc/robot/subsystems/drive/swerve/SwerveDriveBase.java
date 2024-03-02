@@ -35,9 +35,9 @@ public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
 
     }
 
-    public Map<Constants.SwerveDrive.MountingLocations, Boolean> areHalSensoredOfMoudlesTriggered() {
-        Map<Constants.SwerveDrive.MountingLocations, Boolean> defaultReturn = new HashMap<>();
-        for (var location : Constants.SwerveDrive.MountingLocations.values())
+    public Map<Constants.SwerveDriveConsts.MountingLocations, Boolean> areHalSensoredOfMoudlesTriggered() {
+        Map<Constants.SwerveDriveConsts.MountingLocations, Boolean> defaultReturn = new HashMap<>();
+        for (var location : Constants.SwerveDriveConsts.MountingLocations.values())
             defaultReturn.put(location, false);
         return defaultReturn;
     }
@@ -46,11 +46,11 @@ public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
 
     }
 
-    public void setCurrentModuleRotatoinToHome(Constants.SwerveDrive.MountingLocations moduleLocation) {
+    public void setCurrentModuleRotatoinToHome(Constants.SwerveDriveConsts.MountingLocations moduleLocation) {
 
     }
 
-    public void setModuleRotationEncoderTicks(Constants.SwerveDrive.MountingLocations mountingLocation, double ticks) {
+    public void setModuleRotationEncoderTicks(Constants.SwerveDriveConsts.MountingLocations mountingLocation, double ticks) {
 
     }
 
@@ -67,14 +67,14 @@ public class SwerveDriveBase extends SubsystemBase implements JoystickBindable {
     }
 
     public void forEachModuleEntry(
-            Consumer<Map.Entry<Constants.SwerveDrive.MountingLocations, SwerveModule>> consumer) {
+            Consumer<Map.Entry<Constants.SwerveDriveConsts.MountingLocations, SwerveModule>> consumer) {
     }
 
-    public boolean isModuleZeroed(Constants.SwerveDrive.MountingLocations mountingLocation) {
+    public boolean isModuleZeroed(Constants.SwerveDriveConsts.MountingLocations mountingLocation) {
         return false;
     }
 
-    public void withModule(Constants.SwerveDrive.MountingLocations mountingLocation, Consumer<SwerveModule> consumer) {
+    public void withModule(Constants.SwerveDriveConsts.MountingLocations mountingLocation, Consumer<SwerveModule> consumer) {
 
     }
 

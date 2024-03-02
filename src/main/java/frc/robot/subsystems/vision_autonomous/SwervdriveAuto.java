@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.commands.SwerdriveAutoCommand;
 import frc.robot.subsystems.drive.getSwerveAutonomousTrj;
 
 public class SwervdriveAuto {
@@ -36,8 +37,13 @@ public class SwervdriveAuto {
 
     public void startCommand(){
         Pose2d firstApriltag = new Pose2d(15, 5.5, new Rotation2d(0));
+        Pose2d test = new Pose2d(1,0,new Rotation2d(0));
 
         Trajectory tra = getSwerveAutonomousTrj.getInstance().createTrajectory(firstApriltag, 1);
+        
+        Trajectory testtra = getSwerveAutonomousTrj.getInstance().createTrajectory(test, 2);
+        SwerdriveAutoCommand command = new SwerdriveAutoCommand(testtra);
+        command.schedule();
     }
 
     public static SwervdriveAuto getInstance(){

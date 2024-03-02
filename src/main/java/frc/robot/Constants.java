@@ -19,7 +19,7 @@ import frc.robot.subsystems.drive.swerve.SwerveModule;
 
 public class Constants {
 
-    public static final boolean driveEnabled = true;
+    public static final boolean driveEnabled = false;
 
     public static final class Joystick {
         public static final IJoystickId id = () -> 0;
@@ -50,7 +50,7 @@ public class Constants {
             //public static final double ka = 0.40922;
 
             public static final double kMaxVMetersPerSecond = 1;            //own constraints
-            public static final double kMaxAccMetersPerSecond = 0.3; //0.9
+            public static final double kMaxAccMetersPerSecond = 0.6; //0.9
             public static final double kMaxCentripetalAcceleration = 0;
 
             public static final double kRamsetB = 2;
@@ -98,7 +98,7 @@ public class Constants {
     }
 
     
-    public static final class SwerveDrive {
+    public static final class SwerveDriveConsts {
 
         public static enum MountingLocations {
             FrontRight, FrontLeft, BackRight, BackLeft
@@ -111,7 +111,9 @@ public class Constants {
             public static IJoystickButtonId fieldOriented = Logitech.b;
             public static IJoystickButtonId shooterFrontOriented = Logitech.a;
             public static IJoystickButtonId shooterBackOriented = Logitech.a;
-            public static IJoystickButtonId zeroNavx = Logitech.start;
+            public static IJoystickButtonId zeroNavx = Logitech.a;
+            public static IJoystickButtonId zeorOdometry = Logitech.start;
+            public static IJoystickButtonId startcom = Logitech.rb;
         }
 
         private static void setSwerveDriveConstants() {
@@ -148,12 +150,13 @@ public class Constants {
         }
 
         private static void addCommonModuleConfigurarions() {
-            commonConfigurations.driveMotorTicksPerRotation = 11_564.0;
+            commonConfigurations.driveMotorTicksPerRotation = 11_564.0*2;
             commonConfigurations.rotationMotorTicksPerRotation = 196_608.0;
-            commonConfigurations.drivePID = new PidValues(0.015, 0.0, 0.0, 0.03375);
+            commonConfigurations.drivePID = new PidValues(0.025
+            , 0.0, 0.0, 0.03375); // 0.015, 0.03375
             commonConfigurations.drivePID.slotIdX = Optional.of(0);
             // commonConfigurations.drivePID.setAcceleration(0.0000001);
-            commonConfigurations.rotationPID = new PidValues(0.04, 0.0, 0.5);
+            commonConfigurations.rotationPID = new PidValues(0.6, 0.16, 4);
             commonConfigurations.rotationPID.slotIdX = Optional.of(0);
             commonConfigurations.wheelCircumference = 0.1 * Math.PI;
             commonConfigurations.maxVelocity = maxSpeedOfDrive;
@@ -171,6 +174,7 @@ public class Constants {
         private static FridoTalonSRX angleMotorInitializer(int id, MotorType motorType) {
             FridoTalonSRX motor = new FridoTalonSRX(id);
             motor.factoryDefault();
+            motor.config_IntegralZone(0, 100);
             // motor.enableVoltageCompensation(10.4);
             return motor;
         }

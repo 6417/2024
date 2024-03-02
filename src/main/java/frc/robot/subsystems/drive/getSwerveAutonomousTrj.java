@@ -25,7 +25,7 @@ import frc.robot.subsystems.vision_autonomous.Visionprocessing;
 
 public class getSwerveAutonomousTrj extends SubsystemBase {
 
-    public static getAutonomousTrajectory instance;
+    public static getSwerveAutonomousTrj instance;
 
     private TrajectoryConfig getTrajectoryConfig() {
         /*
@@ -42,7 +42,6 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
                 Constants.Testchassi.PathWeaver.kMaxAccMetersPerSecond)
                 .setKinematics(SwerveDrive.getInstance().getKinematics())
                 .addConstraint(constraint);
-
 
         return config;
     }
@@ -89,9 +88,9 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
         return trajectory;
     }
 
-    public static getAutonomousTrajectory getInstance() {
+    public static getSwerveAutonomousTrj getInstance() {
         if (instance == null) {
-            instance = new getAutonomousTrajectory();
+            instance = new getSwerveAutonomousTrj();
         }
 
         return instance;

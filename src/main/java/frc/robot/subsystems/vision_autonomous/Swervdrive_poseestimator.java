@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.fridowpi.sensors.FridoNavx;
+import frc.robot.Constants.Swervedrive;
+import frc.robot.subsystems.drive.Tankdrive;
 import frc.robot.subsystems.drive.swerve.SwerveDrive;
 
 public class Swervdrive_poseestimator extends SubsystemBase {
@@ -39,9 +41,9 @@ public class Swervdrive_poseestimator extends SubsystemBase {
     return Math.tanh(x / maxDist) * (div_at_max_dis / Math.tanh(1) + divmin);
   }
 
-  public void update(Pose2d pose) {
+  public void update() {
     Rotation2d gyroAngle = FridoNavx.getInstance().getRotation2d();
-    swerveDrivePoseEstimator.updateWithTime(timer.get(), gyroAngle, new SwerveModulePosition[] {});
+    swerveDrivePoseEstimator.updateWithTime(timer.get(), gyroAngle, SwerveDrive.getInstance().getOdometryPoses());
 
     int t = Visionprocessing.getInstance().validTarget();
 
@@ -59,8 +61,13 @@ public class Swervdrive_poseestimator extends SubsystemBase {
     }
   }
 
+  public void reset_odometry() {
+    swerveDrivePoseEstimator.resetPosition(FridoNavx.getInstance().getRotation2d(), SwerveDrive.getInstance().getOdometryPoses(), new Pose2d(0,0, new Rotation2d(0)));
+  }
+
   @Override
   public void periodic() {
+    update();
     // This method will be called once per scheduler run
   }
 
