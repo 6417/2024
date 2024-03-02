@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drive.swerve_2019;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.stream.Collectors;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -154,6 +158,14 @@ public class SwerveDrive2019 extends SwerveDriveBase {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
+		super.initSendable(builder);
+		// builder.addDoubleProperty("odometry x",() -> swerveDrivePoseEstimator.getInstance().swerveDrivePoseEstimator.getEstimatedPosition().getX(), null);
+		// builder.addDoubleProperty("odometry y",() -> SwerveDrivePoseEstimator.getInstance().swerveDrivePoseEstimator.getEstimatedPosition().getY(), null);
+		// builder.addDoubleProperty("odometry rot",() -> swerveDrivePoseEstimator.getInstance().swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), null);
+	}
+
+	public SwerveDriveKinematics getKinematics() {
+		return kinematics;
 	}
 
 	@Override
@@ -184,26 +196,15 @@ public class SwerveDrive2019 extends SwerveDriveBase {
 	}
 
 	@Override
-	public void configureButtonBindings(Joystick joystick) {
+	public SwerveModulePosition[] getOdometryPoses(){
+		ArrayList<SwerveModulePosition> pos = new ArrayList<SwerveModulePosition>();
+		for (var module:modules.values()){
+			pos.add(module.getOdometryPos());
+		}
+		return pos.toArray(SwerveModulePosition[]::new);
 	}
 
 	@Override
-	public List<Binding> getMappings() {
-		var joystick = Constants.Joystick.primaryJoystickId;
-		return List.of(
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroNavx, Trigger::onTrue,
-						new InstantCommand(FridoNavx.getInstance()::reset)),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroEncoders, Trigger::onTrue,
-						new ZeroEncoders()),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.fullSpeed, Trigger::toggleOnTrue,
-						new SetSpeedFactor(Constants.SwerveDrive.Swerve2019.fullSpeed)),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.slowSpeed, Trigger::toggleOnTrue,
-						new SetSpeedFactor(Constants.SwerveDrive.Swerve2019.slowSpeedFactor)),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveFieldOriented, Trigger::onTrue,
-						new InstantCommand(() -> setDriveMode(DriveOrientation.FieldOriented))),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveForwards, Trigger::onTrue,
-						new InstantCommand(() -> setDriveMode(DriveOrientation.ShooterFront))),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveBackwards, Trigger::onTrue,
-						new InstantCommand(() -> setDriveMode(DriveOrientation.ShooterBack))));
+	public void configureButtonBindings(Joystick joystick) {
 	}
 }

@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Config;
+import frc.fridowpi.sensors.FridoNavx;
 
 public class TankDrivePoseEstimator {
 	public DifferentialDrivePoseEstimator m_poseEstimator;
@@ -17,7 +18,7 @@ public class TankDrivePoseEstimator {
 
 		m_poseEstimator = new DifferentialDrivePoseEstimator(
 				Config.drive().getDifferentialKinematics().get(),
-				Gyro.getInstance().getRotation2d(),
+				FridoNavx.getInstance().getRotation2d(),
 				Config.drive().getLeftEncoderPos(),
 				Config.drive().getRightEncoderPos(),
 				new Pose2d(),
@@ -27,7 +28,7 @@ public class TankDrivePoseEstimator {
 
 	public void updatePoseEstimator() {
 		m_poseEstimator.update(
-				Gyro.getInstance().getRotation2d(),
+				FridoNavx.getInstance().getRotation2d(),
 				Config.drive().getLeftEncoderPos(),
 				Config.drive().getRightEncoderPos());
 	}

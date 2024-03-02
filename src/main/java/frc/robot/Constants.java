@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Time;
@@ -70,12 +70,11 @@ public class Constants {
 		public static final double feedSpeakerSpeed = shooterSpeakerSpeed;
 		public static final double brushesSpeakerSpeed = 0.0;
 
-
 		public static final ShooterData data = new ShooterData(
 				List.of(20, 21, 22, 23),
 				List.of(shooterIntakeSpeed, shooterAmpSpeed, shooterSpeakerSpeed,
-					feedIntakeSpeed, feedAmpSpeed, feedSpeakerSpeed,
-					brushesIntakeSpeed, brushesAmpSpeed, brushesSpeakerSpeed),
+						feedIntakeSpeed, feedAmpSpeed, feedSpeakerSpeed,
+						brushesIntakeSpeed, brushesAmpSpeed, brushesSpeakerSpeed),
 				2024);
 	}
 
@@ -291,26 +290,25 @@ public class Constants {
 
 			public static final RobotData robotData = new RobotData(
 					new HardwareData(
-						null,
-						Meters.of(0.75),
-						1 / metersToRelativeEncoder),
+							null,
+							Meters.of(0.75),
+							1 / metersToRelativeEncoder),
 					new DriveData(
-					 enabled,
-					 motorIds,
-					 List.of(),
-					 Map.of(SpeedFactor.DEFAULT_SPEED, defaultSpeedFactor,
-							SpeedFactor.SLOW, fullSpeed,
-							SpeedFactor.FAST, slowSpeedFactor)),
+							enabled,
+							motorIds,
+							List.of(),
+							Map.of(SpeedFactor.DEFAULT_SPEED, defaultSpeedFactor,
+									SpeedFactor.SLOW, fullSpeed,
+									SpeedFactor.FAST, slowSpeedFactor)),
 					new AutoData(
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null),
-					new PidData(null, null, null)
-					);
+							null,
+							null,
+							null,
+							null,
+							null,
+							null,
+							null),
+					new PidData(null, null, null));
 
 			static {
 				setSwerveDriveConstants();
@@ -332,6 +330,27 @@ public class Constants {
 				commonConfigurations.rotationEncoderType = FridoFeedBackDevice.kBuildin;
 			}
 
+			public static final double xOffset = 0.275;
+			public static final double yOffset = 0.275;
+
+			public static final Translation2d[] SWERVE_MODULE_TRANSLATIONS = {
+					new Translation2d(-xOffset, yOffset),
+					new Translation2d(-xOffset, -yOffset),
+					new Translation2d(xOffset, -yOffset),
+					new Translation2d(xOffset, yOffset)
+			};
+
+			public static final SwerveModulePosition[] SWERVE_MODULE_POSITIONS = {
+				new SwerveModulePosition(SWERVE_MODULE_TRANSLATIONS[0].getNorm(),
+						SWERVE_MODULE_TRANSLATIONS[0].getAngle()),
+				new SwerveModulePosition(SWERVE_MODULE_TRANSLATIONS[1].getNorm(),
+						SWERVE_MODULE_TRANSLATIONS[1].getAngle()),
+				new SwerveModulePosition(SWERVE_MODULE_TRANSLATIONS[2].getNorm(),
+						SWERVE_MODULE_TRANSLATIONS[2].getAngle()),
+				new SwerveModulePosition(SWERVE_MODULE_TRANSLATIONS[3].getNorm(),
+						SWERVE_MODULE_TRANSLATIONS[3].getAngle())
+			};
+
 			private static FridolinsMotor driveMotorInitializer(int id) {
 				var motor = new FridoFalcon500v6(id);
 				motor.factoryDefault();
@@ -347,13 +366,10 @@ public class Constants {
 			}
 
 			private static void addModuleSpecificConfigurarions() {
-				var xOffset = 0.275;
-				var yOffset = 0.275;
-
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontLeftConfig = commonConfigurations
 						.clone();
 				frontLeftConfig.absoluteEncoderZeroPosition = 0.03;
-				frontLeftConfig.mountingPoint = new Translation2d(-xOffset, yOffset);
+				frontLeftConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[0];
 				frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(1);
 				frontLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(11, MotorType.kBrushless);
 				frontLeftConfig.driveMotorInverted = false;
@@ -363,7 +379,7 @@ public class Constants {
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontRightConfig = commonConfigurations
 						.clone();
 				frontRightConfig.absoluteEncoderZeroPosition = 0.35 + 0.5;
-				frontRightConfig.mountingPoint = new Translation2d(-xOffset, -yOffset);
+				frontRightConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[1];
 				frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(2);
 				frontRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(12, MotorType.kBrushless);
 				frontRightConfig.driveMotorInverted = false;
@@ -374,7 +390,7 @@ public class Constants {
 
 						.clone();
 				backLeftConfig.absoluteEncoderZeroPosition = 0.47 + 0.5;
-				backLeftConfig.mountingPoint = new Translation2d(xOffset, yOffset);
+				frontRightConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[2];
 				backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(3);
 				backLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(13, MotorType.kBrushless);
 				backLeftConfig.driveMotorInverted = false;
@@ -384,7 +400,7 @@ public class Constants {
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backRightConfig = commonConfigurations
 						.clone();
 				backRightConfig.absoluteEncoderZeroPosition = 0.12 + 0.5;
-				backRightConfig.mountingPoint = new Translation2d(xOffset, -yOffset);
+				frontRightConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[3];
 				backRightConfig.driveMotorInitializer = () -> driveMotorInitializer(4);
 				backRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(14, MotorType.kBrushless);
 				backRightConfig.driveMotorInverted = false;

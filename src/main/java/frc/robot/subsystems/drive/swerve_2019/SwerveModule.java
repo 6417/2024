@@ -1,10 +1,13 @@
 package frc.robot.subsystems.drive.swerve_2019;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -102,6 +105,10 @@ public class SwerveModule implements Sendable {
         limitedModuleStates = config.limitModuleStates;
     }
 
+	public SwerveModulePosition getOdometryPos() {
+		return new SwerveModulePosition(motors.drive.getEncoderTicks() * motors.driveMotorTicksPerRotation, new Rotation2d(Radians.of(getModuleRotationAngle())));
+	}
+
     public Vector2 getModuleRotation() {
         return Vector2.fromRad(getModuleRotationAngle());
     }
@@ -140,6 +147,10 @@ public class SwerveModule implements Sendable {
 
     public double getSpeed() {
         return motors.drive.getEncoderVelocity();
+    }
+
+    public double getWheelDistMeter(){
+        return motors.drive.getEncoderTicks() / motors.driveMotorTicksPerRotation * motors.wheelCircumference;
     }
 
     public void setDesiredState(SwerveModuleState state) {

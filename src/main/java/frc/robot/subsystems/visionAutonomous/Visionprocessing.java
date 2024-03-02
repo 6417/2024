@@ -1,11 +1,15 @@
 package frc.robot.subsystems.visionAutonomous;
 
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Visionprocessing extends SubsystemBase {
 
     static Visionprocessing instance;
+
+    private MedianFilter filter_x;
+    private MedianFilter filter_y;
 
     double[] apriltag_position = { 15.079472, 0.245872, 1.355852,
             16.185134, 0.883666, 1.355852,
@@ -28,13 +32,15 @@ public class Visionprocessing extends SubsystemBase {
             180, 0, 120, 240 };
 
     private Visionprocessing() {
+        filter_x = new MedianFilter(2);
+        filter_y = new MedianFilter(2);
     }
 
     @Override
     public void periodic() {
     }
 
-    private double[] getData() {
+    public double[] getData() {
         double[] data = NetworkTableInstance.getDefault().getTable("limelight").getEntry("targetpose_cameraspace").getDoubleArray(new double[6]);
         return data;
     }
@@ -49,9 +55,34 @@ public class Visionprocessing extends SubsystemBase {
         return (int) t;
     }
 
-    public double[] getFieldPos(){
+    public double[] getFieldPos_raw(){
         double[] data = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose_wpiblue").getDoubleArray(new double[6]); //default botpose
         return data;
+    }
+
+    public String get_json(){
+        String json = NetworkTableInstance.getDefault().getTable("limelight").getEntry("json").getString("none");
+        return json;
+    }
+
+    public void analyse_json(String json){
+    }
+
+    public double[] getFieldPos(){
+        double[] pos = getFieldPos_raw();
+        /* 
+        if (Tankdrive.getInstance().getWeelSpeeds().leftMetersPerSecond == 0 && Tankdrive.getInstance().getWeelSpeeds().rightMetersPerSecond == 0 || true){
+            double x = filter_x.calculate(pos[0]);
+            double y = filter_y.calculate(pos[1]);
+            return new double[] {x,y,pos[2],pos[3],pos[4],pos[5]};
+        }
+        */
+        return pos;
+    }
+
+    public void resetFilter(){
+        filter_x.reset();
+        filter_y.reset();
     }
 
     private double[] get_relativ_robotPose(double[] pose){
