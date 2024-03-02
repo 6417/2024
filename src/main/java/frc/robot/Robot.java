@@ -11,6 +11,7 @@ import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.joystick.IdsWithState.State;
 import frc.robot.joystick.Joystick2024;
 import frc.robot.subsystems.drive.PidTuner;
+import frc.robot.abstraction.baseClasses.BDrive.DriveOrientation;
 
 public class Robot extends TimedRobot {
 
@@ -36,6 +37,8 @@ public class Robot extends TimedRobot {
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
 
         SignalLogger.setPath("/home/lvuser/logs");
+
+		Config.drive().setOrientation(DriveOrientation.FieldOriented);
     }
 
     @Override

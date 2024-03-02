@@ -89,11 +89,11 @@ public class DriveCommand2019 extends Command {
 
     private void setChassisSpeeds(Vector2 xyVector, double rotationSpeed) {
             switch (SwerveDrive2019.getInstance().getDriveMode()) {
-                case ShooterBack:
+                case Forwards:
                     SwerveDrive2019.getInstance().drive(ChassisSpeeds.fromFieldRelativeSpeeds(xyVector.x, xyVector.y,
                             rotationSpeed, new Rotation2d(0.0)));
                     break;
-                case ShooterFront:
+                case Backwards:
                     SwerveDrive2019.getInstance().drive(ChassisSpeeds.fromFieldRelativeSpeeds(xyVector.x, xyVector.y,
                             rotationSpeed, new Rotation2d(Math.PI)));
                     break;

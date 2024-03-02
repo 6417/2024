@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.fridowpi.command.ParallelRaceGroup;
 import frc.robot.Constants;
 import frc.robot.commands.CSVLoggerCommand;
+import frc.robot.Config;
 
 public class getRamsetCommand {
 
@@ -29,18 +30,18 @@ public class getRamsetCommand {
 
         RamseteCommand command = new RamseteCommand(
                 trajectory,
-                Tankdrive.getInstance()::getPos,
-                new RamseteController(Constants.Testchassi.PathWeaver.kRamsetB,
-                        Constants.Testchassi.PathWeaver.kRamseteZeta),
-                new SimpleMotorFeedforward(Constants.Testchassi.ksVolts,
-                        Constants.Testchassi.kvVoltSevondsPerMeter,
-                        Constants.Testchassi.kaVoltSecondsSquaredPerMeter),
-                Tankdrive.getInstance().m_kinematics,
-                Tankdrive.getInstance()::getWeelSpeeds,
-                new PIDController(Constants.Testchassi.kPDriveVel, 0, 0),
-                new PIDController(Constants.Testchassi.kPDriveVel, 0, 0),
-                Tankdrive.getInstance()::setVolts,
-                Tankdrive.getInstance());
+                Config.drive()::getPos,
+                new RamseteController(Constants.Testchassis.PathWeaver.kRamsetB,
+                        Constants.Testchassis.PathWeaver.kRamseteZeta),
+                new SimpleMotorFeedforward(Constants.Testchassis.ksVolts,
+                        Constants.Testchassis.kvVoltSevondsPerMeter,
+                        Constants.Testchassis.kaVoltSecondsSquaredPerMeter),
+                Config.drive().getDifferentialKinematics().get(),
+                () -> Config.drive().getDifferentialWheelSpeeds().get(),
+                new PIDController(Constants.Testchassis.kPDriveVel, 0, 0),
+                new PIDController(Constants.Testchassis.kPDriveVel, 0, 0),
+                Config.drive()::setVolts,
+                Config.drive());
 
         return command;
     }

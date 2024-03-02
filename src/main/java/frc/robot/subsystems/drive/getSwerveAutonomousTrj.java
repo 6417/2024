@@ -3,25 +3,15 @@ package frc.robot.subsystems.drive;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.fridowpi.command.ParallelRaceGroup;
+import frc.robot.Config;
 import frc.robot.Constants;
-import frc.robot.autonomous_tools.PathviewerLoader;
-import frc.robot.commands.CSVLoggerCommand;
-import frc.robot.subsystems.drive.swerve.SwerveDrive;
-import frc.robot.subsystems.vision_autonomous.Swervdrive_poseestimator;
-import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
-import frc.robot.subsystems.vision_autonomous.Visionprocessing;
 
 public class getSwerveAutonomousTrj extends SubsystemBase {
 
@@ -36,11 +26,11 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
                 Tankdrive.getInstance().m_kinematics, 10);
         */
         SwerveDriveKinematicsConstraint constraint = new SwerveDriveKinematicsConstraint(
-            SwerveDrive.getInstance().getKinematics(), 1);//const
+            Config.drive().getSwerveKinematics().get(), 1);//const
 
-        TrajectoryConfig config = new TrajectoryConfig(Constants.Testchassi.PathWeaver.kMaxVMetersPerSecond,
-                Constants.Testchassi.PathWeaver.kMaxAccMetersPerSecond)
-                .setKinematics(SwerveDrive.getInstance().getKinematics())
+        TrajectoryConfig config = new TrajectoryConfig(Constants.Testchassis.PathWeaver.kMaxVMetersPerSecond,
+                Constants.Testchassis.PathWeaver.kMaxAccMetersPerSecond)
+                .setKinematics(Config.drive().getSwerveKinematics().get())
                 .addConstraint(constraint);
 
         return config;
@@ -51,7 +41,7 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
         List<Translation2d> list_Translation2d = new ArrayList<Translation2d>();
 
         Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(
-        Swervdrive_poseestimator.getInstance().swerveDrivePoseEstimator.getEstimatedPosition(),
+        Config.drive().getPos(),
         list_Translation2d,
         endPose,
         conf);
@@ -63,11 +53,11 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
         TrajectoryConfig conf = getTrajectoryConfig();
         List<Translation2d> list_Translation2d = new ArrayList<Translation2d>();
 
-        Translation2d endtranslation = Swervdrive_poseestimator.getInstance().swerveDrivePoseEstimator.getEstimatedPosition().getTranslation().plus(endPose.getTranslation());
+        Translation2d endtranslation = Config.drive().getPos().getTranslation().plus(endPose.getTranslation());
         endPose = new Pose2d(endtranslation, endPose.getRotation());
         Trajectory new_trajectory = null;
 
-        new_trajectory = TrajectoryGenerator.generateTrajectory(Swervdrive_poseestimator.getInstance().swerveDrivePoseEstimator.getEstimatedPosition(),
+        new_trajectory = TrajectoryGenerator.generateTrajectory(Config.drive().getPos(),
         list_Translation2d,
         endPose,
         conf);

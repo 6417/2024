@@ -1,10 +1,8 @@
 package frc.robot.subsystems.drive.swerve_2019;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -18,20 +16,15 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.fridowpi.joystick.Binding;
-import frc.fridowpi.sensors.FridoNavx;
 import frc.fridowpi.utils.Algorithms;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveDrive.Swerve2019;
+import frc.robot.abstraction.baseClasses.BDrive.DriveOrientation;
 import frc.robot.abstraction.baseClasses.BDrive.MountingLocations;
 import frc.robot.commands.drive.commands_2019.DriveCommand2019;
-import frc.robot.commands.drive.commands_2019.SetSpeedFactor;
-import frc.robot.commands.drive.commands_2019.ZeroEncoders;
 
 public class SwerveDrive2019 extends SwerveDriveBase {
-	private DriveOrientation driveMode = DriveOrientation.ShooterBack;
+	private DriveOrientation driveMode = DriveOrientation.Forwards;
 	private static SwerveDriveBase instance = null;
 	private SwerveKinematics<MountingLocations> kinematics;
 	private Map<MountingLocations, SwerveModule> modules = new HashMap<>();

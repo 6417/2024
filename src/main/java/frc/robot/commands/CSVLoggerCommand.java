@@ -4,14 +4,12 @@
 
 package frc.robot.commands;
 
-import frc.fridowpi.sensors.FridoNavx;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.vision_autonomous.Tankdrive_odometry;
-import frc.robot.utils.CSVLogger;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.fridowpi.sensors.FridoNavx;
+import frc.robot.Config;
+import frc.robot.utils.CSVLogger;
 
 /** An example command that uses an example subsystem. */
 public class CSVLoggerCommand extends Command {
@@ -48,15 +46,15 @@ public class CSVLoggerCommand extends Command {
   public void execute() {
     if (t.hasElapsed(0.1 * i)) {
       var goal = trajectory.sample(t.get());
-      loger.put("odometry_x", Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getX());
-      loger.put("odometry_y", Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getY());
+      loger.put("odometry_x", Config.drive().getPos().getX());
+      loger.put("odometry_y", Config.drive().getPos().getY());
       loger.put("pose_traj_x", goal.poseMeters.getX());
       loger.put("pose_traj_y", goal.poseMeters.getY());
       loger.put("rot_traj", goal.poseMeters.getRotation().getDegrees());
       loger.put("rot_gyro", FridoNavx.getInstance().getRotation2d().getDegrees());
       loger.put("time", t.get());
       loger.put("rot_odo",
-          Tankdrive_odometry.getInstance().m_odometry.getEstimatedPosition().getRotation().getDegrees());
+          Config.drive().getPos().getRotation().getDegrees());
       // System.out.println(Tankdrive_odometry.getInstance().m_odometry.getPoseMeters().getX());
       i++;
     }
