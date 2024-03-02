@@ -66,10 +66,9 @@ public class ShooterSubsystem extends BShooter {
 
 	public ShooterSubsystem() {
 		shooter = this;
-	}
-
-	public void init() {
 		speedsMapShooter = getData().speeds;
+		speedsMapBrushes = getData().speeds;
+		speedsMapFeeder = getData().speeds;
 		motorLeft = new FridoCanSparkMax(getData().motorIds.get(0), MotorType.kBrushless);
 		motorRight = new FridoCanSparkMax(getData().motorIds.get(1), MotorType.kBrushless);
 		motorFeeder = new FridoCanSparkMax(getData().motorIds.get(2), MotorType.kBrushless);
@@ -106,6 +105,15 @@ public class ShooterSubsystem extends BShooter {
 
 		pid.setTolerance(50);
 		pid.setIntegratorRange(-0.015, 0.015);
+	}
+
+	@Override
+	public void init() {
+	}
+
+	@Override
+	public void periodic() {
+		run();
 	}
 
 	@Override
@@ -192,6 +200,7 @@ public class ShooterSubsystem extends BShooter {
 			addCommands(
 					new SetBrushMotor(ShooterConfig.AMP),
 					new SetShooterMotors(ShooterConfig.AMP),
+					new WaitCommand(1.0),
 					new SetFeederMotor(ShooterConfig.AMP),
 					new WaitCommand(3.0),
 					new SetFeederMotor(0),
@@ -219,7 +228,8 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public boolean isFinished() {
-			return motorRight.pidAtTarget();
+			// return motorRight.pidAtTarget();
+			return true;
 		}
 	}
 
@@ -236,12 +246,14 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public void initialize() {
-			shooter.setSpeedPercent(targetSpeed);
+			// shooter.setSpeedPercent(targetSpeed);
+			motorLeft.set(targetSpeed);
 		}
 
 		@Override
 		public boolean isFinished() {
-			return motorRight.pidAtTarget();
+			// return motorRight.pidAtTarget();
+			return true;
 		}
 	}
 
@@ -258,7 +270,8 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public void initialize() {
-			motorFeeder.setPidTarget(targetSpeed * maxSpeedRpm, PidType.velocity);
+			// motorFeeder.setPidTarget(targetSpeed * maxSpeedRpm, PidType.velocity);
+			motorFeeder.set(targetSpeed);
 		}
 
 		@Override
@@ -268,7 +281,8 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public boolean isFinished() {
-			return motorFeeder.pidAtTarget();
+			// return motorFeeder.pidAtTarget();
+			return true;
 		}
 	}
 
@@ -289,6 +303,11 @@ public class ShooterSubsystem extends BShooter {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-		builder.addDoubleProperty("shooterSpeeds", () -> speedRpm, val -> speedRpm = val);
+		builder.addDoubleProperty("ampShooterSpeed",
+				() -> speedsMapShooter.get(ShooterConfig.AMP.asInt()),
+				val -> speedsMapShooter.set(ShooterConfig.AMP.asInt(), val));
+		builder.addDoubleProperty("ampBrushesSpeed",
+				() -> speedsMapBrushes.get(ShooterConfig.AMP.asInt()),
+				val -> speedsMapBrushes.set(ShooterConfig.AMP.asInt(), val));
 	}
 }

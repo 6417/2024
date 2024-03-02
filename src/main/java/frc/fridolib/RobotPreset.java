@@ -48,7 +48,7 @@ public enum RobotPreset {
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))
 
 	// DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),
-	ShooterTester(Constants.Diplodocus.robotData, new FourFalconsTankDrive(), new ShooterSubsystem()),
+	// ShooterTester(Constants.Diplodocus.robotData, new FourFalconsTankDrive(), new ShooterTest()),
 	// TestChassisShooter(new FourFalconTankDrive(-1, -1, -1, -1), new ShooterTwoPhoenix(-1, -1)),
 	;
 

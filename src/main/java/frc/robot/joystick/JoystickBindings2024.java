@@ -14,6 +14,7 @@ import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
 
 /**
  * JoystickBindings2024
@@ -100,12 +101,13 @@ public class JoystickBindings2024 {
 				.andThen(() -> System.out.println("<<<[zeroing]>>>")));
 
 		// TODO: make better CONFIG
-		// Config.active.getShooter().ifPresent(s -> {
-		// 	quickBind(Logitech.a, State.DEFAULT, () -> s.shoot(ShooterConfig.INTAKE));
-		// 	quickBind(Logitech.b, State.DEFAULT, () -> s.shoot(ShooterConfig.AMP));
-		// 	quickBind(Logitech.y, State.DEFAULT, () -> s.shoot(ShooterConfig.SPEAKER));
-		// 	quickBind(Logitech.x, State.DEFAULT, () -> s.setSpeedPercent(0));
-		// });
+		Config.active.getShooter().ifPresent(s -> {
+			// quickBind(Logitech.a, State.DEFAULT, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBind(Logitech.b, () -> s.shoot(ShooterConfig.AMP));
+			quickBind(Logitech.x, () -> {});
+			// quickBind(Logitech.y, State.DEFAULT, () -> s.shoot(ShooterConfig.SPEAKER));
+			// quickBind(Logitech.x, State.DEFAULT, () -> s.setSpeedPercent(0));
+		});
 
 		// Config.active.getClimber().ifPresent(climber -> {
 		// 	quickBind(Logitech.y, State.ENDGAME, climber::oneStepUp);
@@ -114,8 +116,8 @@ public class JoystickBindings2024 {
 		// 	quickBind(Logitech.b, State.ENDGAME, climber::retract);
 		// });
 
-		quickBind(Logitech.b, () -> Config.active.getClimber().get().getServo().setSpeed(-0.1));
-		quickBind(Logitech.a, () -> Config.active.getClimber().get().getServo().setSpeed(0.1));
+		// quickBind(Logitech.b, () -> Config.active.getClimber().get().getServo().setSpeed(-0.1));
+		// quickBind(Logitech.a, () -> Config.active.getClimber().get().getServo().setSpeed(0.1));
 
 		return tmp_bindings;
 	}
