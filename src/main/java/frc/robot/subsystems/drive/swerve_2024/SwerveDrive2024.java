@@ -105,7 +105,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 		currentChassisSpeeds = requestedMovement;
 		Map<MountingLocations, SwerveModuleState> states = kinematics
 				.toLabledSwerveModuleStates(currentChassisSpeeds);
-		states = normalizeStates(states);
+		// states = normalizeStates(states);
 
 		states.entrySet().forEach(
 				(Entry<MountingLocations, SwerveModuleState> labeledState) -> modules

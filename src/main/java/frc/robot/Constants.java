@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -62,7 +63,7 @@ public class Constants {
 		public static final double brushesIntakeSpeed = 0.6;
 		public static final double feedIntakeSpeed = 0;
 
-		public static final double shooterAmpSpeed = 0.11;
+		public static final double shooterAmpSpeed = 0.14;
 		public static final double feedAmpSpeed = 0.2;
 		public static final double brushesAmpSpeed = 0.9;
 
@@ -273,8 +274,8 @@ public class Constants {
 			public static final double yOffsetMapperMinVoltage = 9;
 			public static final double finetuningZeroFactor = 0.1;
 			public static final double maxFineTuneOffsetForZeroEncodersCommand = 196608 / 100;
-			public static final double maxSpeedOfDrive = 1;
-			public static final double maxRotationSpeed = 1;
+			public static final double maxSpeedOfDrive = 80;
+			public static final double maxRotationSpeed = 80;
 			public static final Map<MountingLocations, frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config> swerveModuleConfigs = new HashMap<>();
 
 			public static frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config commonConfigurations = new frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config();
@@ -321,7 +322,7 @@ public class Constants {
 			private static void addCommonModuleConfigurarions() {
 				commonConfigurations.driveMotorTicksPerRotation = 2048.0;
 				commonConfigurations.rotationMotorTicksPerRotation = 47.691;
-				commonConfigurations.drivePID = new PidValues(0.015, 0.0, 0.0, 0.03375);
+				commonConfigurations.drivePID = new PidValues(0.05, 0.0, 0.0, 0.03375);
 				commonConfigurations.drivePID.slotIdX = Optional.of(0);
 				commonConfigurations.rotationPID = new PidValues(1.8, 0.01, 1);
 				// commonConfigurations.rotationPID = new PidValues(0.0242, 0., 0);
@@ -335,6 +336,7 @@ public class Constants {
 			private static FridolinsMotor driveMotorInitializer(int id) {
 				var motor = new FridoFalcon500v6(id);
 				motor.factoryDefault();
+				motor.asTalonFX().getConfigurator().apply(new Slot0Configs().withKP(0.05).withKS(0.25).withKV(0.15));
 				return motor;
 			}
 

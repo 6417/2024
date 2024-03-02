@@ -3,11 +3,14 @@ package frc.robot.subsystems.drive.swerve_2024;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.controls.VelocityVoltage;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
@@ -67,7 +70,7 @@ public class SwerveModule extends BSwerveModule {
 			config.driveSensorInverted.ifPresent(this.drive::setEncoderDirection);
 			drive.setInverted(config.driveMotorInverted);
 			drive.setIdleMode(IdleMode.kCoast);
-			drive.setPID(config.drivePID);
+			//drive.setPID(config.drivePID);
 
 			rotation = config.rotationMotorInitializer.get();
 			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);
@@ -156,7 +159,8 @@ public class SwerveModule extends BSwerveModule {
 		// if (Math.abs(motors.rotation.getPidTarget() - motors.rotation.getEncoderTicks()) > 0.1) {
 		// 	motors.drive.set(0.0);
 		// } else {
-			motors.drive.set(desiredState.speedMetersPerSecond * speedFactor);
+			((FridoFalcon500v6) motors.drive).asTalonFX().setControl(new VelocityVoltage(speedFactor * desiredState.speedMetersPerSecond));
+			// motors.drive.setVelocity(desiredState.speedMetersPerSecond * speedFactor);
 		// }
 	}
 
@@ -216,6 +220,7 @@ public class SwerveModule extends BSwerveModule {
 		builder.addDoubleProperty("Current angel", () -> getModuleRotationAngle() * 180 / Math.PI, null);
 		builder.addDoubleProperty("Rotation Encoder Ticks", motors.rotation::getEncoderTicks, null);
 		builder.addDoubleProperty("Absolute Encoder", motors.absoluteEncoder::get, null);
+		builder.addDoubleProperty("Velocity Error", () -> getSpeed() - desiredState.speedMetersPerSecond, null);
 		builder.addDoubleProperty("Set abs enc", () -> absPos, val -> {
 			absPos = val;
 			motors.absoluteEncoder.reset();
