@@ -24,7 +24,7 @@ public abstract class BDrive extends Module implements IDrive {
 		DEFAULT_SPEED, SLOW, FAST;
 	}
 
-	protected DriveOrientation driveOrientation = DriveOrientation.Forwards;
+	protected DriveOrientation driveOrientation = DriveOrientation.FieldOriented;
 
 	@Override
 	public final DriveOrientation getOrientation() {

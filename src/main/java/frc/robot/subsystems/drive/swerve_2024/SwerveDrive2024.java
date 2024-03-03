@@ -2,7 +2,6 @@ package frc.robot.subsystems.drive.swerve_2024;
 
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -14,19 +13,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
-import frc.fridowpi.sensors.FridoNavx;
 import frc.fridowpi.utils.Algorithms;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BSwerveDrive;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 import frc.robot.commands.drive.commands_2024.DriveCommand2024;
-import frc.robot.commands.drive.commands_2024.SetSpeedFactor;
 import frc.robot.subsystems.visionAutonomous.SwerveDrivePoseEstimator;
 import frc.robot.subsystems.visionAutonomous.Visionprocessing;
 
@@ -114,7 +108,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 		currentChassisSpeeds = requestedMovement;
 		Map<MountingLocations, SwerveModuleState> states = kinematics
 				.toLabledSwerveModuleStates(currentChassisSpeeds);
-		states = normalizeStates(states);
+		// states = normalizeStates(states);
 
 		states.entrySet().forEach(
 				(Entry<MountingLocations, SwerveModuleState> labeledState) -> modules
@@ -212,27 +206,4 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	public double getRightEncoderPos() {
 		throw new UnsupportedOperationException("Unimplemented method 'getRightEncoderPos'");
 	}
-
-	@Override
-	public List<Binding> getMappings() {
-		var joystick = Constants.Joystick.primaryJoystickId;
-		return List.of(
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroNavx, Trigger::onTrue,
-						new InstantCommand(FridoNavx.getInstance()::reset)),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.zeroEncoders, Trigger::onTrue,
-						new InstantCommand(this::zeroAbsoluteEncoders).andThen(() -> System.out.println("<<<[AbsEncs zeroed]>>>"))),
-
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.fullSpeed, Trigger::toggleOnTrue,
-						new SetSpeedFactor(Constants.SwerveDrive.Swerve2024.fullSpeed)),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.slowSpeed, Trigger::toggleOnTrue,
-						new SetSpeedFactor(Constants.SwerveDrive.Swerve2024.slowSpeedFactor)),
-
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveFieldOriented, Trigger::onTrue,
-						new InstantCommand(() -> setOrientation(DriveOrientation.FieldOriented))),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveForwards, Trigger::onTrue,
-						new InstantCommand(() -> setOrientation(DriveOrientation.Forwards))),
-				new Binding(joystick, Constants.SwerveDrive.ButtounIds.driveBackwards, Trigger::onTrue,
-						new InstantCommand(() -> setOrientation(DriveOrientation.Backwards))));
-	}
-
 }

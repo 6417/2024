@@ -126,4 +126,10 @@ public class ShooterTester extends BShooter {
 				Logitech.a, () -> shooterMaster.set(shootersSpeed));
 		return JoystickBindings2024.tmp_bindings;
 	}
+
+	@Override
+	public void stopMotors() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'stopMotors'");
+	}
 }

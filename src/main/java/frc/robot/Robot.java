@@ -45,16 +45,4 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
     }
-    @Override
-    public void teleopInit() {
-    }
-
-    @Override
-    public void teleopPeriodic() {
-        //exampleServo.setBoundsMicroseconds(2150, 1501, 1500, 1499, 850);
-        //exampleServo.setPulseTimeMicroseconds((int) (000*Controls.joystick.getRightX()));
-        //exampleServo.set(Controls.joystick.getRightX());
-
-        //bindButtonsForSysid();
-    }
 }

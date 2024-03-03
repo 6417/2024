@@ -80,7 +80,7 @@ public class SwerveModule implements Sendable {
             driveSensorInverted.ifPresent(this.drive::setEncoderDirection);
             this.drive.setInverted(driveMotorInverted);
             this.rotation.enableForwardLimitSwitch(limitSwitchPolarity, true);
-            this.drive.setIdleMode(IdleMode.kCoast);
+            this.drive.setIdleMode(IdleMode.kBrake);
             this.rotation.setIdleMode(IdleMode.kBrake);
         }
     }
