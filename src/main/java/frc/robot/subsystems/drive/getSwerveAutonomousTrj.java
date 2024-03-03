@@ -18,6 +18,7 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
     public static getSwerveAutonomousTrj instance;
 
     private TrajectoryConfig getTrajectoryConfig() {
+		assert Config.drive().isSwerve(): "Does assert that the drive() returns a SwerveDrive";
         /*
         var voltageConstraint = new DifferentialDriveVoltageConstraint(
                 new SimpleMotorFeedforward(Constants.Testchassi.ksVolts,

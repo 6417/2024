@@ -27,11 +27,14 @@ import frc.robot.abstraction.baseClasses.BSwerveDrive;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 import frc.robot.commands.drive.commands_2024.DriveCommand2024;
 import frc.robot.commands.drive.commands_2024.SetSpeedFactor;
+import frc.robot.subsystems.visionAutonomous.SwerveDrivePoseEstimator;
+import frc.robot.subsystems.visionAutonomous.Visionprocessing;
 
 // TODO: use velocity PIDs
 public class SwerveDrive2024 extends BSwerveDrive {
 
 	private SwerveKinematics<MountingLocations> kinematics;
+	private SwerveDrivePoseEstimator poseEstimator;
 	private Map<MountingLocations, BSwerveModule> modules = new HashMap<>();
 	private ChassisSpeeds currentChassisSpeeds = new ChassisSpeeds();
 	private double speedFactor = Constants.SwerveDrive.Swerve2024.defaultSpeedFactor;
@@ -44,8 +47,14 @@ public class SwerveDrive2024 extends BSwerveDrive {
 		super.init();
 		setUpSwerveModules();
 		setUpSwerveKinematics();
+		setUpPoseEstimator();
 		zeroRelativeEncoders();
 		setDefaultCommand(new DriveCommand2024());
+	}
+
+	private void setUpPoseEstimator() {
+		double[] pos = Visionprocessing.getInstance().getFieldPos();
+		poseEstimator = SwerveDrivePoseEstimator.fromFieldPos(pos);
 	}
 
 	@Override

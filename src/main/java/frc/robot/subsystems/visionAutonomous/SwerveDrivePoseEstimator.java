@@ -3,38 +3,43 @@ package frc.robot.subsystems.visionAutonomous;
 import static frc.robot.Utils.logerr;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.Config;
 import frc.robot.Constants;
-import frc.robot.abstraction.baseClasses.BSwerveDrive;
 
-public class SwervDrivePoseEstimator extends SubsystemBase {
-	private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+public class SwerveDrivePoseEstimator extends edu.wpi.first.math.estimator.SwerveDrivePoseEstimator {
 
-	private static SwervDrivePoseEstimator instance;
 	private Timer timer;
-	private BSwerveDrive drive;
 
-	public SwervDrivePoseEstimator() {
+	public SwerveDrivePoseEstimator(SwerveDriveKinematics kinematics,
+			SwerveModulePosition[] modulePositions,
+			Rotation2d navxRotation, Pose2d initialPose) {
+		super(
+				kinematics,
+				navxRotation,
+				modulePositions,
+				initialPose);
+
 		if (!Config.drive().isSwerve()) {
 			logerr("Should be a swerve for SwervDrivePoseEstimator");
 			return;
 		}
-		drive = (BSwerveDrive) Config.drive();
-		double[] pos = Visionprocessing.getInstance().getFieldPos();
-
-		swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(drive.getSwerveKinematics().get(),
-				FridoNavx.getInstance().getRotation2d(), Constants.SwerveDrive.Swerve2024.SWERVE_MODULE_POSITIONS,
-				new Pose2d(pos[0], pos[1], new Rotation2d(Units.degreesToRadians(pos[5]))));
 
 		timer = new Timer();
 		timer.start();
+	}
+
+	public static SwerveDrivePoseEstimator fromFieldPos(double[] pos) {
+		return new SwerveDrivePoseEstimator(
+				Config.drive().getSwerveKinematics().get(),
+				Constants.SwerveDrive.Swerve2024.SWERVE_MODULE_POSITIONS,
+				FridoNavx.getInstance().getRotation2d(),
+				new Pose2d(pos[0], pos[1], new Rotation2d(pos[5])));
 	}
 
 	private double get_dist_to_apriltag() {
@@ -51,7 +56,7 @@ public class SwervDrivePoseEstimator extends SubsystemBase {
 
 	public void update() {
 		Rotation2d gyroAngle = FridoNavx.getInstance().getRotation2d();
-		swerveDrivePoseEstimator.updateWithTime(timer.get(), gyroAngle,
+		updateWithTime(timer.get(), gyroAngle,
 				Constants.SwerveDrive.Swerve2024.SWERVE_MODULE_POSITIONS);
 
 		int t = Visionprocessing.getInstance().validTarget();
@@ -61,7 +66,7 @@ public class SwervDrivePoseEstimator extends SubsystemBase {
 			Pose2d pos = new Pose2d(visionPosition[0], visionPosition[1], gyroAngle);
 			double dist = get_dist_to_apriltag();
 			double standDiv = stand_div_vision(dist);
-			swerveDrivePoseEstimator.addVisionMeasurement(pos, timer.get(), VecBuilder.fill(standDiv, standDiv, 0.5));
+			addVisionMeasurement(pos, timer.get(), VecBuilder.fill(standDiv, standDiv, 0.5));
 			// Gyro.getInstance().reset();
 			// if (visionPosition[5] < 0){
 			// visionPosition[5] = visionPosition[5]; //360-
@@ -70,23 +75,7 @@ public class SwervDrivePoseEstimator extends SubsystemBase {
 	}
 
 	public void reset_odometry() {
-		swerveDrivePoseEstimator.resetPosition(FridoNavx.getInstance().getRotation2d(),
+		resetPosition(FridoNavx.getInstance().getRotation2d(),
 				Constants.SwerveDrive.Swerve2024.SWERVE_MODULE_POSITIONS, new Pose2d(0, 0, new Rotation2d(0)));
-	}
-
-	@Override
-	public void periodic() {
-		update();
-	}
-
-	public SwerveDrivePoseEstimator getPoseEstimator() {
-		return swerveDrivePoseEstimator;
-	}
-
-	public static SwervDrivePoseEstimator getInstance() {
-		if (instance == null) {
-			instance = new SwervDrivePoseEstimator();
-		}
-		return instance;
 	}
 }

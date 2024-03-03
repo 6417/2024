@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.Config;
 import frc.robot.commands.SwerdriveAutoCommand;
 import frc.robot.subsystems.drive.getSwerveAutonomousTrj;
 
@@ -25,10 +26,9 @@ public class SwervdriveAuto {
     }
 
     public ChassisSpeeds getVelocitis(Trajectory tra, double t){
-        Pose2d robotPose = SwervDrivePoseEstimator.getInstance().getPoseEstimator().getEstimatedPosition();
         Trajectory.State goal = tra.sample(t);
         Rotation2d rot = goal.poseMeters.getRotation();
-        ChassisSpeeds speeds = controller.calculate(robotPose, goal, rot);
+        ChassisSpeeds speeds = controller.calculate(Config.drive().getPos(), goal, rot);
         return speeds;
     }
 

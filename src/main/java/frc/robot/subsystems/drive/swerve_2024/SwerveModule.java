@@ -153,11 +153,7 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public void driveForward(double speedFactor) {
 		motors.rotation.setPosition(angleToRotationMotorEncoderTicks(desiredState.angle.getRadians()));
-		// if (Math.abs(motors.rotation.getPidTarget() - motors.rotation.getEncoderTicks()) > 0.1) {
-		// 	motors.drive.set(0.0);
-		// } else {
-			motors.drive.set(desiredState.speedMetersPerSecond * speedFactor);
-		// }
+		motors.drive.set(desiredState.speedMetersPerSecond * speedFactor);
 	}
 
 	public void setDriveMotorSpeed(double velocity) {

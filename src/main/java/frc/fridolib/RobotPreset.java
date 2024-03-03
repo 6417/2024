@@ -36,9 +36,7 @@ import frc.robot.subsystems.drive.tankdrive.FourFalconsTankDrive;
 public enum RobotPreset {
 
 	// Enum variants //
-	//
 	Empty(new RobotData(), new EmptyDrive()),
-
 	TestChassisDrive(Constants.Testchassis.robotData, new FourFalconsTankDrive()),
 	Diplodocus(Constants.Diplodocus.robotData, new FourFalconsTankDrive()),
 	Swerve2024(Constants.SwerveDrive.Swerve2024.robotData,
@@ -71,7 +69,6 @@ public enum RobotPreset {
 	}
 
 	// Getters / Accessors //
-
 	public Optional<BDrive> getDrive() {
 		return DRIVE;
 	}
