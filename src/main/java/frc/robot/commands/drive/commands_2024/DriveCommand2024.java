@@ -120,33 +120,36 @@ public class DriveCommand2024 extends Command {
 	}
 
 	private void applySkewLimit(Vector2 vec) {
-		/*vec.x *= vec.x * Math.signum(vec.x);
-		vec.y *= vec.y * Math.signum(vec.y);*/
+		/*
+		 * vec.x *= vec.x * Math.signum(vec.x);
+		 * vec.y *= vec.y * Math.signum(vec.y);
+		 */
 	}
 
 	@Override
 	public void execute() {
 		if (drive.areAllModulesZeroed() && joystickNotInDeadBand()) {
 			JoystickInput xyr = new JoystickInput();
-			xyr.x = -JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getY();
-			xyr.y = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getX();
+			xyr.x = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getX();
+			xyr.y = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getY();
 			xyr.r = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getZ();
 
 			Vector2 xyVector = convertJoystickInputToVector(xyr);
-			if(xyVector.magnitude()<Constants.SwerveDrive.Swerve2024.deadBand){
-				xyVector.x=0;
-				xyVector.y=0;
-			}else{
+			if (xyVector.magnitude() < Constants.SwerveDrive.Swerve2024.deadBand) {
+				xyVector.x = 0;
+				xyVector.y = 0;
+			} else {
 				double mag = xyVector.magnitude();
 				double normalizedMag = MathUtilities.map(mag, Constants.SwerveDrive.Swerve2024.deadBand, 1.0, 0.0, 1.0);
 				xyVector.normalize();
 				xyVector = xyVector.smul(normalizedMag);
 			}
-			//applySkewLimit(xyVector);
-			if(Math.abs(xyr.r)<Constants.SwerveDrive.Swerve2024.deadBand){
-				xyr.r=0;
-			}else{
-				xyr.r = MathUtilities.map(Math.abs(xyr.r), Constants.SwerveDrive.Swerve2024.deadBand, 1, 0, 1) * Math.signum(xyr.r); 
+			// applySkewLimit(xyVector);
+			if (Math.abs(xyr.r) < Constants.SwerveDrive.Swerve2024.deadBand) {
+				xyr.r = 0;
+			} else {
+				xyr.r = MathUtilities.map(Math.abs(xyr.r), Constants.SwerveDrive.Swerve2024.deadBand, 1, 0, 1)
+						* Math.signum(xyr.r);
 			}
 			double rotationSpeed = xyr.r * Constants.SwerveDrive.Swerve2024.maxRotationSpeed;
 			setChassisSpeeds(xyVector, rotationSpeed);

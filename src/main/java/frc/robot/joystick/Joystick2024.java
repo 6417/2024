@@ -31,7 +31,7 @@ public class Joystick2024 implements Sendable {
 	}
 
 	public void setup(State state) {
-		// JoystickHandler.getInstance().setJoystickFactory(ControllerWithState::new);
+		// JoystickHandler.getInstance().setJoystickFactory(XBox360WithState::new);
 		JoystickHandler.getInstance().init(); // Don't ask, it works ;)
 		JoystickHandler.getInstance().setupJoysticks(List.of(
 				Constants.Joystick.primaryJoystickId));
@@ -41,16 +41,13 @@ public class Joystick2024 implements Sendable {
 		IdsWithState.activeState = state;
 
 		// Create bindings //
-		JoystickHandler.getInstance().bind(Config.drive());
 		JoystickHandler.getInstance().bindAll(JoystickBindings2024.getBindingsSwerve2024());
-		// Config.active.getShooter().ifPresent(s ->
-		// JoystickHandler.getInstance().bind(s));
 		JoystickHandler.getInstance().init();
 	}
 
 	public void run() {
 		// if (JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId) != null) {
-		// 	var js = getPrimaryJoystick();
+			// var js = getPrimaryJoystick();
 		// 	if (IdsWithState.activeState == State.ENDGAME && js.getY() > 0.1) {
 		// 		Config.active.getClimber().ifPresent((climber) -> climber.oneStepUp(js.getY()));
 		// 	}

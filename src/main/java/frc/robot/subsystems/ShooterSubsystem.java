@@ -1,13 +1,20 @@
 package frc.robot.subsystems;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.fridowpi.command.FridoCommand;
 import frc.fridowpi.command.SequentialCommandGroup;
@@ -32,10 +39,11 @@ public class ShooterSubsystem extends BShooter {
 
 	public ShooterSubsystem shooter;
 	private double speedRpm = 5000.0;
+	private double targetSpeedRpm = 0;
 	private boolean enabled = true;
 	private double maxVolts = 12.0;
-	public List<Double> speedsMapFeeder;
 	public List<Double> speedsMapShooter;
+	public List<Double> speedsMapFeeder;
 	public List<Double> speedsMapBrushes;
 
 	private final PIDController pid = new PIDController(0.0005, 0.0, 0.0);
@@ -66,13 +74,18 @@ public class ShooterSubsystem extends BShooter {
 
 	public ShooterSubsystem() {
 		shooter = this;
-		speedsMapShooter = getData().speeds;
-		speedsMapBrushes = getData().speeds;
-		speedsMapFeeder = getData().speeds;
+		speedsMapShooter = getData().speeds.subList(0, 3);
+		speedsMapFeeder = getData().speeds.subList(3, 6);
+		speedsMapBrushes = getData().speeds.subList(6, 9);
+		System.out.println("shooter: " + speedsMapShooter);
+		System.out.println("feeder: " + speedsMapFeeder);
+		System.out.println("brushers: " + speedsMapBrushes);
 		motorLeft = new FridoCanSparkMax(getData().motorIds.get(0), MotorType.kBrushless);
 		motorRight = new FridoCanSparkMax(getData().motorIds.get(1), MotorType.kBrushless);
 		motorFeeder = new FridoCanSparkMax(getData().motorIds.get(2), MotorType.kBrushless);
 		motorBrushes = new FridoCanSparkMax(getData().motorIds.get(3), MotorType.kBrushless);
+
+		motorLeft.configEncoder(FridoFeedBackDevice.kBuildin, 1);
 
 		motorLeft.factoryDefault();
 		motorRight.factoryDefault();
@@ -83,7 +96,7 @@ public class ShooterSubsystem extends BShooter {
 
 		motorFeeder.setInverted(true);
 
-		motorRight.setPID(new PidValues(0, 0, 0));
+		motorRight.setPID(new PidValues(0, 0, 0)); // We don't use hardware pids
 		motorLeft.setPID(new PidValues(0, 0, 0));
 
 		motorRight.configEncoder(FridoFeedBackDevice.kBuildin, getData().countsPerRevolution);
@@ -119,17 +132,17 @@ public class ShooterSubsystem extends BShooter {
 	@Override
 	public void run() {
 		if (!enabled) {
-			motorRight.stopMotor();
+			// motorLeft.stopMotor();
 			return;
 		}
 		var output = recalculateMotorOutput();
 		var actualOutput = output / maxVolts;
-		motorRight.setVelocity(actualOutput);
+		// motorLeft.setVelocity(actualOutput);
 	}
 
 	private double recalculateMotorOutput() {
 		var ffOutput = ff.calculate(speedRpm);
-		var pidOutput = pid.calculate(speedRpm, motorRight.getEncoderVelocity());
+		var pidOutput = pid.calculate(speedRpm, motorLeft.getEncoderVelocity());
 		return Math.max(-0.5, pidOutput + ffOutput); // Necessary? set(0) is fine?
 	}
 
@@ -142,7 +155,7 @@ public class ShooterSubsystem extends BShooter {
 			System.out.println("<Warning> Speed too low: " + speed);
 			speed = -1.0;
 		}
-		speedRpm = speed * maxSpeedRpm;
+		targetSpeedRpm = speed * maxSpeedRpm;
 	}
 
 	@Override
@@ -161,6 +174,14 @@ public class ShooterSubsystem extends BShooter {
 		}
 	}
 
+	@Override
+	public void stopMotors() {
+		motorBrushes.stopMotor();
+		motorFeeder.stopMotor();
+		motorLeft.stopMotor();
+		motorRight.stopMotor();
+	}
+
 	public class IntakeCommand extends SequentialCommandGroup {
 		private BShooter shooter;
 
@@ -168,26 +189,71 @@ public class ShooterSubsystem extends BShooter {
 			shooter = Config.active.getShooter().get();
 			addRequirements(shooter);
 			addCommands(
-					new SetBrushMotor(ShooterConfig.INTAKE),
-					new SetShooterMotors(ShooterConfig.INTAKE),
-					new SetFeederMotor(ShooterConfig.INTAKE));
+					new InstantCommand(() -> motorBrushes.set(Constants.Shooter.brushesIntakeSpeed)),
+					new InstantCommand(() -> motorLeft.set(Constants.Shooter.shooterIntakeSpeed)),
+					new InstantCommand(() -> motorFeeder.set(Constants.Shooter.feedIntakeSpeed))
+
+			// new SetBrushMotor(ShooterConfig.INTAKE),
+			// new SetShooterMotors(ShooterConfig.INTAKE),
+			// new SetFeederMotor(ShooterConfig.INTAKE));
+			);
 		}
 	}
 
-	public class ShootSpeaker extends SequentialCommandGroup {
+	public class ShootSpeaker extends ParallelRaceGroup {
 		private BShooter shooter;
 
 		public ShootSpeaker() {
 			shooter = Config.active.getShooter().get();
 			addRequirements(shooter);
 			addCommands(
-					new SetBrushMotor(ShooterConfig.SPEAKER),
-					new SetShooterMotors(ShooterConfig.SPEAKER),
-					new SetFeederMotor(ShooterConfig.SPEAKER),
-					new WaitCommand(3.0),
-					new SetFeederMotor(0),
-					new SetShooterMotors(0),
-					new SetBrushMotor(0));
+					new SequentialCommandGroup(
+							new SetBrushMotor(ShooterConfig.SPEAKER),
+							new Command() {
+								@Override
+								public boolean isFinished() {
+									return false;
+								}
+							}),
+					// Shooter
+					new Command() {
+						@Override
+						public void initialize() {
+							setSpeedPercent(speedsMapShooter.get(ShooterConfig.SPEAKER.asInt()));
+							// enable();
+						}
+
+						@Override
+						public void execute() {
+							speedRpm = motorLeft.getEncoderVelocity();
+							var pidOut = pid.calculate(speedRpm, targetSpeedRpm);
+							var ffOut = ff.calculate(targetSpeedRpm);
+							// System.out.println("shoot out: " + (pidOut + ffOut));
+							motorLeft.setVoltage(pidOut + ffOut);
+						}
+
+						@Override
+						public void end(boolean interrupted) {
+							motorLeft.stopMotor();
+							// disable();
+						}
+
+						@Override
+						public boolean isFinished() {
+							return false;
+						}
+					},
+					// Feeder
+					new SequentialCommandGroup(
+							new WaitCommand(1.0),
+
+							new InstantCommand(() -> System.out.println("feeder set")),
+							new InstantCommand(
+									() -> motorFeeder.set(Constants.Shooter.feedSpeakerSpeed)),
+							new WaitCommand(1.5),
+							new InstantCommand(() -> motorFeeder.stopMotor()),
+							new WaitCommand(1),
+							new InstantCommand(shooter::stopMotors)));
 		}
 	}
 
@@ -196,7 +262,7 @@ public class ShooterSubsystem extends BShooter {
 
 		public ShootAmp() {
 			shooter = Config.active.getShooter().get();
-			addRequirements(shooter);
+			// addRequirements(shooter);
 			addCommands(
 					new SetBrushMotor(ShooterConfig.AMP),
 					new SetShooterMotors(ShooterConfig.AMP),
@@ -228,7 +294,7 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public boolean isFinished() {
-			// return motorRight.pidAtTarget();
+			// return motorLeft.pidAtTarget();
 			return true;
 		}
 	}
@@ -252,7 +318,7 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public boolean isFinished() {
-			// return motorRight.pidAtTarget();
+			// return motorLeft.pidAtTarget();
 			return true;
 		}
 	}
@@ -261,6 +327,7 @@ public class ShooterSubsystem extends BShooter {
 		private double targetSpeed;
 
 		public SetFeederMotor(double speed) {
+			System.out.println("Alo amk");
 			targetSpeed = speed;
 		}
 
@@ -276,7 +343,7 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public void execute() {
-			motorFeeder.setVelocity(targetSpeed);
+			// motorFeeder.setVelocity(targetSpeed);
 		}
 
 		@Override
@@ -293,6 +360,7 @@ public class ShooterSubsystem extends BShooter {
 
 	@Override
 	public void disable() {
+		stopMotors();
 		enabled = false;
 	}
 

@@ -51,7 +51,7 @@ public class Constants {
 	}
 
 	public static final class Global {
-		public static final int idShooterMotor = 0;
+		public static final int neoTicksPerRevolution = 42;
 	}
 
 	public static final class Sysid {
@@ -59,17 +59,17 @@ public class Constants {
 	}
 
 	public static final class Shooter {
-		public static final double shooterIntakeSpeed = -0.6;
-		public static final double brushesIntakeSpeed = 0.6;
+		public static final double shooterIntakeSpeed = -0.4;
 		public static final double feedIntakeSpeed = 0;
+		public static final double brushesIntakeSpeed = -0.2;
 
-		public static final double shooterAmpSpeed = 0.14;
-		public static final double feedAmpSpeed = 0.2;
-		public static final double brushesAmpSpeed = 0.9;
+		public static final double shooterAmpSpeed = 0.12;
+		public static final double feedAmpSpeed = 0.17;
+		public static final double brushesAmpSpeed = 0.6;
 
 		public static final double shooterSpeakerSpeed = 0.7;
-		public static final double feedSpeakerSpeed = shooterSpeakerSpeed;
-		public static final double brushesSpeakerSpeed = 0.0;
+		public static final double feedSpeakerSpeed = 1.0;
+		public static final double brushesSpeakerSpeed = 0;
 
 
 		public static final ShooterData data = new ShooterData(
@@ -77,7 +77,7 @@ public class Constants {
 				List.of(shooterIntakeSpeed, shooterAmpSpeed, shooterSpeakerSpeed,
 					feedIntakeSpeed, feedAmpSpeed, feedSpeakerSpeed,
 					brushesIntakeSpeed, brushesAmpSpeed, brushesSpeakerSpeed),
-				2024);
+				1);
 	}
 
 	public static final class Climber {
@@ -269,13 +269,13 @@ public class Constants {
 			public static final boolean rotateAllModulesInSameDirection = false;
 			public static final boolean joystickYinverted = true;
 			public static final boolean joystickXinverted = true;
-			public static final double deadBand = 0.055;
+			public static final double deadBand = 0.18;
 			public static final double yOffsetMapperMaxVoltage = 12.5;
 			public static final double yOffsetMapperMinVoltage = 9;
 			public static final double finetuningZeroFactor = 0.1;
 			public static final double maxFineTuneOffsetForZeroEncodersCommand = 196608 / 100;
-			public static final double maxSpeedOfDrive = 80;
-			public static final double maxRotationSpeed = 80;
+			public static final double maxSpeedOfDrive = 25;
+			public static final double maxRotationSpeed = 25 * 2 * Math.PI;
 			public static final Map<MountingLocations, frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config> swerveModuleConfigs = new HashMap<>();
 
 			public static frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config commonConfigurations = new frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config();
@@ -324,7 +324,7 @@ public class Constants {
 				commonConfigurations.rotationMotorTicksPerRotation = 47.691;
 				commonConfigurations.drivePID = new PidValues(0.05, 0.0, 0.0, 0.03375);
 				commonConfigurations.drivePID.slotIdX = Optional.of(0);
-				commonConfigurations.rotationPID = new PidValues(1.8, 0.01, 1);
+				commonConfigurations.rotationPID = new PidValues(1.05, 0.01, 1);
 				// commonConfigurations.rotationPID = new PidValues(0.0242, 0., 0);
 				commonConfigurations.rotationPID.slotIdX = Optional.of(0);
 				commonConfigurations.wheelCircumference = 0.1 * Math.PI;
@@ -336,7 +336,7 @@ public class Constants {
 			private static FridolinsMotor driveMotorInitializer(int id) {
 				var motor = new FridoFalcon500v6(id);
 				motor.factoryDefault();
-				motor.asTalonFX().getConfigurator().apply(new Slot0Configs().withKP(0.05).withKS(0.25).withKV(0.15));
+				motor.asTalonFX().getConfigurator().apply(new Slot0Configs().withKP(0.03).withKS(0.18).withKV(0.27));
 				return motor;
 			}
 
@@ -354,7 +354,7 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontLeftConfig = commonConfigurations
 						.clone();
-				frontLeftConfig.absoluteEncoderZeroPosition = 0.03;
+				frontLeftConfig.absoluteEncoderZeroPosition = 0.03 + 0.005;
 				frontLeftConfig.mountingPoint = new Translation2d(-xOffset, yOffset);
 				frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(1);
 				frontLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(11, MotorType.kBrushless);
@@ -364,7 +364,7 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontRightConfig = commonConfigurations
 						.clone();
-				frontRightConfig.absoluteEncoderZeroPosition = 0.35 + 0.5;
+				frontRightConfig.absoluteEncoderZeroPosition = 0.35 + 0.5 - 0.005;
 				frontRightConfig.mountingPoint = new Translation2d(-xOffset, -yOffset);
 				frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(2);
 				frontRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(12, MotorType.kBrushless);
@@ -375,7 +375,7 @@ public class Constants {
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backLeftConfig = commonConfigurations
 
 						.clone();
-				backLeftConfig.absoluteEncoderZeroPosition = 0.47 + 0.5;
+				backLeftConfig.absoluteEncoderZeroPosition = 0.47 + 0.5 - 0.011;
 				backLeftConfig.mountingPoint = new Translation2d(xOffset, yOffset);
 				backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(3);
 				backLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(13, MotorType.kBrushless);
@@ -385,7 +385,7 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backRightConfig = commonConfigurations
 						.clone();
-				backRightConfig.absoluteEncoderZeroPosition = 0.12 + 0.5;
+				backRightConfig.absoluteEncoderZeroPosition = 0.12 + 0.5 - 0.0056;
 				backRightConfig.mountingPoint = new Translation2d(xOffset, -yOffset);
 				backRightConfig.driveMotorInitializer = () -> driveMotorInitializer(4);
 				backRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(14, MotorType.kBrushless);
@@ -421,7 +421,7 @@ public class Constants {
 			public static final Map<MountingLocations, SwerveModule.Config> swerveModuleConfigs = new HashMap<>();
 
 			public static SwerveModule.Config commonConfigurations = new SwerveModule.Config();
-			public static double defaultSpeedFactor = 0.75;
+			public static double defaultSpeedFactor = 0.3;
 			public static double slowSpeedFactor = 0.35;
 			public static double fullSpeed = 1.0;
 

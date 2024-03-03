@@ -17,6 +17,7 @@ import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.motors.utils.PidValues;
 import frc.fridowpi.utils.Vector2;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
+import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 
 public class SwerveModule extends BSwerveModule {
 	// Set variables (TODO: Intergrate into RobotData)
@@ -74,7 +75,7 @@ public class SwerveModule extends BSwerveModule {
 
 			rotation = config.rotationMotorInitializer.get();
 			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);
-			rotation.setIdleMode(IdleMode.kBrake);
+			rotation.setIdleMode(IdleMode.kCoast);
 			rotation.setPID(config.rotationPID);
 
 			absoluteEncoder = new AnalogEncoder(config.absoluteEncoderChannel);
@@ -220,7 +221,7 @@ public class SwerveModule extends BSwerveModule {
 		builder.addDoubleProperty("Current angel", () -> getModuleRotationAngle() * 180 / Math.PI, null);
 		builder.addDoubleProperty("Rotation Encoder Ticks", motors.rotation::getEncoderTicks, null);
 		builder.addDoubleProperty("Absolute Encoder", motors.absoluteEncoder::get, null);
-		builder.addDoubleProperty("Velocity Error", () -> getSpeed() - desiredState.speedMetersPerSecond, null);
+		builder.addDoubleProperty("Velocity Error", () -> Math.abs(getSpeed()) - Math.abs(desiredState.speedMetersPerSecond * 0.075), null);
 		builder.addDoubleProperty("Set abs enc", () -> absPos, val -> {
 			absPos = val;
 			motors.absoluteEncoder.reset();

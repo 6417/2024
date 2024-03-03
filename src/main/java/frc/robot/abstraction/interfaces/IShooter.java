@@ -20,6 +20,8 @@ public interface IShooter extends IModule {
 	// Must be called in a .periodic() function, so that the motors are fed
 	public void run();
 
+	public void stopMotors();
+
 	public void enable();
 
 	public void disable();
