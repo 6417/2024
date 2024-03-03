@@ -42,8 +42,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-		Joystick2024.getInstance().run();
-		Config.active.getShooter().ifPresent(shooter -> shooter.run());
     }
 
 }

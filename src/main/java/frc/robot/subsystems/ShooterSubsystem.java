@@ -74,9 +74,28 @@ public class ShooterSubsystem extends BShooter {
 
 	public ShooterSubsystem() {
 		shooter = this;
+	}
+
+	@Override
+	public void init() {
 		speedsMapShooter = getData().speeds.subList(0, 3);
 		speedsMapFeeder = getData().speeds.subList(3, 6);
 		speedsMapBrushes = getData().speeds.subList(6, 9);
+
+		assert speedsMapShooter == List.of(
+			Constants.Shooter.shooterIntakeSpeed,
+			Constants.Shooter.shooterAmpSpeed,
+			Constants.Shooter.shooterSpeakerSpeed);
+		assert speedsMapFeeder == List.of(
+			Constants.Shooter.feedIntakeSpeed,
+			Constants.Shooter.feedAmpSpeed,
+			Constants.Shooter.feedSpeakerSpeed);
+		assert speedsMapBrushes == List.of(
+			Constants.Shooter.brushesIntakeSpeed,
+			Constants.Shooter.brushesAmpSpeed,
+			Constants.Shooter.brushesSpeakerSpeed);
+		System.out.println("assertion passed");
+		
 		System.out.println("shooter: " + speedsMapShooter);
 		System.out.println("feeder: " + speedsMapFeeder);
 		System.out.println("brushers: " + speedsMapBrushes);
@@ -118,15 +137,6 @@ public class ShooterSubsystem extends BShooter {
 
 		pid.setTolerance(50);
 		pid.setIntegratorRange(-0.015, 0.015);
-	}
-
-	@Override
-	public void init() {
-	}
-
-	@Override
-	public void periodic() {
-		run();
 	}
 
 	@Override
@@ -187,16 +197,30 @@ public class ShooterSubsystem extends BShooter {
 
 		public IntakeCommand() {
 			shooter = Config.active.getShooter().get();
+			var config = ShooterConfig.INTAKE.asInt();
 			addRequirements(shooter);
 			addCommands(
-					new InstantCommand(() -> motorBrushes.set(Constants.Shooter.brushesIntakeSpeed)),
-					new InstantCommand(() -> motorLeft.set(Constants.Shooter.shooterIntakeSpeed)),
-					new InstantCommand(() -> motorFeeder.set(Constants.Shooter.feedIntakeSpeed))
-
-			// new SetBrushMotor(ShooterConfig.INTAKE),
-			// new SetShooterMotors(ShooterConfig.INTAKE),
-			// new SetFeederMotor(ShooterConfig.INTAKE));
+					new InstantCommand(() -> motorBrushes.set(speedsMapBrushes.get(config))),
+					new InstantCommand(() -> motorLeft.set(speedsMapShooter.get(config))),
+					new InstantCommand(() -> motorFeeder.set(speedsMapFeeder.get(config)))
 			);
+		}
+	}
+
+	public class ShootAmp extends SequentialCommandGroup {
+		private BShooter shooter;
+
+		public ShootAmp() {
+			shooter = Config.active.getShooter().get();
+			var config = ShooterConfig.AMP;
+			addRequirements(shooter);
+			addCommands(
+					new SetBrushMotor(config),
+					new SetShooterMotors(config),
+					new WaitCommand(1.0),
+					new SetFeederMotor(config),
+					new WaitCommand(3.0),
+					new InstantCommand(shooter::stopMotors));
 		}
 	}
 
@@ -205,10 +229,11 @@ public class ShooterSubsystem extends BShooter {
 
 		public ShootSpeaker() {
 			shooter = Config.active.getShooter().get();
+			var config = ShooterConfig.SPEAKER;
 			addRequirements(shooter);
 			addCommands(
 					new SequentialCommandGroup(
-							new SetBrushMotor(ShooterConfig.SPEAKER),
+							new SetBrushMotor(config),
 							new Command() {
 								@Override
 								public boolean isFinished() {
@@ -219,8 +244,7 @@ public class ShooterSubsystem extends BShooter {
 					new Command() {
 						@Override
 						public void initialize() {
-							setSpeedPercent(speedsMapShooter.get(ShooterConfig.SPEAKER.asInt()));
-							// enable();
+							setSpeedPercent(speedsMapShooter.get(config.asInt()));
 						}
 
 						@Override
@@ -228,14 +252,12 @@ public class ShooterSubsystem extends BShooter {
 							speedRpm = motorLeft.getEncoderVelocity();
 							var pidOut = pid.calculate(speedRpm, targetSpeedRpm);
 							var ffOut = ff.calculate(targetSpeedRpm);
-							// System.out.println("shoot out: " + (pidOut + ffOut));
 							motorLeft.setVoltage(pidOut + ffOut);
 						}
 
 						@Override
 						public void end(boolean interrupted) {
 							motorLeft.stopMotor();
-							// disable();
 						}
 
 						@Override
@@ -249,29 +271,9 @@ public class ShooterSubsystem extends BShooter {
 
 							new InstantCommand(() -> System.out.println("feeder set")),
 							new InstantCommand(
-									() -> motorFeeder.set(Constants.Shooter.feedSpeakerSpeed)),
+									() -> motorFeeder.set(speedsMapFeeder.get(config.asInt()))),
 							new WaitCommand(1.5),
-							new InstantCommand(() -> motorFeeder.stopMotor()),
-							new WaitCommand(1),
 							new InstantCommand(shooter::stopMotors)));
-		}
-	}
-
-	public class ShootAmp extends SequentialCommandGroup {
-		private BShooter shooter;
-
-		public ShootAmp() {
-			shooter = Config.active.getShooter().get();
-			// addRequirements(shooter);
-			addCommands(
-					new SetBrushMotor(ShooterConfig.AMP),
-					new SetShooterMotors(ShooterConfig.AMP),
-					new WaitCommand(1.0),
-					new SetFeederMotor(ShooterConfig.AMP),
-					new WaitCommand(3.0),
-					new SetFeederMotor(0),
-					new SetShooterMotors(0),
-					new SetBrushMotor(0));
 		}
 	}
 
@@ -283,8 +285,8 @@ public class ShooterSubsystem extends BShooter {
 			targetSpeed = speed;
 		}
 
-		public SetBrushMotor(ShooterConfig speed) {
-			targetSpeed = speedsMapBrushes.get(speed.asInt());
+		public SetBrushMotor(ShooterConfig config) {
+			targetSpeed = speedsMapBrushes.get(config.asInt());
 		}
 
 		@Override
@@ -306,8 +308,8 @@ public class ShooterSubsystem extends BShooter {
 			targetSpeed = speed;
 		}
 
-		public SetShooterMotors(ShooterConfig speed) {
-			targetSpeed = speedsMapShooter.get(speed.asInt());
+		public SetShooterMotors(ShooterConfig config) {
+			targetSpeed = speedsMapShooter.get(config.asInt());
 		}
 
 		@Override
@@ -327,12 +329,11 @@ public class ShooterSubsystem extends BShooter {
 		private double targetSpeed;
 
 		public SetFeederMotor(double speed) {
-			System.out.println("Alo amk");
 			targetSpeed = speed;
 		}
 
-		public SetFeederMotor(ShooterConfig speed) {
-			targetSpeed = speedsMapFeeder.get(speed.asInt());
+		public SetFeederMotor(ShooterConfig config) {
+			targetSpeed = speedsMapFeeder.get(config.asInt());
 		}
 
 		@Override
@@ -377,5 +378,8 @@ public class ShooterSubsystem extends BShooter {
 		builder.addDoubleProperty("ampBrushesSpeed",
 				() -> speedsMapBrushes.get(ShooterConfig.AMP.asInt()),
 				val -> speedsMapBrushes.set(ShooterConfig.AMP.asInt(), val));
+		builder.addDoubleProperty("ampFeederSpeed",
+				() -> speedsMapShooter.get(ShooterConfig.AMP.asInt()),
+				val -> speedsMapShooter.set(ShooterConfig.AMP.asInt(), val));
 	}
 }

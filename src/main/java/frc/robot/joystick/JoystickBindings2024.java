@@ -121,7 +121,8 @@ public class JoystickBindings2024 {
 		tmp_bindings.clear();
 
 		// Drive
-		quickBindWhileHeld(Logitech.lt, () -> new Command() {
+		quickBindToggle(Logitech.lt, 
+		new Command() {
 			@Override
 			public void initialize() {
 				Config.drive().setSpeedFactor(
@@ -133,7 +134,7 @@ public class JoystickBindings2024 {
 						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED));
 			};
 		});
-		quickBindWhileHeld(Logitech.rt, new Command() {
+		quickBindToggle(Logitech.rt, new Command() {
 			@Override
 			public void initialize() {
 				Config.drive().setSpeedFactor(

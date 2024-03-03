@@ -59,13 +59,13 @@ public class Constants {
 	}
 
 	public static final class Shooter {
-		public static final double shooterIntakeSpeed = -0.4;
+		public static final double shooterIntakeSpeed = -0.6;
 		public static final double feedIntakeSpeed = 0;
 		public static final double brushesIntakeSpeed = -0.2;
 
 		public static final double shooterAmpSpeed = 0.12;
 		public static final double feedAmpSpeed = 0.17;
-		public static final double brushesAmpSpeed = 0.6;
+		public static final double brushesAmpSpeed = 0.3;
 
 		public static final double shooterSpeakerSpeed = 0.7;
 		public static final double feedSpeakerSpeed = 1.0;
