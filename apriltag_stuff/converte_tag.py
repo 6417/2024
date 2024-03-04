@@ -12,10 +12,16 @@ json_data = {"fiducials" : []}
 csv_file = open(filename, "r")
 reader = csv.reader(csv_file, delimiter=",")
 
+#field_bright = 8.21 in meters
+#field_with = 16.54
+
+field_bright = 323.25 
+field_with = 651.25
+
 for row in reader:
 	id = int(row[0])
-	x = float(row[1])
-	y = float(row[2])
+	x = float(row[1]) - field_with/2
+	y = float(row[2]) - field_bright/2
 	z = float(row[3])
 	rotation = float(row[4])
 	
@@ -26,25 +32,25 @@ for row in reader:
 		"family": "apriltag3_36h11_classic",
 		"id": id,
 		"size": 160.0,
-		"unique" : 1,
 		"transform" : [
-			q.W(),
+			round(q.W(),5),
 			0,
 			0,
-			units.inchesToMeters(x),
+			round(units.inchesToMeters(x),5),
 			0,
-			q.X(),
+			round(q.X(),5),
 			0,
-			units.inchesToMeters(y),
-			0,
-			0,
-			q.Y(),
-			units.inchesToMeters(z),
+			round(units.inchesToMeters(y),5),
 			0,
 			0,
+			round(q.Y(),5),
+			round(units.inchesToMeters(z),5),
 			0,
-			q.Z()
-			],
+			0,
+			0,
+			round(q.Z(),5)
+		],
+		"unique" : 1,
 		},
 	)
 
