@@ -18,9 +18,9 @@ public class SwervedriveAuto extends Module {
 
 	ChassisSpeeds speeds = new ChassisSpeeds();
     static SwervedriveAuto instance;
-    
+    PIDController pid = new PIDController(11,0.12,0.02);
     private HolonomicDriveController controller = new HolonomicDriveController(
-        new PIDController(5, 0.1, 0.1), new PIDController(1, 0.1, 0.1),
+        pid,pid,
         new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(6.28, 3.14)));
 
     private SwervedriveAuto(){
@@ -35,7 +35,7 @@ public class SwervedriveAuto extends Module {
 
     public void startCommand(){
         Pose2d firstApriltag = new Pose2d(15, 5.5, new Rotation2d(0));
-        Pose2d test = new Pose2d(2, 0,new Rotation2d(0));
+        Pose2d test = new Pose2d(3, 0,new Rotation2d(0));
 
         Trajectory tra = getSwerveAutonomousTrj.getInstance().createTrajectory(firstApriltag, 1);
         

@@ -245,7 +245,7 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public SwerveModulePosition getOdometryPos() {
 		return new SwerveModulePosition(
-				motors.drive.getEncoderTicks() / config.driveMotorTicksPerRotation * config.wheelCircumference * Constants.SwerveDrive.Swerve2024.gearRatio * 72, new Rotation2d(Radians.of(getModuleRotationAngle())));
+				motors.drive.getEncoderTicks() / config.driveMotorTicksPerRotation * config.wheelCircumference * Constants.SwerveDrive.Swerve2024.gearRatio * 65, new Rotation2d(Radians.of(getModuleRotationAngle())));
 	}
 
 	@Override
