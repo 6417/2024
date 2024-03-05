@@ -111,8 +111,6 @@ public class JoystickBindings2024 {
 		// quickBind(Logitech.b, State.ENDGAME, climber::retract);
 		// });
 		//
-		quickBind(Logitech.b, () -> Config.active.getClimber().get().getServo().setSpeed(-0.1));
-		quickBind(Logitech.a, () -> Config.active.getClimber().get().getServo().setSpeed(0.1));
 		Config.active.getClimber().ifPresent(climber -> {
 			quickBind(Logitech.x, State.ENDGAME, climber::release);
 		});

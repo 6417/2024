@@ -50,33 +50,12 @@ public class Joystick2024 implements Sendable {
 
 	public void run() {
 
-		var x = getPrimaryJoystick().getX();
-		var y = getPrimaryJoystick().getY();
-		var tw = getPrimaryJoystick().getTwist();
-		var thr = getPrimaryJoystick().getThrottle();
-		var lt = XBoxJoystick.getLtValue();
-		var rt = XBoxJoystick.getRtValue();
-		
-		if (x > 0.05) {
-			System.out.println("X:" + x);
+		if (JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId) != null) {
+			var js = getPrimaryJoystick();
+			if (IdsWithState.activeState == State.ENDGAME && js.getY() > 0.1) {
+				Config.active.getClimber().ifPresent((climber) -> climber.oneStepUp(js.getY()));
+			}
 		}
-		if (y > 0.05) {
-			System.out.println("Y:" + y);
-		}
-		if (tw > 0.05) {
-			System.out.println("Twist:" + tw);
-		}
-		if (thr > 0.05) {
-			System.out.println("Throttle:" + thr);
-		}
-		if (lt > 0.05) {
-			System.out.println("Left Trigger:" + lt);
-		}
-		if (rt > 0.05) {
-			System.out.println("Right Trigger:" + rt);
-		}
-		
-
 	}
 
 	// Setters //

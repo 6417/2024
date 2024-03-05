@@ -17,7 +17,6 @@ public class Robot extends TimedRobot {
 
     // Aliases for often used singleton instances
     ShuffleboardTab tab;
-    PidTuner pidtuner = new PidTuner();
 
     @Override
     public void robotInit() {
