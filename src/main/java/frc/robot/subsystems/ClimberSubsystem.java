@@ -105,6 +105,12 @@ public class ClimberSubsystem extends BClimber {
 		seilMotorLinks.stopMotor();
 		seilMotorRechts.stopMotor();
 	}
+	
+	@Override
+	public void oneStepUp(double speed) {
+		seilMotorLinks.set(-speed);
+		seilMotorRechts.set(-speed);
+	}
 
 	@Override
 	public ClimberData getData() {
@@ -112,12 +118,6 @@ public class ClimberSubsystem extends BClimber {
 		var motorRight = 21;
 		var servo = -1;
 		return new ClimberData(List.of(motorLeft, motorRight, servo));
-	}
-
-	@Override
-	public void oneStepUp(double speed) {
-		seilMotorLinks.set(-speed);
-		seilMotorRechts.set(-speed);
 	}
 
 	@Override

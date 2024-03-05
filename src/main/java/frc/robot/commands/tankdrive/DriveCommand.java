@@ -18,9 +18,9 @@ public class DriveCommand extends Command {
 
   @Override
   public void execute() {
-    double x = Config.joystick().getX();
+    double rot = Config.joystick().getX();
     double y = Config.joystick().getY();
-    double rot = Config.joystick().getTwist();
+    double x = Config.joystick().getTwist();
     m_subsystem.drive(y, x, rot);
   }
 
