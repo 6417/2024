@@ -79,7 +79,7 @@ public class SwerveModule extends BSwerveModule {
 
 			rotation = config.rotationMotorInitializer.get();
 			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);
-			rotation.setIdleMode(IdleMode.kBrake);
+			rotation.setIdleMode(IdleMode.kCoast);
 			rotation.setPID(config.rotationPID);
 
 			absoluteEncoder = new AnalogEncoder(config.absoluteEncoderChannel);
@@ -220,6 +220,7 @@ public class SwerveModule extends BSwerveModule {
 		builder.addDoubleProperty("Current angel", () -> getModuleRotationAngle() * 180 / Math.PI, null);
 		builder.addDoubleProperty("Rotation Encoder Ticks", motors.rotation::getEncoderTicks, null);
 		builder.addDoubleProperty("Absolute Encoder", motors.absoluteEncoder::get, null);
+		builder.addDoubleProperty("Absolute Pos", motors.absoluteEncoder::getAbsolutePosition, null);
 		builder.addDoubleProperty("Velocity Error", () -> Math.abs(getSpeed()) - Math.abs(desiredState.speedMetersPerSecond * 0.075), null);
 		builder.addDoubleProperty("Set abs enc", () -> absPos, val -> {
 			absPos = val;
@@ -239,7 +240,10 @@ public class SwerveModule extends BSwerveModule {
 
 	@Override
 	public void setIdleMode(IdleMode mode) {
+		/* This function shell not be used at all */
 		motors.drive.setIdleMode(mode);
+		motors.rotation.setIdleMode(mode);
+		this.mode = mode;
 	}
 
 	@Override

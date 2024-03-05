@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.abstraction.baseClasses.BDrive.DriveOrientation;
 import frc.robot.joystick.IdsWithState.State;
@@ -45,4 +46,19 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
     }
+
+	@Override
+	public void teleopInit() {
+		Config.drive().setIdleMode(IdleMode.kBrake);
+	}
+
+	@Override
+	public void autonomousInit() {
+		Config.drive().setIdleMode(IdleMode.kBrake);
+	}
+
+	@Override
+	public void disabledInit() {
+		Config.drive().setIdleMode(IdleMode.kCoast);
+	}
 }
