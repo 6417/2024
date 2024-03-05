@@ -5,18 +5,14 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.abstraction.baseClasses.BDrive.DriveOrientation;
 import frc.robot.joystick.IdsWithState.State;
-import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 import frc.robot.joystick.Joystick2024;
+import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 
 public class Robot extends TimedRobot {
-
-    // Aliases for often used singleton instances
-    ShuffleboardTab tab;
 
     @Override
     public void robotInit() {
