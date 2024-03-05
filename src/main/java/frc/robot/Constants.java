@@ -366,7 +366,7 @@ public class Constants {
 			private static void addModuleSpecificConfigurarions() {
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontLeftConfig = commonConfigurations
 						.clone();
-				frontLeftConfig.absoluteEncoderZeroPosition = 0.0348;
+				frontLeftConfig.absoluteEncoderZeroPosition = 0.5348;
 				frontLeftConfig.mountingPoint = new Translation2d(-xOffset, yOffset);
 				frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(1);
 				frontLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(11, MotorType.kBrushless);
@@ -386,7 +386,7 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backLeftConfig = commonConfigurations
 						.clone();
-				backLeftConfig.absoluteEncoderZeroPosition = 0.9605;
+				backLeftConfig.absoluteEncoderZeroPosition = 0.4605;
 				backLeftConfig.mountingPoint = new Translation2d(xOffset, yOffset);
 				backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(3);
 				backLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(13, MotorType.kBrushless);
