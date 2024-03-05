@@ -33,4 +33,6 @@ public abstract class BSwerveModule implements Sendable, ISwerveModule {
 	abstract public void zeroRelativeEncoder();
 
 	abstract public void zeroAbsoluteEncoder();
+
+	abstract public double getWheelSpeed();
 }

@@ -7,6 +7,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.robot.joystick.JoystickBindings2024;
@@ -41,11 +44,15 @@ public abstract class BTankDrive extends BDrive {
 		return Optional.empty();
 	}
 
+    public Measure<Velocity<Distance>> getSwerveWheelSpeeds() {
+		return null;
+	}
+
 	public void resetOdometry() {
 		poseEstimator.reset();
 	}
 
-    public SwerveModulePosition[] getOdometryPoses() {
+    public SwerveModulePosition[] getModulePositions() {
 		throw new UnsupportedOperationException("Unimplemented method 'getOdometryPoses' for tankdrive");
 	}
 

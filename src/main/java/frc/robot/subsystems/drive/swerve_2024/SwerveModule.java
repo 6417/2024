@@ -277,4 +277,9 @@ public class SwerveModule extends BSwerveModule {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'isInitialized'");
 	}
+
+	@Override
+	public double getWheelSpeed() {
+		return motors.drive.getEncoderVelocity() * Constants.SwerveDrive.Swerve2024.gearRatio * config.wheelCircumference;
+	}
 }

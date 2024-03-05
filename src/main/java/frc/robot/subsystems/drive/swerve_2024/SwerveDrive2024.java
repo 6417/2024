@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drive.swerve_2024;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +13,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -184,7 +189,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	}
 
 	@Override
-	public SwerveModulePosition[] getOdometryPoses() {
+	public SwerveModulePosition[] getModulePositions() {
 		return modules.values().stream().map(BSwerveModule::getOdometryPos).toArray(SwerveModulePosition[]::new);
 	}
 
@@ -192,5 +197,10 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	public void drive(double v_x, double v_y, double rot) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'drive'");
+	}
+
+	@Override
+	public Measure<Velocity<Distance>> getSwerveWheelSpeeds() {
+		return MetersPerSecond.of(modules.get(MountingLocations.FrontLeft).getWheelSpeed());
 	}
 }
