@@ -8,15 +8,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.joystick.IJoystickButtonId;
-import frc.fridowpi.joystick.joysticks.Xbox360;
-import frc.fridowpi.joystick.joysticks.POV;
 import frc.fridowpi.joystick.joysticks.Logitech;
+import frc.fridowpi.joystick.joysticks.POV;
+import frc.fridowpi.joystick.joysticks.Xbox360;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
-import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
 import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 
 /**
@@ -28,6 +27,53 @@ public class JoystickBindings2024 {
 
 	public static JoystickBindings2024 getInstance() {
 		return instance;
+	}
+
+	public static List<Binding> getBindingsSwerve2024() {
+		tmp_bindings.clear();
+
+		// Drive
+		quickBindToggle(Logitech.lt, 
+				() -> Config.drive().setSpeedFactor(
+						Config.data().drive().speedFactors().get(SpeedFactor.FAST)),
+				() -> Config.drive().setSpeedFactor(
+						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED)));
+		quickBindToggle(Logitech.rt,
+				() -> Config.drive().setSpeedFactor(
+						Config.data().drive().speedFactors().get(SpeedFactor.SLOW)),
+				() -> Config.drive().setSpeedFactor(
+						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED)));
+
+		quickBind(Logitech.back, new InstantCommand(() -> {
+					FridoNavx.getInstance().reset();
+					Config.drive().resetOdometry();
+					System.out.println("<<<[zeroed]>>>");
+		}));
+
+		// TODO: make better CONFIG
+		// Config.active.getShooter().ifPresent(s -> {
+		// 	quickBind(Logitech.a, () -> s.shoot(ShooterConfig.INTAKE));
+		// 	quickBind(Logitech.b, () -> s.shoot(ShooterConfig.AMP));
+		// 	quickBind(Logitech.x, s::stopMotors);
+		// 	quickBind(Logitech.y, () -> s.shoot(ShooterConfig.SPEAKER));
+		// });
+		quickBind(Logitech.lb, () -> SwervedriveAuto.getInstance().startCommand());
+
+		// Config.active.getClimber().ifPresent(climber -> {
+		// quickBind(Xbox360.y, State.ENDGAME, climber::oneStepUp);
+		// quickBind(Xbox360.a, State.ENDGAME, climber::oneStepDown);
+		// quickBind(Xbox360.x, State.ENDGAME, climber::release);
+		// quickBind(Xbox360.b, State.ENDGAME, climber::retract);
+		// });
+
+		quickBind(Xbox360.y, () ->
+			Config.active.getClimber().get().getServo().setSpeed(0.1));
+		quickBind(Xbox360.x, () ->
+			Config.active.getClimber().get().getServo().setSpeed(0));
+		quickBind(Xbox360.a, () ->
+			Config.active.getClimber().get().getServo().setSpeed(-0.1));
+
+		return tmp_bindings;
 	}
 
 	public static List<Binding> getBindingsLogitechTest() {
@@ -114,51 +160,6 @@ public class JoystickBindings2024 {
 		Config.active.getClimber().ifPresent(climber -> {
 			quickBind(Logitech.x, State.ENDGAME, climber::release);
 		});
-
-		return tmp_bindings;
-	}
-
-	public static List<Binding> getBindingsSwerve2024() {
-		tmp_bindings.clear();
-
-		// Drive
-		quickBindToggle(Logitech.lt, 
-				() -> Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.FAST)),
-				() -> Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED)));
-		quickBindToggle(Logitech.rt,
-				() -> Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.SLOW)),
-				() -> Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED)));
-
-		quickBind(Logitech.back, new InstantCommand(() -> {
-					FridoNavx.getInstance().reset();
-					Config.drive().resetOdometry();
-					System.out.println("<<<[zeroed]>>>");
-		}));
-
-		// TODO: make better CONFIG
-		Config.active.getShooter().ifPresent(s -> {
-			quickBind(Logitech.a, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBind(Logitech.b, () -> s.shoot(ShooterConfig.AMP));
-			quickBind(Logitech.x, s::stopMotors);
-			quickBind(Logitech.y, () -> s.shoot(ShooterConfig.SPEAKER));
-		});
-		quickBind(Logitech.lb, () -> SwervedriveAuto.getInstance().startCommand());
-
-		// Config.active.getClimber().ifPresent(climber -> {
-		// quickBind(Xbox360.y, State.ENDGAME, climber::oneStepUp);
-		// quickBind(Xbox360.a, State.ENDGAME, climber::oneStepDown);
-		// quickBind(Xbox360.x, State.ENDGAME, climber::release);
-		// quickBind(Xbox360.b, State.ENDGAME, climber::retract);
-		// });
-
-		// quickBind(Xbox360.b, () ->
-		// Config.active.getClimber().get().getServo().setSpeed(-0.1));
-		// quickBind(Xbox360.a, () ->
-		// Config.active.getClimber().get().getServo().setSpeed(0.1));
 
 		return tmp_bindings;
 	}

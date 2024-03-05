@@ -35,7 +35,7 @@ public class SwervedriveAuto extends Module {
 
     public void startCommand(){
         Pose2d firstApriltag = new Pose2d(15, 5.5, new Rotation2d(0));
-        Pose2d test = new Pose2d(2, 0,new Rotation2d(0));
+        Pose2d test = new Pose2d(1, 0,new Rotation2d(0));
 
         Trajectory tra = getSwerveAutonomousTrj.getInstance().createTrajectory(firstApriltag, 1);
         
