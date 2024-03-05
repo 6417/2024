@@ -56,18 +56,19 @@ public class ClimberSubsystem extends BClimber {
 		new SequentialCommandGroup(
 				new ParallelCommandGroup(
 						new InstantCommand(
-								() -> this.servoLinks.setAngle(Constants.Climber.maxServoPos)),
+								() -> this.servoLinks.setAngle(Constants.Climber.servoReleasePositionLeft)),
 						new InstantCommand(
-								() -> this.servoRechts.setAngle(Constants.Climber.maxServoPos))));
+								() -> this.servoRechts.setAngle(Constants.Climber.servoReleasePositionRight)))).schedule();
 	}
 
+	@Override
 	public void lock() {
 		new SequentialCommandGroup(
 				new ParallelCommandGroup(
 						new InstantCommand(
-							() -> this.servoLinks.setAngle(0)),
+							() -> this.servoLinks.setAngle(Constants.Climber.servoLockPositionLeft)),
 						new InstantCommand(
-							() -> this.servoRechts.setAngle(0))));
+							() -> this.servoRechts.setAngle(Constants.Climber.servoLockPositionRight)))).schedule();
 	}
 
 	@Override

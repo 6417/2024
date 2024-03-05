@@ -11,6 +11,8 @@ import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.joystick.IJoystick;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.JoystickHandler;
+import frc.fridowpi.joystick.XBoxJoystick;
+import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.joystick.IdsWithState.State;
 import frc.robot.subsystems.drive.getAutonomousTrajectory;
@@ -41,7 +43,7 @@ public class Joystick2024 implements Sendable {
 		IdsWithState.activeState = state;
 
 		// Create bindings //
-		JoystickHandler.getInstance().bindAll(JoystickBindings2024.getBindingsLogitechTest());
+		JoystickHandler.getInstance().bindAll(JoystickBindings2024.getBindingsSwerve2024());
 		JoystickHandler.getInstance().init();
 	}
 

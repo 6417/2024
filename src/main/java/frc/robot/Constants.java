@@ -97,6 +97,10 @@ public class Constants {
 
 		public static final double maxServoPos = 130;
 		public static final double servoZeroTollerance = 5.0;
+		public static final double servoReleasePositionLeft = 30;
+		public static final double servoReleasePositionRight = 30;
+		public static final double servoLockPositionLeft = 0;
+		public static final double servoLockPositionRight = 0;
 	}
 
 	public static final class DriveCommon {

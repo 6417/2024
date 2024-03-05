@@ -27,7 +27,7 @@ public class DriveCommand2024 extends Command {
 		result |= Constants.SwerveDrive.Swerve2024.deadBand < Math
 				.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getY());
 		result |= Constants.SwerveDrive.Swerve2024.deadBand < Math
-				.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getZ());
+				.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getTwist());
 		return result;
 	}
 
@@ -77,10 +77,10 @@ public class DriveCommand2024 extends Command {
 	private double getJoystickRotationWithAppliedDeadBand() {
 		boolean rotaionNotInDeadBand = Math
 				.abs(JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId)
-						.getZ()) > Constants.SwerveDrive.Swerve2024.deadBand;
+						.getTwist()) > Constants.SwerveDrive.Swerve2024.deadBand;
 		if (rotaionNotInDeadBand) {
 			return MathUtilities.map(
-					JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getZ(),
+					JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getTwist(),
 					Constants.SwerveDrive.Swerve2024.deadBand, 1.0, 0.0, 1.0);
 		}
 		return 0.0;
@@ -132,7 +132,7 @@ public class DriveCommand2024 extends Command {
 			JoystickInput xyr = new JoystickInput();
 			xyr.x = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getX();
 			xyr.y = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getY();
-			xyr.r = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getZ();
+			xyr.r = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getTwist();
 
 			Vector2 xyVector = convertJoystickInputToVector(xyr);
 			if (xyVector.magnitude() < Constants.SwerveDrive.Swerve2024.deadBand) {
