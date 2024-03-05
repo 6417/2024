@@ -48,9 +48,9 @@ public class getAutonomousTrajectory {
 		List<Translation2d> list_translationd2 = new ArrayList<Translation2d>();
 
 		Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(
-				TankDrivePoseEstimator.getInstance().m_poseEstimator.getEstimatedPosition(),
+				Config.drive().getPos(),
 				list_translationd2,
-				TankDrivePoseEstimator.getInstance().m_poseEstimator.getEstimatedPosition()
+				Config.drive().getPos()
 						.plus(new Transform2d(new Translation2d(1, 0), new Rotation2d(0))),
 				conf);
 

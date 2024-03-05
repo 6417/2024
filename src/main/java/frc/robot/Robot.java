@@ -10,14 +10,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.abstraction.baseClasses.BDrive.DriveOrientation;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 import frc.robot.joystick.Joystick2024;
-import frc.robot.subsystems.drive.PidTuner;
 
 public class Robot extends TimedRobot {
 
     // Aliases for often used singleton instances
     ShuffleboardTab tab;
-    PidTuner pidtuner = new PidTuner();
 
     @Override
     public void robotInit() {
@@ -34,6 +33,7 @@ public class Robot extends TimedRobot {
         Shuffleboard.getTab("Drive").add(Config.drive().getDefaultCommand());
         Shuffleboard.getTab("Joystick").add("joystick", Joystick2024.getInstance());
         Config.active.getShooter().ifPresent(shooter -> Shuffleboard.getTab("Shooter").add(shooter));
+        Shuffleboard.getTab("Auto").add(SwervedriveAuto.getInstance());
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
 
         SignalLogger.setPath("/home/lvuser/logs");

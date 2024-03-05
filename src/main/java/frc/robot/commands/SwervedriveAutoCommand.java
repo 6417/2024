@@ -1,19 +1,18 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.visionAutonomous.SwervdriveAuto;
+import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Config;
 
-public class SwerdriveAutoCommand extends Command {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+public class SwervedriveAutoCommand extends Command {
 
   Timer timer = new Timer();
   Trajectory trajectory;
 
-  public SwerdriveAutoCommand(Trajectory tra) {
+  public SwervedriveAutoCommand(Trajectory tra) {
     trajectory = tra;
     //addRequirements(subsystem);
   }
@@ -26,7 +25,7 @@ public class SwerdriveAutoCommand extends Command {
   @Override
   public void execute() {
     double t = timer.get();
-    ChassisSpeeds speeds = SwervdriveAuto.getInstance().getVelocitis(trajectory, t);
+    ChassisSpeeds speeds = SwervedriveAuto.getInstance().getVelocities(trajectory, t);
     Config.drive().drive(speeds);
   }
 
@@ -35,6 +34,7 @@ public class SwerdriveAutoCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    // return timer.hasElapsed(trajectory.getTotalTimeSeconds());
+	return false;
   }
 }

@@ -8,34 +8,33 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Config;
 import frc.fridowpi.sensors.FridoNavx;
 
-public class TankDrivePoseEstimator {
-	public DifferentialDrivePoseEstimator m_poseEstimator;
-
+public class TankDrivePoseEstimator extends DifferentialDrivePoseEstimator {
 	public static TankDrivePoseEstimator instance;
 
 	private TankDrivePoseEstimator() {
-		assert Config.drive().isSwerve();
-
-		m_poseEstimator = new DifferentialDrivePoseEstimator(
-				Config.drive().getDifferentialKinematics().get(),
+		super(Config.drive().getDifferentialKinematics().get(),
 				FridoNavx.getInstance().getRotation2d(),
 				Config.drive().getLeftEncoderPos(),
 				Config.drive().getRightEncoderPos(),
 				new Pose2d(),
 				VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
 				VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+		assert Config.drive().isSwerve();
 	}
 
-	public void updatePoseEstimator() {
-		m_poseEstimator.update(
+	public void update() {
+		update(
 				FridoNavx.getInstance().getRotation2d(),
 				Config.drive().getLeftEncoderPos(),
 				Config.drive().getRightEncoderPos());
 	}
 
+	public void reset() {
+	}
+
 	// Atention not clear witch values are releveant for the pose reseting
 	private void setPos(Rotation2d rot, double weelLeftPosition, double weelRigthPosition, Pose2d pos) {
-		m_poseEstimator.resetPosition(rot, weelLeftPosition, weelRigthPosition, pos);
+		resetPosition(rot, weelLeftPosition, weelRigthPosition, pos);
 	}
 
 	private void visionProcessing() {

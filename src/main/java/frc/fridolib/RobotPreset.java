@@ -65,7 +65,7 @@ public enum RobotPreset {
 		DRIVE.ifPresent(s -> s.init());
 		SHOOTER.ifPresent(s -> s.init());
 		CLIMBER.ifPresent(s -> s.init());
-		SINGLE_SWERVE_MODULE.ifPresent(s -> s.init());
+		// SINGLE_SWERVE_MODULE.ifPresent(s -> s.init());
 	}
 
 	// Getters / Accessors //

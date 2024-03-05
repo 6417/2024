@@ -27,7 +27,7 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
                 Tankdrive.getInstance().m_kinematics, 10);
         */
         SwerveDriveKinematicsConstraint constraint = new SwerveDriveKinematicsConstraint(
-            Config.drive().getSwerveKinematics().get(), 1);//const
+            Config.drive().getSwerveKinematics().get(), 2);//const
 
         TrajectoryConfig config = new TrajectoryConfig(Constants.Testchassis.PathWeaver.kMaxVMetersPerSecond,
                 Constants.Testchassis.PathWeaver.kMaxAccMetersPerSecond)

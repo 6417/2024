@@ -2,11 +2,15 @@ package frc.robot.abstraction.interfaces;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.WheelPositions;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,6 +42,8 @@ public interface IDrive extends IModule, Sendable, JoystickBindable {
 
     public void setIdleMode(IdleMode mode);
 
+	public void resetOdometry();
+
     // Sysid tuning (not really necessary)
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction);
 
@@ -47,6 +53,8 @@ public interface IDrive extends IModule, Sendable, JoystickBindable {
 	public <T> FridolinsMotor getMotor(T motor);
 
     public Pose2d getPos();
+
+    public SwerveModulePosition[] getOdometryPoses(); // For swerve drive: the positions of all modules
 
     public double getLeftEncoderPos();
 

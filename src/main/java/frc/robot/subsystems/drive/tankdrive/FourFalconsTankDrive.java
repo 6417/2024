@@ -27,13 +27,11 @@ import frc.robot.Controls;
 import frc.robot.abstraction.baseClasses.BTankDrive;
 import frc.robot.commands.tankdrive.DriveCommand;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
-import frc.robot.subsystems.visionAutonomous.TankDrivePoseEstimator;
 
 public class FourFalconsTankDrive extends BTankDrive {
 
 	SysIdRoutineLog log;
 
-	public DifferentialDriveKinematics m_kinematics;
 	private DifferentialDrive differentialDrive;
 
 	public FourFalconsTankDrive() {
@@ -69,7 +67,7 @@ public class FourFalconsTankDrive extends BTankDrive {
 				motors.getMotor(MotorRole.LeftMaster)::set,
 				motors.getMotor(MotorRole.RightMaster)::set);
 
-		m_kinematics = new DifferentialDriveKinematics(Config.data().hardware().wheelCircumference());
+		kinematics = new DifferentialDriveKinematics(Config.data().hardware().wheelCircumference());
 
 		setDefaultCommand(new DriveCommand(this));
 	}
@@ -148,7 +146,7 @@ public class FourFalconsTankDrive extends BTankDrive {
 
 	@Override
 	public Optional<DifferentialDriveKinematics> getDifferentialKinematics() {
-		return Optional.of(m_kinematics);
+		return Optional.of(kinematics);
 	}
 
 	@Override
@@ -165,7 +163,7 @@ public class FourFalconsTankDrive extends BTankDrive {
 
 	@Override
 	public Pose2d getPos() {
-		return TankDrivePoseEstimator.getInstance().m_poseEstimator.getEstimatedPosition();
+		return poseEstimator.getEstimatedPosition();
 	}
 
 	@Override

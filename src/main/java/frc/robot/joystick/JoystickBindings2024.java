@@ -17,7 +17,7 @@ import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
 import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
-import frc.robot.subsystems.visionAutonomous.SwervdriveAuto;
+import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 
 /**
  * JoystickBindings2024
@@ -123,33 +123,21 @@ public class JoystickBindings2024 {
 
 		// Drive
 		quickBindToggle(Logitech.lt, 
-		new Command() {
-			@Override
-			public void initialize() {
-				Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.FAST));
-			};
-			@Override
-			public void end(boolean interrupted) {
-				Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED));
-			};
-		});
-		quickBindToggle(Logitech.rt, new Command() {
-			@Override
-			public void initialize() {
-				Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.SLOW));
-			};
-			@Override
-			public void end(boolean interrupted) {
-				Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED));
-			};
-		});
+				() -> Config.drive().setSpeedFactor(
+						Config.data().drive().speedFactors().get(SpeedFactor.FAST)),
+				() -> Config.drive().setSpeedFactor(
+						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED)));
+		quickBindToggle(Logitech.rt,
+				() -> Config.drive().setSpeedFactor(
+						Config.data().drive().speedFactors().get(SpeedFactor.SLOW)),
+				() -> Config.drive().setSpeedFactor(
+						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED)));
 
-		quickBind(Logitech.back, new InstantCommand(() -> FridoNavx.getInstance().reset())
-				.andThen(() -> System.out.println("<<<[zeroing]>>>")));
+		quickBind(Logitech.back, new InstantCommand(() -> {
+					FridoNavx.getInstance().reset();
+					Config.drive().resetOdometry();
+					System.out.println("<<<[zeroed]>>>");
+		}));
 
 		// TODO: make better CONFIG
 		Config.active.getShooter().ifPresent(s -> {
@@ -158,7 +146,7 @@ public class JoystickBindings2024 {
 			quickBind(Logitech.x, s::stopMotors);
 			quickBind(Logitech.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
-		quickBind(Logitech.lb, SwervdriveAuto.getInstance()::startCommand);
+		quickBind(Logitech.lb, () -> SwervedriveAuto.getInstance().startCommand());
 
 		// Config.active.getClimber().ifPresent(climber -> {
 		// quickBind(Xbox360.y, State.ENDGAME, climber::oneStepUp);
@@ -206,8 +194,11 @@ public class JoystickBindings2024 {
 	}
 
 	// Toggle
-	public static void quickBindToggle(IJoystickButtonId button, Command cmd) {
-		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::toggleOnTrue, cmd));
+	public static void quickBindToggle(IJoystickButtonId button, Runnable on, Runnable off) {
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue, 
+					new InstantCommand(on)));
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onFalse,
+					new InstantCommand(off)));
 	}
 
 	// If using different States

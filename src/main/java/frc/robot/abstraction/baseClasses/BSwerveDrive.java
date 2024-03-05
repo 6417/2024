@@ -3,15 +3,45 @@ package frc.robot.abstraction.baseClasses;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import frc.fridowpi.utils.Algorithms;
+import frc.robot.Constants;
+import frc.robot.subsystems.drive.swerve_2024.SwerveKinematics;
+import frc.robot.subsystems.visionAutonomous.CustomSwerveDrivePoseEstimator;
+import frc.robot.subsystems.visionAutonomous.Visionprocessing;
 
 public abstract class BSwerveDrive extends BDrive {
 	// TODO: clean up here
+	protected SwerveKinematics<MountingLocations> kinematics;
+	protected CustomSwerveDrivePoseEstimator poseEstimator;
+
+
+	@Override
+	public void init() {
+		super.init();
+		setUpSwerveKinematics(); // Must be called before setUpPoseEstimator()
+		setUpPoseEstimator();
+	}
+
+	private void setUpSwerveKinematics() {
+		Map<MountingLocations, Translation2d> mountingPoints = Constants.SwerveDrive.Swerve2024.swerveModuleConfigs
+				.entrySet().stream().map(Algorithms.mapEntryFunction(config -> config.mountingPoint))
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		kinematics = new SwerveKinematics<MountingLocations>(mountingPoints);
+	}
+
+	private void setUpPoseEstimator() {
+		double[] pos = Visionprocessing.getInstance().getFieldPos();
+		poseEstimator = CustomSwerveDrivePoseEstimator.fromFieldPos(pos);
+	}
 
 	public DriveOrientation getDriveMode() {
 		return DriveOrientation.Backwards;
@@ -23,17 +53,11 @@ public abstract class BSwerveDrive extends BDrive {
 	public void drive(ChassisSpeeds requesteSpeeds) {
 	}
 
-	@Override
-	public void drive(double v_x, double v_y, double rot) {
-		// TODO convert call to drive(ChassisSpeeds)
-		throw new UnsupportedOperationException("Unimplemented method 'drive'");
-	}
-
 	public void rotateAllModules(double speed) {
 	}
 
-	@Override
-	public void stopAllMotors() {
+	public void resetOdometry() {
+		poseEstimator.resetOdometry();
 	}
 
 	public void setRotationToHome(MountingLocations moduleLocation) {
@@ -74,6 +98,11 @@ public abstract class BSwerveDrive extends BDrive {
 	}
 
 	@Override
+	public Optional<SwerveDriveKinematics> getSwerveKinematics() {
+		return Optional.of(kinematics);
+	}
+
+	@Override
 	public Optional<DifferentialDriveKinematics> getDifferentialKinematics() {
 		return Optional.empty();
 	}
@@ -83,10 +112,15 @@ public abstract class BSwerveDrive extends BDrive {
 		return Optional.empty();
 	}
 
+	// TODO: make optional
 	@Override
-	public Optional<SwerveDriveKinematics> getSwerveKinematics() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getSwerveKinematics'");
+	public double getLeftEncoderPos() {
+		throw new UnsupportedOperationException("Unimplemented method 'getLeftEncoderPos'");
+	}
+
+	@Override
+	public double getRightEncoderPos() {
+		throw new UnsupportedOperationException("Unimplemented method 'getRightEncoderPos'");
 	}
 
 	@Override

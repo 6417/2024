@@ -1,21 +1,26 @@
 package frc.robot.subsystems.drive.swerve_2024;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import frc.fridowpi.module.IModule;
 import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.motors.utils.PidValues;
 import frc.fridowpi.utils.Vector2;
+import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 
 public class SwerveModule extends BSwerveModule {
@@ -69,12 +74,12 @@ public class SwerveModule extends BSwerveModule {
 			drive.configEncoder(config.driveEncoderType, (int) config.driveMotorTicksPerRotation);
 			config.driveSensorInverted.ifPresent(this.drive::setEncoderDirection);
 			drive.setInverted(config.driveMotorInverted);
-			drive.setIdleMode(IdleMode.kCoast);
+			drive.setIdleMode(IdleMode.kBrake);
 			//drive.setPID(config.drivePID);
 
 			rotation = config.rotationMotorInitializer.get();
 			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);
-			rotation.setIdleMode(IdleMode.kCoast);
+			rotation.setIdleMode(IdleMode.kBrake);
 			rotation.setPID(config.rotationPID);
 
 			absoluteEncoder = new AnalogEncoder(config.absoluteEncoderChannel);
@@ -235,5 +240,41 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public void setIdleMode(IdleMode mode) {
 		motors.drive.setIdleMode(mode);
+	}
+
+	@Override
+	public SwerveModulePosition getOdometryPos() {
+		return new SwerveModulePosition(
+				motors.drive.getEncoderTicks() / config.driveMotorTicksPerRotation * config.wheelCircumference * Constants.SwerveDrive.Swerve2024.gearRatio * 72, new Rotation2d(Radians.of(getModuleRotationAngle())));
+	}
+
+	@Override
+	public Collection<IModule> getAllSubModules() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getAllSubModules'");
+	}
+
+	@Override
+	public Collection<IModule> getSubModules() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getSubModules'");
+	}
+
+	@Override
+	public void registerSubmodule(IModule... subModule) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'registerSubmodule'");
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'init'");
+	}
+
+	@Override
+	public boolean isInitialized() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'isInitialized'");
 	}
 }

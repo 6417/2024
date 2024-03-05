@@ -11,7 +11,6 @@ import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.joystick.IJoystick;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.JoystickHandler;
-import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.joystick.IdsWithState.State;
 

@@ -8,8 +8,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,38 +17,33 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.utils.Algorithms;
+import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BSwerveDrive;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 import frc.robot.commands.drive.commands_2024.DriveCommand2024;
-import frc.robot.subsystems.visionAutonomous.SwerveDrivePoseEstimator;
-import frc.robot.subsystems.visionAutonomous.Visionprocessing;
 
 // TODO: use velocity PIDs
 public class SwerveDrive2024 extends BSwerveDrive {
 
-	private SwerveKinematics<MountingLocations> kinematics;
-	private SwerveDrivePoseEstimator poseEstimator;
 	private Map<MountingLocations, BSwerveModule> modules = new HashMap<>();
 	private ChassisSpeeds currentChassisSpeeds = new ChassisSpeeds();
-	private double speedFactor = Constants.SwerveDrive.Swerve2024.defaultSpeedFactor;
+	private double speedFactor;
 
-	public SwerveDrive2024() {
-	}
+	public SwerveDrive2024() { }
 
 	@Override
 	public void init() {
 		super.init();
+		speedFactor = Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED);
 		setUpSwerveModules();
-		setUpSwerveKinematics();
-		setUpPoseEstimator();
 		zeroRelativeEncoders();
 		setDefaultCommand(new DriveCommand2024());
 	}
 
-	private void setUpPoseEstimator() {
-		double[] pos = Visionprocessing.getInstance().getFieldPos();
-		poseEstimator = SwerveDrivePoseEstimator.fromFieldPos(pos);
+	@Override
+	public void periodic() {
+		poseEstimator.update();
 	}
 
 	@Override
@@ -59,13 +54,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	@Override
 	public void zeroAbsoluteEncoders() {
 		forEachModuleEntry(moduleEntry -> moduleEntry.getValue().zeroAbsoluteEncoder());
-	}
-
-	private void setUpSwerveKinematics() {
-		Map<MountingLocations, Translation2d> mountingPoints = Constants.SwerveDrive.Swerve2024.swerveModuleConfigs
-				.entrySet().stream().map(Algorithms.mapEntryFunction(config -> config.mountingPoint))
-				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-		kinematics = new SwerveKinematics<MountingLocations>(mountingPoints);
 	}
 
 	private void setUpSwerveModules() {
@@ -190,20 +178,19 @@ public class SwerveDrive2024 extends BSwerveDrive {
 		throw new UnsupportedOperationException("Unimplemented method 'getMotor'");
 	}
 
-	// TODO: Laurin
 	@Override
 	public Pose2d getPos() {
-		throw new UnsupportedOperationException("Unimplemented method 'getPos'");
-	}
-
-	// TODO: Is it needed for Swerve?
-	@Override
-	public double getLeftEncoderPos() {
-		throw new UnsupportedOperationException("Unimplemented method 'getLeftEncoderPos'");
+		return poseEstimator.getEstimatedPosition();
 	}
 
 	@Override
-	public double getRightEncoderPos() {
-		throw new UnsupportedOperationException("Unimplemented method 'getRightEncoderPos'");
+	public SwerveModulePosition[] getOdometryPoses() {
+		return modules.values().stream().map(BSwerveModule::getOdometryPos).toArray(SwerveModulePosition[]::new);
+	}
+
+	@Override
+	public void drive(double v_x, double v_y, double rot) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'drive'");
 	}
 }
