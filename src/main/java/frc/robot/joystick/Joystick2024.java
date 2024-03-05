@@ -13,6 +13,7 @@ import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.JoystickHandler;
 import frc.robot.Constants;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.subsystems.drive.getAutonomousTrajectory;
 
 // Singleton that manages the joystick configuration of 2024 //
 public class Joystick2024 implements Sendable {
@@ -30,7 +31,7 @@ public class Joystick2024 implements Sendable {
 	}
 
 	public void setup(State state) {
-		// JoystickHandler.getInstance().setJoystickFactory(XBox360WithState::new);
+		JoystickHandler.getInstance().setJoystickFactory(XBoxJoystick::new);
 		JoystickHandler.getInstance().init(); // Don't ask, it works ;)
 		JoystickHandler.getInstance().setupJoysticks(List.of(
 				Constants.Joystick.primaryJoystickId));
@@ -40,33 +41,18 @@ public class Joystick2024 implements Sendable {
 		IdsWithState.activeState = state;
 
 		// Create bindings //
-		JoystickHandler.getInstance().bindAll(JoystickBindings2024.getBindingsSwerve2024());
+		JoystickHandler.getInstance().bindAll(JoystickBindings2024.getBindingsLogitechTest());
 		JoystickHandler.getInstance().init();
 	}
 
 	public void run() {
-		// if (JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId) != null) {
-			// var js = getPrimaryJoystick();
-		// 	if (IdsWithState.activeState == State.ENDGAME && js.getY() > 0.1) {
-		// 		Config.active.getClimber().ifPresent((climber) -> climber.oneStepUp(js.getY()));
-		// 	}
-		// }
-	}
 
-	public void quickBind(IJoystickButtonId button, Runnable fn) {
-		JoystickHandler.getInstance()
-				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue,
-						new InstantCommand(fn)));
-	}
-
-	public void quickBind(IJoystickButtonId button, Command cmd) {
-		JoystickHandler.getInstance()
-				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue, cmd));
-	}
-
-	public void quickBindWhileHeld(IJoystickButtonId button, Command cmd) {
-		JoystickHandler.getInstance()
-				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::whileTrue, cmd));
+		if (JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId) != null) {
+			var js = getPrimaryJoystick();
+			if (IdsWithState.activeState == State.ENDGAME && js.getY() > 0.1) {
+				Config.active.getClimber().ifPresent((climber) -> climber.oneStepUp(js.getY()));
+			}
+		}
 	}
 
 	// Setters //

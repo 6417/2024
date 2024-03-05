@@ -8,20 +8,22 @@ import frc.robot.Constants;
 import frc.fridowpi.joystick.joysticks.POV;
 
 public class XBoxJoystick extends Joystick implements IJoystick {
-    private XboxController xboxController;
+    private static XboxController xboxController;
 
     public XBoxJoystick(IJoystickId port) {
         super(port.getPort());
-        super.setThrottleChannel(4);
-        super.setTwistChannel(5);
+        super.setTwistChannel(4);
+        super.setThrottleChannel(5);
+        super.setXChannel(0);
+        super.setYChannel(1);
         xboxController = new XboxController(port.getPort());
     }
 
-    public double getLtValue() {
+    public static double getLtValue() {
         return xboxController.getLeftTriggerAxis();
     }
 
-    public double getRtValue() {
+    public static double getRtValue() {
         return xboxController.getRightTriggerAxis();
     }
 

@@ -78,16 +78,18 @@ public class JoystickBindings2024 {
 
 	public static List<Binding> getBindingsLogitechTest() {
 		tmp_bindings.clear();
-		quickBindWhileHeld(Logitech.a, () -> System.out.println("a"));
-		quickBind(Logitech.b, () -> System.out.println("b"));
-		quickBind(Logitech.x, () -> System.out.println("x"));
-		quickBind(Logitech.y, () -> System.out.println("y"));
-		quickBind(Logitech.start, () -> System.out.println("start"));
-		quickBind(Logitech.back, () -> System.out.println("back"));
-		quickBind(Logitech.lb, () -> System.out.println("lb"));
-		quickBind(Logitech.rb, () -> System.out.println("rb"));
-		quickBind(Logitech.lt, () -> System.out.println("lt"));
-		quickBind(Logitech.rt, () -> System.out.println("rt"));
+		quickBind(XboxOne.a, () -> System.out.println("a"));
+		quickBind(XboxOne.b, () -> System.out.println("b"));
+		quickBind(XboxOne.x, () -> System.out.println("x"));
+		quickBind(XboxOne.y, () -> System.out.println("y"));
+		quickBind(XboxOne.start, () -> System.out.println("start"));
+		quickBind(XboxOne.back, () -> System.out.println("back"));
+		quickBind(XboxOne.lb, () -> System.out.println("lb"));
+		quickBind(XboxOne.rb, () -> System.out.println("rb"));
+		quickBind(XboxOne.lt, () -> System.out.println("lt"));
+		quickBind(XboxOne.rt, () -> System.out.println("rt"));
+		quickBind(XboxOne.leftJoystick, () -> System.out.println("leftJoystick"));
+		quickBind(XboxOne.rightJoystick, () -> System.out.println("rightJoystick"));
 
 		quickBind(POV.DPadUp, () -> System.out.println("dpad up"));
 		quickBind(POV.DPadUpRight, () -> System.out.println("dpad up right"));
@@ -98,7 +100,7 @@ public class JoystickBindings2024 {
 		quickBind(POV.DPadLeft, () -> System.out.println("dpad left"));
 		quickBind(POV.DPadUpLeft, () -> System.out.println("dpad up left"));
 
-		quickBind(POV.Lt, () -> System.out.println("POV lt"));
+		quickBindWhileHeld(POV.Lt, () -> System.out.println("POV lt"));
 		quickBind(POV.Rt, () -> System.out.println("POV rt"));
 		return tmp_bindings;
 	}
@@ -155,8 +157,6 @@ public class JoystickBindings2024 {
 		// quickBind(Logitech.b, State.ENDGAME, climber::retract);
 		// });
 		//
-		quickBind(Logitech.b, () -> Config.active.getClimber().get().getServo().setSpeed(-0.1));
-		quickBind(Logitech.a, () -> Config.active.getClimber().get().getServo().setSpeed(0.1));
 		Config.active.getClimber().ifPresent(climber -> {
 			quickBind(Logitech.x, State.ENDGAME, climber::release);
 		});

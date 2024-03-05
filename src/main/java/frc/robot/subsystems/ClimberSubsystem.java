@@ -21,8 +21,10 @@ import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BClimber;
 
 public class ClimberSubsystem extends BClimber {
-	private FridolinsMotor seilMotorLinks = new FridoCanSparkMax(Constants.Climber.seilZiehMotorLinks, MotorType.kBrushless);
-	private FridolinsMotor seilMotorRechts = new FridoCanSparkMax(Constants.Climber.seilZiehMotorRechts, MotorType.kBrushless);
+	private FridolinsMotor seilMotorLinks = new FridoCanSparkMax(Constants.Climber.seilZiehMotorLinks,
+			MotorType.kBrushless);
+	private FridolinsMotor seilMotorRechts = new FridoCanSparkMax(Constants.Climber.seilZiehMotorRechts,
+			MotorType.kBrushless);
 	private FridoServoMotor servoLinks = new FridoServoMotor(Constants.Climber.servoLinksId);
 	private FridoServoMotor servoRechts = new FridoServoMotor(Constants.Climber.servoRechtsId);
 
@@ -56,8 +58,16 @@ public class ClimberSubsystem extends BClimber {
 						new InstantCommand(
 								() -> this.servoLinks.setAngle(Constants.Climber.maxServoPos)),
 						new InstantCommand(
-								() -> this.servoRechts.setAngle(Constants.Climber.maxServoPos))),
-				new ClimberPid(this, Constants.Climber.ausfahrBereich)).schedule();
+								() -> this.servoRechts.setAngle(Constants.Climber.maxServoPos))));
+	}
+
+	public void lock() {
+		new SequentialCommandGroup(
+				new ParallelCommandGroup(
+						new InstantCommand(
+							() -> this.servoLinks.setAngle(0)),
+						new InstantCommand(
+							() -> this.servoRechts.setAngle(0))));
 	}
 
 	@Override
@@ -103,17 +113,17 @@ public class ClimberSubsystem extends BClimber {
 	}
 
 	@Override
+	public void oneStepUp(double speed) {
+		seilMotorLinks.set(-speed);
+		seilMotorRechts.set(speed);
+	}
+
+	@Override
 	public ClimberData getData() {
 		var motorLeft = 22;
 		var motorRight = 21;
 		var servo = -1;
 		return new ClimberData(List.of(motorLeft, motorRight, servo));
-	}
-
-	@Override
-	public void oneStepUp(double speed) {
-		seilMotorLinks.set(-speed);
-		seilMotorRechts.set(-speed);
 	}
 
 	@Override
