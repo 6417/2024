@@ -11,10 +11,11 @@ public class SwervedriveAutoCommand extends Command {
 
   Timer timer = new Timer();
   Trajectory trajectory;
+  ChassisSpeeds speeds;
 
   public SwervedriveAutoCommand(Trajectory tra) {
     trajectory = tra;
-    //addRequirements(subsystem);
+    // addRequirements(subsystem);
   }
 
   @Override
@@ -25,16 +26,26 @@ public class SwervedriveAutoCommand extends Command {
   @Override
   public void execute() {
     double t = timer.get();
-    ChassisSpeeds speeds = SwervedriveAuto.getInstance().getVelocities(trajectory, t);
+    speeds = SwervedriveAuto.getInstance().getVelocities(trajectory, t);
     Config.drive().drive(speeds);
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   @Override
   public boolean isFinished() {
+    // fist idea to stop command, not realy working, stop to eraly
     // return timer.hasElapsed(trajectory.getTotalTimeSeconds());
-	return false;
+
+    // second attempt to sotp command, guest values, not now if it works
+    if (Math.abs(speeds.vxMetersPerSecond) <= 0.5 &&
+        Math.abs(speeds.vyMetersPerSecond) <= 0.5 &&
+        Math.abs(speeds.omegaRadiansPerSecond) <= 0.2) {
+      return true;
+    }
+
+    return false;
   }
 }
