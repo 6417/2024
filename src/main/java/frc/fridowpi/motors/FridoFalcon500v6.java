@@ -23,6 +23,7 @@ import com.ctre.phoenix6.signals.ReverseLimitValue;
 
 import frc.fridowpi.module.IModule;
 import frc.fridowpi.module.Module;
+import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.fridowpi.motors.utils.PidValues;
 
 
@@ -35,6 +36,7 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 	Module moduleProxy = new Module();
 	Optional<Integer> pidSlotIdx = Optional.empty();
 	TalonFXConfiguration config = new TalonFXConfiguration();
+	double pidF = 0;
 
 	public FridoFalcon500v6(int deviceNumber) {
 		motorProxy = new TalonFX(deviceNumber);
@@ -142,10 +144,10 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 	public void setPidTarget(double value, PidType type) {
 		switch (type) {
 			case position:
-				motorProxy.setControl(new PositionDutyCycle(value));
+				motorProxy.setControl(new PositionVoltage(value).withFeedForward(pidF));
 				break;
 			case velocity:
-				motorProxy.setControl(new VelocityDutyCycle(value));
+				motorProxy.setControl(new VelocityVoltage(value).withFeedForward(pidF));
 				break;
 			default:
 				throw new Error("Not implemented: " + type);
@@ -199,18 +201,29 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 
 	public Optional<Double> tolerance;
 
+	public void setPID(PidValues pidValues, FeedForwardValues feedForwardValues) {
+		if (!pidSlotIdx.isPresent()) {
+			pidSlotIdx = Optional.of(0);
+		}
+		var pid = new SlotConfigs().withKP(pidValues.kP).withKI(pidValues.kI).withKD(pidValues.kD)
+			.withKS(feedForwardValues.kS).withKV(feedForwardValues.kV).withKA(feedForwardValues.kA);
+		pidValues.kF.ifPresent(kF -> pidF = kF);
+		pid.SlotNumber = pidSlotIdx.get();
+		motorProxy.getConfigurator().apply(pid);
+
+		tolerance = pidValues.tolerance;
+	}
+
 	@Override
 	public void setPID(PidValues pidValues) {
 		if (!pidSlotIdx.isPresent()) {
 			pidSlotIdx = Optional.of(0);
 		}
 		var pid = new SlotConfigs().withKP(pidValues.kP).withKI(pidValues.kI).withKD(pidValues.kD);
-		pidValues.kF.ifPresent((kF) -> pid.kS = pidValues.kF.get()); // I hope that's the right one (static feedforward)
+		pidValues.kF.ifPresent(kF -> pidF = kF);
 		pid.SlotNumber = pidSlotIdx.get();
 		motorProxy.getConfigurator().apply(pid);
 
-		// pidValues.tolerance.ifPresent((tolerance) ->
-				// motorProxy.getConfigurator().apply(${1:configs})
 		tolerance = pidValues.tolerance;
 	}
 

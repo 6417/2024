@@ -42,6 +42,8 @@ public class Robot extends TimedRobot {
 		Config.drive().setOrientation(DriveOrientation.FieldOriented);
     }
 
+	double maxSpeed = 0;
+
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();

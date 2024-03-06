@@ -1,6 +1,7 @@
 package frc.fridowpi.motors;
 
 import frc.fridowpi.module.IModule;
+import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.fridowpi.motors.utils.PidValues;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
@@ -28,6 +29,8 @@ public interface FridolinsMotor extends MotorController, IModule {
     public void factoryDefault();
 
     public void setPID(PidValues pidValues);
+
+    public void setPID(PidValues pidValues, FeedForwardValues feedForwardValues);
 
     public boolean pidAtTarget();
 

@@ -17,11 +17,12 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import frc.fridowpi.module.IModule;
 import frc.fridowpi.module.Module;
+import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.fridowpi.motors.utils.PidValues;
 
 public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 	Module moduleProxy = new Module();
-	Optional<Integer> pidSlotIdx;
+	Optional<Integer> pidSlotIdx = Optional.empty();
 
 	public FridoFalcon500(int deviceNumber) {
 		super(deviceNumber);
@@ -177,9 +178,6 @@ public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 
 	@Override
 	public void setPID(PidValues pidValues) {
-		if (pidSlotIdx == null || !pidSlotIdx.isPresent()) {
-			pidSlotIdx = Optional.of(0);
-		}
 		super.config_kP(pidSlotIdx.get(), pidValues.kP);
 		super.config_kI(pidSlotIdx.get(), pidValues.kI);
 		super.config_kD(pidSlotIdx.get(), pidValues.kD);
@@ -188,6 +186,10 @@ public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 		});
 		pidValues.tolerance.ifPresent((tolerance) -> super.configAllowableClosedloopError(pidSlotIdx.get(), tolerance));
 		tolerance = pidValues.tolerance;
+	}
+
+	@Override
+	public void setPID(PidValues pidValues, FeedForwardValues feedForwardValues) {
 	}
 
 	@Override
