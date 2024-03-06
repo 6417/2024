@@ -9,12 +9,12 @@ public enum Xbox360 implements IJoystickButtonId {
     y(4),
     lb(5),
     rb(6),
-    lt(12),
-    rt(11),
     back(7),
     start(8),
     leftJoystick(9),
-    rightJoystick(10);
+    rightJoystick(10),
+    lt(200),
+    rt(201);
 
     private final int buttonId;
 
