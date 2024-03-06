@@ -132,7 +132,7 @@ public class DriveCommand2024 extends Command {
 			JoystickInput xyr = new JoystickInput();
 			xyr.x = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getX();
 			xyr.y = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getY();
-			xyr.r = JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getTwist();
+			xyr.r = -JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId).getTwist();
 
 			Vector2 xyVector = convertJoystickInputToVector(xyr);
 			if (xyVector.magnitude() < Constants.SwerveDrive.Swerve2024.deadBand) {

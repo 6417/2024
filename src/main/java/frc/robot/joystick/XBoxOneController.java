@@ -1,21 +1,24 @@
-package frc.fridowpi.joystick;
+package frc.robot.joystick;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
+import frc.fridowpi.joystick.IJoystickButtonId;
+import frc.fridowpi.joystick.IJoystickId;
+import frc.fridowpi.joystick.WPIJoystick;
 import frc.fridowpi.joystick.joysticks.POV;
+import frc.robot.Constants;
 
-public class XBoxJoystick extends Joystick implements IJoystick {
+public class XBoxOneController extends WPIJoystick {
     private XboxController xboxController;
 
-    public XBoxJoystick(IJoystickId port) {
-        super(port.getPort());
-        super.setThrottleChannel(4);
-        super.setTwistChannel(5);
-        xboxController = new XboxController(port.getPort());
-    }
+	public XBoxOneController(IJoystickId port) {
+		super(port);
+		setThrottleChannel(5);
+		setTwistChannel(4);
+		xboxController = new XboxController(port.getPort());
+	}
+
 
     public double getLtValue() {
         return xboxController.getLeftTriggerAxis();
@@ -33,7 +36,6 @@ public class XBoxJoystick extends Joystick implements IJoystick {
             return new Trigger(() -> isPressedLorRT((POV) id));
         }
         return new JoystickButton(this, id.getButtonId());
-
     }
 
     private boolean isPressedPOV(POV id) {

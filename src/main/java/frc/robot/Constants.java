@@ -47,7 +47,7 @@ public class Constants {
 	public static final class Joystick {
 		public static final IJoystickId primaryJoystickId = () -> 0;
 		public static final int idCounterStart = 1000;
-		public static final double treshold = 0.2;
+		public static final double lt_rt_reshold = 0.2;
 	}
 
 	public static final class Global {
@@ -61,11 +61,11 @@ public class Constants {
 	public static final class Shooter {
 		public static final double shooterIntakeSpeed = -0.6;
 		public static final double feedIntakeSpeed = 0;
-		public static final double brushesIntakeSpeed = -0.2;
+		public static final double brushesIntakeSpeed = -0.1;
 
 		public static final double shooterAmpSpeed = 0.12;
-		public static final double feedAmpSpeed = 0.17;
-		public static final double brushesAmpSpeed = 0.3;
+		public static final double feedAmpSpeed = 0.12;
+		public static final double brushesAmpSpeed = 0.2;
 
 		public static final double shooterSpeakerSpeed = 0.7;
 		public static final double feedSpeakerSpeed = 1.0;
@@ -265,14 +265,11 @@ public class Constants {
 
 			public static final boolean enabled = true;
 			public static final double absoluteEncoderZeroPositionTolerance = 0.01;
-			public static final boolean rotateAllModulesInSameDirection = false;
 			public static final boolean joystickYinverted = true;
 			public static final boolean joystickXinverted = true;
 			public static final double deadBand = 0.18;
 			public static final double yOffsetMapperMaxVoltage = 12.5;
 			public static final double yOffsetMapperMinVoltage = 9;
-			public static final double finetuningZeroFactor = 0.1;
-			public static final double maxFineTuneOffsetForZeroEncodersCommand = 196608 / 100;
 			public static final double maxSpeedOfDrive = 25;
 			public static final double maxRotationSpeed = 25 * 2 * Math.PI;
 			public static final Map<MountingLocations, frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config> swerveModuleConfigs = new HashMap<>();
