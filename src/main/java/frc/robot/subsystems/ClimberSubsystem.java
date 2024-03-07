@@ -4,11 +4,7 @@ import java.util.List;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.fridowpi.command.FridoCommand;
-import frc.fridowpi.command.ParallelCommandGroup;
-import frc.fridowpi.command.SequentialCommandGroup;
 import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridoServoMotor;
 import frc.fridowpi.motors.FridolinsMotor;
@@ -35,17 +31,22 @@ public class ClimberSubsystem extends BClimber {
 		seilMotorLinks.factoryDefault();
 		seilMotorRechts.factoryDefault();
 
+		seilMotorRechts.setIdleMode(IdleMode.kCoast);
+		seilMotorLinks.setIdleMode(IdleMode.kCoast);
+
 		seilMotorLinks.setPID(Constants.Climber.pidValuesSlot0);
 		seilMotorRechts.setPID(Constants.Climber.pidValuesSlot0);
 		seilMotorLinks.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen, true);
 		seilMotorRechts.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen, true);
 		seilMotorRechts.follow(seilMotorLinks, DirectionType.followMaster);
-		seilMotorLinks.setIdleMode(IdleMode.kBrake);
 
 		servoRechts.setBoundsMicroseconds(2200, 1499, 1500, 1501, 800);
 		servoRechts.setMaxAngle(130);
 		servoLinks.setBoundsMicroseconds(2200, 1499, 1500, 1501, 800);
 		servoLinks.setMaxAngle(130);
+
+		servoLinks.setAngle(Constants.Climber.servoLeftLockAngle);
+		servoRechts.setAngle(Constants.Climber.servoRightLockAngle);
 	}
 
 	@Override
@@ -121,7 +122,12 @@ public class ClimberSubsystem extends BClimber {
 	}
 
 	@Override
-	public Servo getServo() {
+	public FridoServoMotor getServoLeft() {
 		return servoLinks;
+	}
+
+	@Override
+	public FridoServoMotor getServoRight() {
+		return servoRechts;
 	}
 }

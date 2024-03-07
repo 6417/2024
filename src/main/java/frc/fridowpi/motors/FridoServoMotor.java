@@ -17,8 +17,13 @@ public class FridoServoMotor extends Servo {
     public void setAngle(double degrees) {
         super.setAngle(degrees*180/maxAngle);
     }
+
     @Override
     public double getAngle() {
         return super.getAngle()/180*maxAngle;
     }
+
+	public void increaseAngle(double step) {
+		setAngle(getAngle() + step);
+	}
 }

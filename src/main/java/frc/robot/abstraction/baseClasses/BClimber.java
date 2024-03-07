@@ -3,9 +3,9 @@ package frc.robot.abstraction.baseClasses;
 
 import java.util.List;
 
-import edu.wpi.first.wpilibj.Servo;
 import frc.robot.abstraction.interfaces.IClimber;
 import frc.fridowpi.module.Module;
+import frc.fridowpi.motors.FridoServoMotor;
 
 /**
  * BRopeClimber
@@ -20,7 +20,8 @@ public abstract class BClimber extends Module implements IClimber {
 		}
 	}
 
-	abstract public Servo getServo();
+	abstract public FridoServoMotor getServoLeft();
+	abstract public FridoServoMotor getServoRight();
 
 	abstract public ClimberData getData();
 

@@ -54,25 +54,19 @@ public class JoystickBindings2024 {
 
 		// TODO: make better CONFIG
 		Config.active.getShooter().ifPresent(s -> {
-		quickBind(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
-		quickBind(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
-		quickBind(XboxOne.x, s::stopMotors);
-		quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
+			quickBind(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBind(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
+			quickBind(XboxOne.x, s::stopMotors);
+			quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
-		quickBind(XboxOne.lb, () -> SwervedriveAuto.getInstance().startCommand());
+		// quickBind(XboxOne.lb, () -> SwervedriveAuto.getInstance().startCommand());
 
-		// Config.active.getClimber().ifPresent(climber -> {
-		// 	// quickBind(Xbox360.y, State.ENDGAME, climber::oneStepUp);
-		// 	// quickBind(Xbox360.a, State.ENDGAME, climber::oneStepDown);
-		// 	quickBind(XboxOne.x, () -> {
-		// 		System.out.println("x");
-		// 		climber.lock();
-		// 	});
-		// 	quickBind(XboxOne.b, () -> {
-		// 		System.out.println("b");
-		// 		climber.release();
-		// 	});
-		// });
+		Config.active.getClimber().ifPresent(climber -> {
+			// quickBind(Xbox360.y, State.ENDGAME, climber::oneStepUp);
+			// quickBind(Xbox360.a, State.ENDGAME, climber::oneStepDown);
+			quickBind(POV.DPadUp, climber::release);
+			quickBind(POV.DPadDown, climber::lock);
+		});
 
 		// quickBind(Xbox360.y, () ->
 		// Config.active.getClimber().get().getServo().setSpeed(0.1));
@@ -163,8 +157,10 @@ public class JoystickBindings2024 {
 		// quickBind(Logitech.b, State.ENDGAME, climber::retract);
 		// });
 		//
-		quickBind(Logitech.b, () -> Config.active.getClimber().get().getServo().setSpeed(-0.1));
-		quickBind(Logitech.a, () -> Config.active.getClimber().get().getServo().setSpeed(0.1));
+		// quickBind(Logitech.b, () ->
+		// Config.active.getClimber().get().getServo().setSpeed(-0.1));
+		// quickBind(Logitech.a, () ->
+		// Config.active.getClimber().get().getServo().setSpeed(0.1));
 		Config.active.getClimber().ifPresent(climber -> {
 			quickBind(Logitech.x, State.ENDGAME, climber::release);
 		});

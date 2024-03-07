@@ -103,10 +103,11 @@ public class Constants {
 		public static final double maxServoPos = 130;
 		public static final double servoZeroTollerance = 5.0;
 
-		public static final double servoLeftReleaseAngle = 0;
-		public static final double servoRightReleaseAngle = 0;
-		public static final double servoLeftLockAngle = 130;
-		public static final double servoRightLockAngle = 130;
+		public static final double servoLeftReleaseAngle = 87;
+		public static final double servoLeftLockAngle = 107;
+
+		public static final double servoRightReleaseAngle = 53;
+		public static final double servoRightLockAngle = 33;
 	}
 
 	public static final class DriveCommon {
