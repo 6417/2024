@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryParameterizer.TrajectoryGenerationException;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Config;
@@ -23,7 +24,8 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
     public enum Type {
         rel,
         abs,
-        futur_abs
+        futur_abs,
+        futur_abs_with_waypoints
     }
 
     private TrajectoryConfig getTrajectoryConfig() {
@@ -55,6 +57,14 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
 
         Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(startPose, list_Translation2d, endPose, conf);
         return new_trajectory;
+    }
+
+    private Trajectory get_future_abs_tra_waypoints(Pose2d startPose, Pose2d endPose, ArrayList<Translation2d> list){
+        TrajectoryConfig conf = getTrajectoryConfig();
+        List<Translation2d> list_Translation2d = list;
+
+        Trajectory new_Trajectory = TrajectoryGenerator.generateTrajectory(startPose, list_Translation2d, endPose, conf);
+        return new_Trajectory;
     }
 
     private Trajectory get_abs_trajectory(Pose2d endPose) {
@@ -104,6 +114,17 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
 
         if (type == Type.futur_abs) {
             trajectory = get_future_abs_trajectory(startPose, endPose);
+        } else {
+            throw new Error("error you have specified the wrong type of trajectory");
+        }
+        return trajectory;
+    }
+
+    public Trajectory createTrajectory(Pose2d startPose, Pose2d endPose, ArrayList<Translation2d> list, Type type) {
+        Trajectory trajectory;
+
+        if (type == Type.futur_abs_with_waypoints) {
+            trajectory = get_future_abs_tra_waypoints(startPose, endPose, list);
         } else {
             throw new Error("error you have specified the wrong type of trajectory");
         }

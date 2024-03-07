@@ -1,6 +1,9 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
+
+import org.apache.logging.log4j.core.lookup.SystemPropertiesLookup;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
@@ -40,10 +43,12 @@ public class SwervedriveAutoCommand extends Command {
     // return timer.hasElapsed(trajectory.getTotalTimeSeconds());
 
     // second attempt to sotp command, guest values, not now if it works
-    if (Math.abs(speeds.vxMetersPerSecond) <= 0.5 &&
-        Math.abs(speeds.vyMetersPerSecond) <= 0.5 &&
-        Math.abs(speeds.omegaRadiansPerSecond) <= 0.2) {
-      return true;
+    if (Math.abs(speeds.vxMetersPerSecond) <= 0.1 &&
+        Math.abs(speeds.vyMetersPerSecond) <= 0.1 &&
+        Math.abs(speeds.omegaRadiansPerSecond) <= 0.05) {
+      if (timer.get() >= 1) {
+        return true;
+      }
     }
 
     return false;

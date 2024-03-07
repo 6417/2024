@@ -1,10 +1,13 @@
 package frc.robot.subsystems.visionAutonomous;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -81,7 +84,7 @@ public class SwervedriveAuto extends Module {
         command.schedule();
     }
 
-    // attention not correcect whenn making sequentialn and still standing at the same position
+    // this command will be called from the autonomous to create the drive command from a trajecotry
     public SwervedriveAutoCommand getCommand(Trajectory tra){
         return new SwervedriveAutoCommand(tra);
     }
@@ -89,15 +92,13 @@ public class SwervedriveAuto extends Module {
     public void startCommand(){
 
         Pose2d firstApriltag = new Pose2d(15, 5.5, new Rotation2d(0));
-<<<<<<< HEAD
         Pose2d test = new Pose2d(1, 0,new Rotation2d(0));
-=======
-        Pose2d test = new Pose2d(3, 0,new Rotation2d(0));
+        ArrayList<Translation2d> points = new ArrayList<>();
+        //points.add(new Translation2d(1,0));
 
         //test trajectorys
         Trajectory tra2 = getSwerveAutonomousTrj.getInstance().createTrajectory(firstApriltag, Type.abs);
-        Trajectory testtra = getSwerveAutonomousTrj.getInstance().createTrajectory(test, Type.rel);
->>>>>>> 222ca1fea748151204a049f3cbb2ffb1f292f056
+        Trajectory testtra = getSwerveAutonomousTrj.getInstance().createTrajectory(Config.drive().getPos(), test, points, Type.futur_abs_with_waypoints);
 
         SwervedriveAutoCommand command = new SwervedriveAutoCommand(testtra);
         command.schedule();

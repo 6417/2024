@@ -4,43 +4,113 @@ import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Config;
 import frc.robot.subsystems.drive.getSwerveAutonomousTrj;
 import frc.robot.subsystems.drive.getSwerveAutonomousTrj.Type;
 
 public class Autonomous extends SubsystemBase {
 
-  private class Path {
-    public ArrayList<Pose2d> poses = new ArrayList<>();
-    public ArrayList<Trajectory> tra = new ArrayList<>();
+    //red autonomous
+    Pose2d redspeakter = new Pose2d(0.45, 2.64, new Rotation2d(0));
+    Pose2d redend1 = new Pose2d(4.419, 1.945, new Rotation2d(0));
+    Pose2d redend2 = new Pose2d(4.419,5.4, new Rotation2d(0));
+    Pose2d redamp = new Pose2d(1.8,7.77, new Rotation2d(0));
+    Pose2d redstart1 = new Pose2d(0.92,3.1, new Rotation2d(0));
+    Pose2d redstart2 = new Pose2d(0.92,2.1, new Rotation2d(0));
+    ArrayList<Translation2d> redpoints1 = new ArrayList<>(); //for ampToEnd1
 
-    public void generatePath() {
-      if (poses.size() <= 1) {
-        throw new Error("error in generate Path");
-      }
-      for (int i = 1; i < poses.size(); i++) {
-        tra.add(getSwerveAutonomousTrj.getInstance().createTrajectory(poses.get(i - 1), poses.get(i), Type.futur_abs));
-      }
+    //blue autonomous
+    Pose2d bluespeaker = new Pose2d(15.18,5.4, new Rotation2d(0));
+    Pose2d blueend1 = new Pose2d(12.34,6.3, new Rotation2d(0));
+    Pose2d blueend2 = new Pose2d(12.34, 1.2, new Rotation2d(0));
+    Pose2d blueamp = new Pose2d(14.74,7.77, new Rotation2d(0));
+    Pose2d bluestart1 = new Pose2d(15.62,3.1, new Rotation2d(0));
+    Pose2d bluestart2 = new Pose2d(15.62,2.1 , new Rotation2d(0));
+    ArrayList<Translation2d> bluePoints1 = new ArrayList<>(); // for ampToEnd1
+
+    ArrayList<Translation2d> emptylsit = new ArrayList<>();
+
+
+    public Command followPath(Pose2d start, Pose2d end, ArrayList<Translation2d> list) {
+        Trajectory first_trajectory = getSwerveAutonomousTrj.getInstance()
+                .createTrajectory(start, end, list,Type.futur_abs_with_waypoints);
+        return SwervedriveAuto.getInstance().getCommand(first_trajectory);
     }
-  }
+    
+    public Command redSpeakerToEnd1() {
+        return new SequentialCommandGroup(
+            //new ShootSpekerCommand(),
+            followPath(redspeakter, redend1, emptylsit));}
 
-  Path examplepath = new Path();
+    public Command redSpeakerToEnd2(){
+        return new SequentialCommandGroup(
+            //new ShooterSpeakerCommand(),
+            followPath(redspeakter, redend2, emptylsit));}
 
-  public Autonomous() {
-    examplepath.poses.add(Config.drive().getPos());
-    examplepath.poses.add(new Pose2d(1, 1, new Rotation2d(0)));
-  }
+    public Command redAmpToEnd1(){
+        redpoints1.add(new Translation2d(2.1,6.3));
+        return new SequentialCommandGroup(
+            //new ShooterAmpCommand(),
+            followPath(redamp, redend1, emptylsit));}
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    public Command redStart1ToSpeakerToEnd1(){
+        return new SequentialCommandGroup(
+            followPath(redstart1, redspeakter, emptylsit),
+            //new ShooterSpeakerCommand(),
+            followPath(redspeakter, redend1, emptylsit));}
 
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
+    public Command redStart1ToAmpToEnd1(){
+        return new SequentialCommandGroup(
+            followPath(redstart1, redamp, emptylsit),
+            //new ShooterSpekerCommand(),
+            followPath(redamp, redend1, emptylsit));}
+    
+    public Command redStart2ToAmpToEnd1(){
+        return new SequentialCommandGroup(
+            followPath(redstart2, redspeakter, emptylsit),
+            //new ShooterSpeakerCommand(),
+            followPath(redspeakter, redend1, emptylsit));}
+
+    public Command blueSpeakerToEnd1(){
+        return new SequentialCommandGroup(
+            //new ShooterSpeakerCommand(),
+            followPath(bluespeaker, blueend1, emptylsit));}
+
+    public Command blueSpeakerToEnd2(){
+        return new SequentialCommandGroup(
+            //new ShooterSpeakerCommand(),
+            followPath(bluespeaker, blueend2, emptylsit));}
+        
+    public Command blueAmpToEnd1(){
+        bluePoints1.add(new Translation2d(14.44,6.3));
+        return new SequentialCommandGroup(
+            //new ShooterAmpCommand(),
+            followPath(blueamp, blueend1, emptylsit));}
+
+    public Command blueStart1ToSpeakerToEnd1(){
+        return new SequentialCommandGroup(
+            followPath(bluestart1, bluespeaker, emptylsit),
+            // new ShooterSpeakerCommand(),
+            followPath(bluespeaker, blueend1, emptylsit));}
+
+    public Command blueStart2ToSpeakerToEnd1(){
+        return new SequentialCommandGroup(
+            followPath(bluestart2, bluespeaker, emptylsit),
+            // new ShooterSpeakerCommand(),
+            followPath(bluespeaker, blueend1, emptylsit));}
+
+    public Autonomous() {
+    }
+
+    @Override
+    public void periodic() {
+    }
+
+    @Override
+    public void simulationPeriodic() {
+    }
 }
