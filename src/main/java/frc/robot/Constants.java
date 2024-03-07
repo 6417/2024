@@ -13,6 +13,7 @@ import java.util.Optional;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.units.Distance;
@@ -28,6 +29,7 @@ import frc.fridowpi.motors.FridoTalonSRX;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.LimitSwitchPolarity;
+import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.fridowpi.motors.utils.PidValues;
 import frc.robot.abstraction.RobotData;
 import frc.robot.abstraction.RobotData.AutoData;
@@ -71,6 +73,9 @@ public class Constants {
 		public static final double feedSpeakerSpeed = 1.0;
 		public static final double brushesSpeakerSpeed = 0;
 
+		public static final PidValues velocityPidShooter = new PidValues(0.0005, 0.0, 0.0);
+		public static final FeedForwardValues velocityffShooter = new FeedForwardValues(0.081, 0.0020075);
+
 		public static final ShooterData data = new ShooterData(
 				List.of(20, 21, 22, 23),
 				List.of(shooterIntakeSpeed, shooterAmpSpeed, shooterSpeakerSpeed,
@@ -97,6 +102,11 @@ public class Constants {
 
 		public static final double maxServoPos = 130;
 		public static final double servoZeroTollerance = 5.0;
+
+		public static final double servoLeftReleaseAngle = 0;
+		public static final double servoRightReleaseAngle = 0;
+		public static final double servoLeftLockAngle = 130;
+		public static final double servoRightLockAngle = 130;
 	}
 
 	public static final class DriveCommon {

@@ -35,7 +35,7 @@ public class JoystickBindings2024 {
 		tmp_bindings.clear();
 
 		// Drive
-		quickBindToggle(XboxOne.lt, 
+		quickBindToggle(XboxOne.lt,
 				() -> Config.drive().setSpeedFactor(
 						Config.data().drive().speedFactors().get(SpeedFactor.FAST)),
 				() -> Config.drive().setSpeedFactor(
@@ -47,33 +47,39 @@ public class JoystickBindings2024 {
 						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED)));
 
 		quickBind(XboxOne.back, new InstantCommand(() -> {
-					FridoNavx.getInstance().reset();
-					Config.drive().resetOdometry();
-					System.out.println("<<<[zeroed]>>>");
+			FridoNavx.getInstance().reset();
+			Config.drive().resetOdometry();
+			System.out.println("<<<[zeroed]>>>");
 		}));
 
 		// TODO: make better CONFIG
 		Config.active.getShooter().ifPresent(s -> {
-			quickBind(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBind(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
-			quickBind(XboxOne.x, s::stopMotors);
-			quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
+		quickBind(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
+		quickBind(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
+		quickBind(XboxOne.x, s::stopMotors);
+		quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
 		quickBind(XboxOne.lb, () -> SwervedriveAuto.getInstance().startCommand());
 
 		// Config.active.getClimber().ifPresent(climber -> {
-		// quickBind(Xbox360.y, State.ENDGAME, climber::oneStepUp);
-		// quickBind(Xbox360.a, State.ENDGAME, climber::oneStepDown);
-		// quickBind(Xbox360.x, State.ENDGAME, climber::release);
-		// quickBind(Xbox360.b, State.ENDGAME, climber::retract);
+		// 	// quickBind(Xbox360.y, State.ENDGAME, climber::oneStepUp);
+		// 	// quickBind(Xbox360.a, State.ENDGAME, climber::oneStepDown);
+		// 	quickBind(XboxOne.x, () -> {
+		// 		System.out.println("x");
+		// 		climber.lock();
+		// 	});
+		// 	quickBind(XboxOne.b, () -> {
+		// 		System.out.println("b");
+		// 		climber.release();
+		// 	});
 		// });
 
-// 		quickBind(Xbox360.y, () ->
-// 			Config.active.getClimber().get().getServo().setSpeed(0.1));
-// 		quickBind(Xbox360.x, () ->
-// 			Config.active.getClimber().get().getServo().setSpeed(0));
-// 		quickBind(Xbox360.a, () ->
-// 			Config.active.getClimber().get().getServo().setSpeed(-0.1));
+		// quickBind(Xbox360.y, () ->
+		// Config.active.getClimber().get().getServo().setSpeed(0.1));
+		// quickBind(Xbox360.x, () ->
+		// Config.active.getClimber().get().getServo().setSpeed(0));
+		// quickBind(Xbox360.a, () ->
+		// Config.active.getClimber().get().getServo().setSpeed(-0.1));
 
 		return tmp_bindings;
 	}
@@ -198,10 +204,10 @@ public class JoystickBindings2024 {
 
 	// Toggle
 	public static void quickBindToggle(IJoystickButtonId button, Runnable on, Runnable off) {
-		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue, 
-					new InstantCommand(on)));
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue,
+				new InstantCommand(on)));
 		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onFalse,
-					new InstantCommand(off)));
+				new InstantCommand(off)));
 	}
 
 	// If using different States

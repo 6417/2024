@@ -28,7 +28,6 @@ import frc.robot.abstraction.baseClasses.BSwerveDrive;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 import frc.robot.commands.drive.commands_2024.DriveCommand2024;
 
-// TODO: use velocity PIDs
 public class SwerveDrive2024 extends BSwerveDrive {
 
 	private Map<MountingLocations, BSwerveModule> modules = new HashMap<>();

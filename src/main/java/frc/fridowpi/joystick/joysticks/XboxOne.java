@@ -13,8 +13,8 @@ public enum XboxOne implements IJoystickButtonId {
     start(8),
     leftJoystick(9),
     rightJoystick(10),
-    lt(200),
-    rt(201);
+    lt(11),
+    rt(12);
 
     private final int buttonId;
 

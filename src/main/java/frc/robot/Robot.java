@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
         SignalLogger.setPath("/home/lvuser/logs");
 
 		Config.drive().setOrientation(DriveOrientation.FieldOriented);
+		Config.active.getClimber().ifPresent(climber -> climber.lock());
     }
 
 	double maxSpeed = 0;

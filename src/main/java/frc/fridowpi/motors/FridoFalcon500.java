@@ -194,7 +194,7 @@ public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 
 	@Override
 	public boolean pidAtTarget() {
-		return abs(super.getClosedLoopError() - tolerance.orElse(0.0)) < tolerance.orElse(0.0);
+		return abs(super.getClosedLoopError() - tolerance.orElse(0.01)) < tolerance.orElse(0.01);
 	}
 
 	private NeutralMode convertFromFridoIdleMode(IdleMode mode) {
@@ -256,5 +256,10 @@ public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 	@Override
 	public boolean isInitialized() {
 		return initialized;
+	}
+
+	@Override
+	public void runPid() {
+		/* Software pid calculations here */
 	}
 }

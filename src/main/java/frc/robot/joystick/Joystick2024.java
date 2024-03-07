@@ -53,27 +53,6 @@ public class Joystick2024 implements Sendable {
 		// }
 	}
 
-	public void quickBind(IJoystickButtonId button, Runnable fn) {
-		JoystickHandler.getInstance()
-				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue,
-						new InstantCommand(fn)));
-	}
-
-	public void quickBind(IJoystickButtonId button, Command cmd) {
-		JoystickHandler.getInstance()
-				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue, cmd));
-	}
-
-	public void quickBindWhileHeld(IJoystickButtonId button, Command cmd) {
-		JoystickHandler.getInstance()
-				.bind(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::whileTrue, cmd));
-	}
-
-	// Setters //
-	public void setState(State state) {
-		IdsWithState.activeState = state;
-	}
-
 	@Override
 	public void initSendable(SendableBuilder builder) {
 	}

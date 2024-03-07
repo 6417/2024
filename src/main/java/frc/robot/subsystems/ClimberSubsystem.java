@@ -41,6 +41,9 @@ public class ClimberSubsystem extends BClimber {
 		seilMotorRechts.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen, true);
 		seilMotorRechts.follow(seilMotorLinks, DirectionType.followMaster);
 		seilMotorLinks.setIdleMode(IdleMode.kBrake);
+
+		servoRechts.setBoundsMicroseconds(2200, 1499, 1500, 1501, 800);
+		servoRechts.setMaxAngle(130);
 		servoLinks.setBoundsMicroseconds(2200, 1499, 1500, 1501, 800);
 		servoLinks.setMaxAngle(130);
 	}
@@ -51,13 +54,14 @@ public class ClimberSubsystem extends BClimber {
 
 	@Override
 	public void release() {
-		new SequentialCommandGroup(
-				new ParallelCommandGroup(
-						new InstantCommand(
-								() -> this.servoLinks.setAngle(Constants.Climber.maxServoPos)),
-						new InstantCommand(
-								() -> this.servoRechts.setAngle(Constants.Climber.maxServoPos))),
-				new ClimberPid(this, Constants.Climber.ausfahrBereich)).schedule();
+		servoRechts.setAngle(Constants.Climber.servoRightReleaseAngle);
+		servoLinks.setAngle(Constants.Climber.servoLeftReleaseAngle);
+	}
+
+	@Override
+	public void lock() {
+		servoRechts.setAngle(Constants.Climber.servoRightLockAngle);
+		servoLinks.setAngle(Constants.Climber.servoLeftLockAngle);
 	}
 
 	@Override

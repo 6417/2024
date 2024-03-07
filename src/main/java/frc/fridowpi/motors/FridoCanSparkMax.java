@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.fridowpi.motors.utils.PidValues;
 
 import com.revrobotics.CANSparkMax;
@@ -12,6 +13,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.fridowpi.module.Module;
 import frc.fridowpi.module.IModule;
 
@@ -20,6 +24,8 @@ import static java.lang.Math.abs;
 public class FridoCanSparkMax extends CANSparkMax implements FridolinsMotor {
     public static List<FridoCanSparkMax> allMotorsWithShitySoftware = new ArrayList<>();
 
+	private PIDController pid;
+	private SimpleMotorFeedforward ff;
     private IModule moduleProxy = new Module();
 
     SparkMaxLimitSwitch forwardLimitSwitch;
@@ -78,19 +84,8 @@ public class FridoCanSparkMax extends CANSparkMax implements FridolinsMotor {
 
     @Override
     public void setVelocity(double velocity) {
-        if (this.pidController != null) {
-            selectedPIDSlotIdx.ifPresentOrElse(
-                    slotIdx -> pidController.setReference(velocity, ControlType.kVelocity, slotIdx),
-                    () -> pidController.setReference(velocity, ControlType.kVelocity));
-            setPoint = velocity;
-            pidControlType = ControlType.kVelocity;
-        } else {
-            try {
-                throw new Exception("PID Controller not initialized");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+		/* Attention: Uses software PIDs */
+
     }
 
     private SparkMaxLimitSwitch.Type convertFromFridoLimitSwitchPolarity(FridolinsMotor.LimitSwitchPolarity polarity) {
@@ -273,6 +268,20 @@ public class FridoCanSparkMax extends CANSparkMax implements FridolinsMotor {
         setMotionMagicParametersIfNecessary(pidValues);
     }
 
+	@Override
+	public void setPID(PidValues pidValues, FeedForwardValues ffValues) {
+		pid.setPID(pidValues.kP, pidValues.kI, pidValues.kD);
+		ff = new SimpleMotorFeedforward(ffValues.kS, ffValues.kV, ffValues.kA);
+        tolerance = pidValues.tolerance;
+	}
+
+	@Override
+	public void runPid() {
+		var pidOut = pid.calculate(getEncoderVelocity(), setPoint);
+		var ffOut = ff.calculate(setPoint);
+		super.setVoltage(pidOut + ffOut);
+	}
+
     @Override
     public boolean pidAtTarget() {
             if (pidControlType == null) {
@@ -283,17 +292,17 @@ public class FridoCanSparkMax extends CANSparkMax implements FridolinsMotor {
             case kDutyCycle:
             case kVelocity:
             case kSmartVelocity:
-                return abs(setPoint - getEncoderVelocity()) < tolerance.orElse(0.0);
+                return abs(setPoint - getEncoderVelocity()) < tolerance.orElse(0.01);
 
             case kVoltage:
-                return abs(super.getBusVoltage() - setPoint) < tolerance.orElse(0.0);
+                return abs(super.getBusVoltage() - setPoint) < tolerance.orElse(0.01);
 
             case kPosition:
             case kSmartMotion:
-                return abs(setPoint - getEncoderTicks()) < tolerance.orElse(0.0);
+                return abs(setPoint - getEncoderTicks()) < tolerance.orElse(0.01);
 
             case kCurrent:
-                return abs(getOutputCurrent() - setPoint) < tolerance.orElse(0.0);
+                return abs(getOutputCurrent() - setPoint) < tolerance.orElse(0.01);
             default:
                 return true;
         }

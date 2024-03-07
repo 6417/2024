@@ -22,6 +22,12 @@ public interface FridolinsMotor extends MotorController, IModule {
         smartVelocity;
     }
 
+	/*
+	 * May be necessary to call this periodically
+	 * if using a software PID (by the time of writing only FridoCanSparkMax with velocity PIDs)
+	 */
+    public void runPid();
+
     public void setIdleMode(IdleMode type);
 
     public void follow(FridolinsMotor master, DirectionType direction);

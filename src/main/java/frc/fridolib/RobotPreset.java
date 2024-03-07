@@ -8,6 +8,7 @@ import frc.robot.abstraction.baseClasses.BClimber;
 import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.abstraction.interfaces.ISwerveModule;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.EmptyDrive;
 import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
@@ -41,8 +42,8 @@ public enum RobotPreset {
 	Diplodocus(Constants.Diplodocus.robotData, new FourFalconsTankDrive()),
 	Swerve2024(Constants.SwerveDrive.Swerve2024.robotData,
 			new SwerveDrive2024(),
-			new ShooterSubsystem()),
-			// new ClimberSubsystem()),
+			new ShooterSubsystem(),
+			new ClimberSubsystem())
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))
 
 	// DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),

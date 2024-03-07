@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.fridowpi.module.IModule;
+import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.fridowpi.motors.utils.PidValues;
 
 public class FridoTalonSRX extends WPI_TalonSRX implements FridolinsMotor {
@@ -187,6 +188,12 @@ public class FridoTalonSRX extends WPI_TalonSRX implements FridolinsMotor {
         }
     }
     
+	@Override
+	public void setPID(PidValues pidValues, FeedForwardValues feedForwardValues) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'setPID'");
+	}
+
     @Override
     public double getEncoderVelocity() {
         return super.getSelectedSensorVelocity();
@@ -246,4 +253,9 @@ public class FridoTalonSRX extends WPI_TalonSRX implements FridolinsMotor {
     public Collection<IModule> getSubModules() {
         return List.of();
     }
+
+	@Override
+	public void runPid() {
+		/* Software pid calculations here */
+	}
 }
