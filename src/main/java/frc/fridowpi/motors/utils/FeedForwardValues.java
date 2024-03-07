@@ -43,5 +43,14 @@ public class FeedForwardValues {
 	public void setkA(double kA) {
 		this.kA = kA;
 	}
+
+	public FeedForwardValues clone() {
+		try {
+			return (FeedForwardValues) super.clone();
+		} catch (CloneNotSupportedException e) {
+			FeedForwardValues copy = new FeedForwardValues(kS, kV, kA);
+			return copy;
+		}
+	}
 }
 

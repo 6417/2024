@@ -81,4 +81,13 @@ public class PidValues {
             return copy;
         }
     }
+
+	public void setIZone(double iZone) {
+	}
+
+	public PidValues withIZone(double iZone) {
+		var copy = this.clone();
+		copy.setIZone(iZone);
+		return copy;
+	}
 }

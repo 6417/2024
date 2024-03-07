@@ -20,6 +20,7 @@ import frc.fridowpi.motors.FridolinsMotor.DirectionType;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.motors.utils.PidValues;
+import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BShooter;
@@ -43,6 +44,10 @@ public class ShooterSubsystem extends BShooter {
 
 	private final PIDController pid = new PIDController(0.0005, 0.0, 0.0);
 	private final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.081, 0.0020075);
+
+	// private PidValues pidValues = new PidValues(0.0005, 0.0, 0.0);
+	// private FeedForwardValues ffValues = new FeedForwardValues(0.0081,
+	// 0.0020075);
 
 	/**
 	 * Left follows right
@@ -78,19 +83,19 @@ public class ShooterSubsystem extends BShooter {
 		speedsMapBrushes = getData().speeds.subList(6, 9);
 
 		assert speedsMapShooter == List.of(
-			Constants.Shooter.shooterIntakeSpeed,
-			Constants.Shooter.shooterAmpSpeed,
-			Constants.Shooter.shooterSpeakerSpeed);
+				Constants.Shooter.shooterIntakeSpeed,
+				Constants.Shooter.shooterAmpSpeed,
+				Constants.Shooter.shooterSpeakerSpeed);
 		assert speedsMapFeeder == List.of(
-			Constants.Shooter.feedIntakeSpeed,
-			Constants.Shooter.feedAmpSpeed,
-			Constants.Shooter.feedSpeakerSpeed);
+				Constants.Shooter.feedIntakeSpeed,
+				Constants.Shooter.feedAmpSpeed,
+				Constants.Shooter.feedSpeakerSpeed);
 		assert speedsMapBrushes == List.of(
-			Constants.Shooter.brushesIntakeSpeed,
-			Constants.Shooter.brushesAmpSpeed,
-			Constants.Shooter.brushesSpeakerSpeed);
+				Constants.Shooter.brushesIntakeSpeed,
+				Constants.Shooter.brushesAmpSpeed,
+				Constants.Shooter.brushesSpeakerSpeed);
 		System.out.println("assertion passed");
-		
+
 		System.out.println("shooter: " + speedsMapShooter);
 		System.out.println("feeder: " + speedsMapFeeder);
 		System.out.println("brushers: " + speedsMapBrushes);
@@ -110,8 +115,8 @@ public class ShooterSubsystem extends BShooter {
 
 		motorFeeder.setInverted(true);
 
-		motorRight.setPID(new PidValues(0, 0, 0)); // We don't use hardware pids
-		motorLeft.setPID(new PidValues(0, 0, 0));
+		// pidValues.setTolerance(50);
+		// motorRight.setPID(pidValues, ffValues);
 
 		motorRight.configEncoder(FridoFeedBackDevice.kBuildin, getData().countsPerRevolution);
 		motorRight.selectPidSlot(0);
@@ -132,23 +137,6 @@ public class ShooterSubsystem extends BShooter {
 
 		pid.setTolerance(50);
 		pid.setIntegratorRange(-0.015, 0.015);
-	}
-
-	@Override
-	public void run() {
-		if (!enabled) {
-			// motorLeft.stopMotor();
-			return;
-		}
-		var output = recalculateMotorOutput();
-		var actualOutput = output / maxVolts;
-		// motorLeft.setVelocity(actualOutput);
-	}
-
-	private double recalculateMotorOutput() {
-		var ffOutput = ff.calculate(speedRpm);
-		var pidOutput = pid.calculate(speedRpm, motorLeft.getEncoderVelocity());
-		return Math.max(-0.5, pidOutput + ffOutput); // Necessary? set(0) is fine?
 	}
 
 	@Override
@@ -180,6 +168,10 @@ public class ShooterSubsystem extends BShooter {
 	}
 
 	@Override
+	public void run() {
+	}
+
+	@Override
 	public void stopMotors() {
 		motorBrushes.stopMotor();
 		motorFeeder.stopMotor();
@@ -197,8 +189,7 @@ public class ShooterSubsystem extends BShooter {
 			addCommands(
 					new InstantCommand(() -> motorBrushes.set(speedsMapBrushes.get(config))),
 					new InstantCommand(() -> motorLeft.set(speedsMapShooter.get(config))),
-					new InstantCommand(() -> motorFeeder.set(speedsMapFeeder.get(config)))
-			);
+					new InstantCommand(() -> motorFeeder.set(speedsMapFeeder.get(config))));
 		}
 	}
 

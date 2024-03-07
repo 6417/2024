@@ -18,6 +18,7 @@ import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
+import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.fridowpi.motors.utils.PidValues;
 import frc.fridowpi.utils.Vector2;
 import frc.robot.Constants;
@@ -31,6 +32,7 @@ public class SwerveModule extends BSwerveModule {
 		public Supplier<FridolinsMotor> driveMotorInitializer;
 		public Supplier<FridolinsMotor> rotationMotorInitializer;
 		public PidValues drivePID;
+		public FeedForwardValues driveFeedForward;
 		public PidValues rotationPID;
 		public double rotationMotorTicksPerRotation;
 		public double driveMotorTicksPerRotation;
@@ -41,6 +43,8 @@ public class SwerveModule extends BSwerveModule {
 		public FridoFeedBackDevice rotationEncoderType;
 		public Optional<Boolean> driveSensorInverted = Optional.empty();
 		public boolean driveMotorInverted;
+		public IdleMode driveIdleMode;
+		public IdleMode rotationIdleMode;
 
 		@Override
 		public Config clone() {
@@ -53,12 +57,15 @@ public class SwerveModule extends BSwerveModule {
 				copy.driveMotorInitializer = driveMotorInitializer;
 				copy.rotationMotorInitializer = rotationMotorInitializer;
 				copy.drivePID = drivePID.clone();
+				copy.driveFeedForward = driveFeedForward.clone();
 				copy.rotationPID = rotationPID.clone();
 				copy.rotationMotorTicksPerRotation = rotationMotorTicksPerRotation;
 				copy.driveMotorTicksPerRotation = driveMotorTicksPerRotation;
 				copy.wheelCircumference = wheelCircumference;
 				copy.mountingPoint = new Translation2d(mountingPoint.getX(), mountingPoint.getY());
 				copy.driveMotorInverted = driveMotorInverted;
+				copy.driveIdleMode = driveIdleMode;
+				copy.rotationIdleMode = rotationIdleMode;
 				return copy;
 			}
 		}
@@ -72,10 +79,10 @@ public class SwerveModule extends BSwerveModule {
 		public Motors(Config config) {
 			drive = config.driveMotorInitializer.get();
 			drive.configEncoder(config.driveEncoderType, (int) config.driveMotorTicksPerRotation);
-			config.driveSensorInverted.ifPresent(this.drive::setEncoderDirection);
+			config.driveSensorInverted.ifPresent(drive::setEncoderDirection);
 			drive.setInverted(config.driveMotorInverted);
 			drive.setIdleMode(IdleMode.kBrake);
-			drive.setPID(config.drivePID);
+			drive.setPID(config.drivePID, config.driveFeedForward);
 
 			rotation = config.rotationMotorInitializer.get();
 			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);

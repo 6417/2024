@@ -28,6 +28,7 @@ import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridoTalonSRX;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
+import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.motors.FridolinsMotor.LimitSwitchPolarity;
 import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.fridowpi.motors.utils.PidValues;
@@ -325,7 +326,8 @@ public class Constants {
 			private static void addCommonModuleConfigurarions() {
 				commonConfigurations.driveMotorTicksPerRotation = 2048.0;
 				commonConfigurations.rotationMotorTicksPerRotation = 47.691;
-				commonConfigurations.drivePID = new PidValues(0.05, 0.0, 0.0, 0.03375);
+				commonConfigurations.drivePID = new PidValues(0.029, 0, 0);
+				commonConfigurations.driveFeedForward = new FeedForwardValues(0.179, 0.270);
 				commonConfigurations.drivePID.slotIdX = Optional.of(0);
 				commonConfigurations.rotationPID = new PidValues(1.05, 0.01, 1);
 				commonConfigurations.rotationPID.slotIdX = Optional.of(0);
@@ -333,6 +335,8 @@ public class Constants {
 				commonConfigurations.maxVelocity = maxSpeedOfDrive;
 				commonConfigurations.driveEncoderType = FridoFeedBackDevice.kBuildin;
 				commonConfigurations.rotationEncoderType = FridoFeedBackDevice.kBuildin;
+				commonConfigurations.driveIdleMode = IdleMode.kBrake;
+				commonConfigurations.rotationIdleMode = IdleMode.kBrake;
 			}
 
 			public static final double xOffset = 0.275;

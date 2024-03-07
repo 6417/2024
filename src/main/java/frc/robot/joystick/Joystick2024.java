@@ -4,12 +4,7 @@ import java.util.List;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.joystick.IJoystick;
-import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.JoystickHandler;
 import frc.robot.Constants;
 import frc.robot.joystick.IdsWithState.State;

@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -201,5 +202,10 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	@Override
 	public Measure<Velocity<Distance>> getSwerveWheelSpeeds() {
 		return MetersPerSecond.of(modules.get(MountingLocations.FrontLeft).getWheelSpeed());
+	}
+
+	@Override
+	public void initSendable(SendableBuilder builder) {
+		builder.addDoubleProperty("speed factor", () -> this.speedFactor, val -> speedFactor = val);
 	}
 }
