@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.utils.Algorithms;
-import frc.robot.Config;
 import frc.robot.Constants;
+import frc.robot.Controls;
 import frc.robot.abstraction.baseClasses.BSwerveDrive;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 import frc.robot.commands.drive.commands_2024.DriveCommand2024;
@@ -33,14 +33,12 @@ public class SwerveDrive2024 extends BSwerveDrive {
 
 	private Map<MountingLocations, BSwerveModule> modules = new HashMap<>();
 	private ChassisSpeeds currentChassisSpeeds = new ChassisSpeeds();
-	private double speedFactor;
 
 	public SwerveDrive2024() { }
 
 	@Override
 	public void init() {
 		super.init();
-		speedFactor = Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED);
 		setUpSwerveModules();
 		zeroRelativeEncoders();
 		setDefaultCommand(new DriveCommand2024());
@@ -86,12 +84,12 @@ public class SwerveDrive2024 extends BSwerveDrive {
 
 	private Map<MountingLocations, SwerveModuleState> normalizeStates(
 			Map<MountingLocations, SwerveModuleState> states) {
-		if (getMaxSpeed(states) > Constants.SwerveDrive.Swerve2024.maxSpeedOfDrive * speedFactor)
+		if (getMaxSpeed(states) > Constants.SwerveDrive.Swerve2024.maxSpeedOfDrive * Controls.getAccelerationSensitivity())
 			return states.entrySet().stream()
 					.map(Algorithms.mapEntryFunction(
 							Algorithms.mapSwerveModuleStateSpeed(speed -> speed / getMaxSpeed(states))))
 					.map(Algorithms.mapEntryFunction(
-							Algorithms.mapSwerveModuleStateSpeed(speed -> speed * speedFactor)))
+							Algorithms.mapSwerveModuleStateSpeed(speed -> speed * Controls.getAccelerationSensitivity())))
 					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		return states;
 	}
@@ -107,7 +105,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 				(Entry<MountingLocations, SwerveModuleState> labeledState) -> modules
 						.get(labeledState.getKey()).setDesiredState(labeledState.getValue()));
 
-		forEachModule(module -> module.driveForward(speedFactor));
+		forEachModule(module -> module.driveForward(Controls.getAccelerationSensitivity()));
 	}
 
 	@Override
@@ -147,7 +145,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	@Override
 	public void setSpeedFactor(double speedFactor) {
 		assert speedFactor > 0.0 : "speedFactor must be grater than zero";
-		this.speedFactor = speedFactor;
 	}
 
 	@Override
@@ -206,6 +203,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-		builder.addDoubleProperty("speed factor", () -> this.speedFactor, val -> speedFactor = val);
+		/* Controls in Controls */
 	}
 }

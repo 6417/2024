@@ -30,8 +30,7 @@ public record RobotData(
 	public record DriveData(
 			boolean enabled,
 			List<Integer> motorIds,
-			List<MotorRole> inverted,
-			Map<SpeedFactor, Double> speedFactors) {
+			List<MotorRole> inverted) {
 	}
 
 	public record AutoData(
@@ -59,8 +58,7 @@ public record RobotData(
 				new DriveData(
 						false,
 						List.of(),
-						List.of(),
-						Map.of()),
+						List.of()),
 				new AutoData(
 						MetersPerSecond.of(0),
 						MetersPerSecondPerSecond.of(0),

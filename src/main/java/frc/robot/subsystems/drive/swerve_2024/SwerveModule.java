@@ -81,7 +81,6 @@ public class SwerveModule extends BSwerveModule {
 			drive.configEncoder(config.driveEncoderType, (int) config.driveMotorTicksPerRotation);
 			config.driveSensorInverted.ifPresent(drive::setEncoderDirection);
 			drive.setInverted(config.driveMotorInverted);
-			drive.setIdleMode(IdleMode.kBrake);
 			drive.setPID(config.drivePID, config.driveFeedForward);
 
 			rotation = config.rotationMotorInitializer.get();

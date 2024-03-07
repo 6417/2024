@@ -13,16 +13,13 @@ import java.util.Optional;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
-import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.IJoystickId;
-import frc.fridowpi.joystick.joysticks.Logitech;
 import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridoTalonSRX;
@@ -38,7 +35,6 @@ import frc.robot.abstraction.RobotData.DriveData;
 import frc.robot.abstraction.RobotData.HardwareData;
 import frc.robot.abstraction.RobotData.PidData;
 import frc.robot.abstraction.baseClasses.BDrive.MountingLocations;
-import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.abstraction.baseClasses.BShooter.ShooterData;
 import frc.robot.subsystems.drive.swerve_2019.SwerveModule;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
@@ -111,13 +107,6 @@ public class Constants {
 		public static final double servoRightLockAngle = 33;
 	}
 
-	public static final class DriveCommon {
-		public static final Map<SpeedFactor, Double> defaultSpeedFactors = Map.of(
-				SpeedFactor.DEFAULT_SPEED, 0.8,
-				SpeedFactor.FAST, 1.0,
-				SpeedFactor.SLOW, 0.4);
-	}
-
 	public static final class Diplodocus {
 
 		public static final int mLeftFront = 11;
@@ -171,8 +160,7 @@ public class Constants {
 				new DriveData(
 						driveEnabled,
 						List.of(mLeftFront, mRightFront, mLeftBack, mRightBack),
-						invertedMotors,
-						DriveCommon.defaultSpeedFactors),
+						invertedMotors),
 				new AutoData(
 						Autonomous.maxSpeed,
 						Autonomous.maxAcceleration,
@@ -241,8 +229,7 @@ public class Constants {
 				new DriveData(
 						driveEnabled,
 						List.of(idLeftfront, idRightfront, idLeftback, idRightback),
-						invertedMotors,
-						DriveCommon.defaultSpeedFactors),
+						invertedMotors),
 				new AutoData(
 						MetersPerSecond.of(PathWeaver.kMaxVMetersPerSecond),
 						MetersPerSecondPerSecond.of(PathWeaver.kMaxAccMetersPerSecond),
@@ -259,19 +246,7 @@ public class Constants {
 
 	public static final class SwerveDrive {
 
-		public static final class ButtounIds {
-			public static final IJoystickButtonId zeroEncoders = Logitech.back;
-			public static final IJoystickButtonId fullSpeed = Logitech.x;
-			public static final IJoystickButtonId slowSpeed = Logitech.y;
-			public static final IJoystickButtonId driveFieldOriented = Logitech.b;
-			public static final IJoystickButtonId driveForwards = Logitech.a;
-			public static final IJoystickButtonId driveBackwards = Logitech.a;
-			public static final IJoystickButtonId zeroNavx = Logitech.start;
-		}
-
 		public static final class Swerve2024 {
-			private static void setSwerveDriveConstants() {
-			}
 
 			public static final double gearRatio = 5.192308;
 
@@ -303,10 +278,7 @@ public class Constants {
 					new DriveData(
 							enabled,
 							motorIds,
-							List.of(),
-							Map.of(SpeedFactor.DEFAULT_SPEED, 0.8,
-									SpeedFactor.SLOW, 1.0,
-									SpeedFactor.FAST, 0.35)),
+							List.of()),
 					new AutoData(
 							null,
 							null,
@@ -318,7 +290,6 @@ public class Constants {
 					new PidData(null, null, null));
 
 			static {
-				setSwerveDriveConstants();
 				addCommonModuleConfigurarions();
 				addModuleSpecificConfigurarions();
 			}
