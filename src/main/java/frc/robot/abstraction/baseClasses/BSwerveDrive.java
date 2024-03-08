@@ -23,6 +23,9 @@ public abstract class BSwerveDrive extends BDrive {
 	protected SwerveKinematics<MountingLocations> kinematics;
 	protected CustomSwerveDrivePoseEstimator poseEstimator;
 
+	public enum MotorType {
+		DRIVE, ROTATE;
+	}
 
 	@Override
 	public void init() {
@@ -126,5 +129,59 @@ public abstract class BSwerveDrive extends BDrive {
 	@Override
 	public final boolean isSwerve() {
 		return true;
+	}
+
+	public enum SwerveMotor {
+		FRONT_LEFT_DRIVE(MountingLocations.FrontLeft, MotorType.DRIVE),
+		FRONT_LEFT_ROTATE(MountingLocations.FrontLeft, MotorType.ROTATE),
+		FRONT_RIGHT_DRIVE(MountingLocations.FrontRight, MotorType.DRIVE),
+		FRONT_RIGHT_ROTATE(MountingLocations.FrontRight, MotorType.ROTATE),
+		BACK_LEFT_DRIVE(MountingLocations.BackLeft, MotorType.DRIVE),
+		BACK_LEFT_ROTATE(MountingLocations.BackLeft, MotorType.ROTATE),
+		BACK_RIGHT_DRIVE(MountingLocations.BackRight, MotorType.DRIVE),
+		BACK_RIGHT_ROTATE(MountingLocations.BackRight, MotorType.ROTATE),
+		;
+
+		private final MountingLocations location;
+		private final MotorType motorType;
+
+		private SwerveMotor(MountingLocations location, MotorType motorType) {
+			this.location = location;
+			this.motorType = motorType;
+		}
+
+		public SwerveMotor from(MountingLocations location, MotorType motorType) {
+			return switch (motorType) {
+				case DRIVE -> driveMotorFrom(location);
+				case ROTATE -> rotateMotorFrom(location);
+			};
+		}
+
+		public SwerveMotor driveMotorFrom(MountingLocations location) {
+			return switch (location) {
+				case FrontLeft -> FRONT_LEFT_DRIVE;
+				case FrontRight -> FRONT_RIGHT_DRIVE;
+				case BackLeft -> BACK_LEFT_DRIVE;
+				case BackRight -> BACK_RIGHT_DRIVE;
+			};
+		}
+
+		public SwerveMotor rotateMotorFrom(MountingLocations location) {
+			return switch (location) {
+				case FrontLeft -> FRONT_LEFT_ROTATE;
+				case FrontRight -> FRONT_RIGHT_ROTATE;
+				case BackLeft -> BACK_LEFT_ROTATE;
+				case BackRight -> BACK_RIGHT_ROTATE;
+			};
+		}
+
+		// Getters
+		public MountingLocations getLocation() {
+			return location;
+		}
+
+		public MotorType getMotorType() {
+			return motorType;
+		}
 	}
 }

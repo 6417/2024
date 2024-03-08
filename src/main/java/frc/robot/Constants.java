@@ -3,6 +3,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Time;
@@ -164,6 +166,7 @@ public class Constants {
 				new AutoData(
 						Autonomous.maxSpeed,
 						Autonomous.maxAcceleration,
+						null,
 						Autonomous.kS,
 						Autonomous.kV,
 						Autonomous.kA,
@@ -233,6 +236,7 @@ public class Constants {
 				new AutoData(
 						MetersPerSecond.of(PathWeaver.kMaxVMetersPerSecond),
 						MetersPerSecondPerSecond.of(PathWeaver.kMaxAccMetersPerSecond),
+						null,
 						Meters.of(PathWeaver.ksMeters),
 						MetersPerSecond.of(PathWeaver.kvMetersPerSecoond),
 						MetersPerSecondPerSecond.of(PathWeaver.ka),
@@ -257,6 +261,11 @@ public class Constants {
 			public static final double deadBand = 0.18;
 			public static final double yOffsetMapperMaxVoltage = 12.5;
 			public static final double yOffsetMapperMinVoltage = 9;
+
+			public static final Measure<Velocity<Distance>> maxVelocity = MetersPerSecond.of(2.5);
+			public static final Measure<Velocity<Velocity<Distance>>> maxAcceleration = MetersPerSecondPerSecond.of(1); // Not yet tested
+			public static final Measure<Velocity<Angle>> maxTurnSpeed = RotationsPerSecond.of(25);
+			// Old values
 			public static final double maxSpeedOfDrive = 25;
 			public static final double maxRotationSpeed = 25 * 2 * Math.PI;
 			public static final Map<MountingLocations, frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config> swerveModuleConfigs = new HashMap<>();
@@ -280,8 +289,9 @@ public class Constants {
 							motorIds,
 							List.of()),
 					new AutoData(
-							null,
-							null,
+							maxVelocity,
+							maxAcceleration,
+							maxTurnSpeed,
 							null,
 							null,
 							null,
@@ -298,7 +308,8 @@ public class Constants {
 				commonConfigurations.driveMotorTicksPerRotation = 2048.0;
 				commonConfigurations.rotationMotorTicksPerRotation = 47.691;
 				commonConfigurations.drivePID = new PidValues(0.029, 0, 0);
-				commonConfigurations.driveFeedForward = new FeedForwardValues(0.179, 0.270);
+				// commonConfigurations.driveFeedForward = new FeedForwardValues(0.179, 0.270);
+				commonConfigurations.driveFeedForward = new FeedForwardValues(3.0, 3.270);
 				commonConfigurations.drivePID.slotIdX = Optional.of(0);
 				commonConfigurations.rotationPID = new PidValues(1.05, 0.01, 1);
 				commonConfigurations.rotationPID.slotIdX = Optional.of(0);
@@ -306,7 +317,7 @@ public class Constants {
 				commonConfigurations.maxVelocity = maxSpeedOfDrive;
 				commonConfigurations.driveEncoderType = FridoFeedBackDevice.kBuildin;
 				commonConfigurations.rotationEncoderType = FridoFeedBackDevice.kBuildin;
-				commonConfigurations.driveIdleMode = IdleMode.kBrake;
+				commonConfigurations.driveIdleMode = IdleMode.kCoast;
 				commonConfigurations.rotationIdleMode = IdleMode.kBrake;
 			}
 

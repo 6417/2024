@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -95,6 +96,14 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	}
 
 	@Override
+	public void drive(double vxPercent, double vyPercent, double rotPercent) {
+		var requestedMovement = new ChassisSpeeds(
+				percent2driveVelocity(vxPercent), percent2driveVelocity(vyPercent),
+				percent2rotationVelocity(rotPercent));
+		drive(requestedMovement);
+	}
+
+	@Override
 	public void drive(ChassisSpeeds requestedMovement) {
 		currentChassisSpeeds = requestedMovement;
 		Map<MountingLocations, SwerveModuleState> states = kinematics
@@ -116,14 +125,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	@Override
 	public void setRotationToHome(MountingLocations moduleLocation) {
 		modules.get(moduleLocation).setCurrentRotationToEncoderHome();
-	}
-
-	public static double joystickInputToMetersPerSecond(double joystickValue) {
-		return joystickValue * Constants.SwerveDrive.Swerve2024.maxSpeedOfDrive;
-	}
-
-	public static double joystickInputToRadPerSecond(double joystickValue) {
-		return joystickValue * Constants.SwerveDrive.Swerve2024.maxRotationSpeed;
 	}
 
 	@Override
@@ -177,7 +178,12 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	// TODO: abstraction over motorrole
 	@Override
 	public <T> FridolinsMotor getMotor(T motor) {
-		throw new UnsupportedOperationException("Unimplemented method 'getMotor'");
+		assert motor instanceof BSwerveDrive.SwerveMotor;
+		var swerveMotor = (BSwerveDrive.SwerveMotor) motor;
+		return switch(swerveMotor.getMotorType()) {
+			case DRIVE -> modules.get(swerveMotor.getLocation()).getDriveMotor();
+			case ROTATE -> modules.get(swerveMotor.getLocation()).getRotationMotor();
+		};
 	}
 
 	@Override
@@ -188,12 +194,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	@Override
 	public SwerveModulePosition[] getModulePositions() {
 		return modules.values().stream().map(BSwerveModule::getOdometryPos).toArray(SwerveModulePosition[]::new);
-	}
-
-	@Override
-	public void drive(double v_x, double v_y, double rot) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'drive'");
 	}
 
 	@Override

@@ -16,9 +16,11 @@ public class Controls extends Module {
 			SpeedFactor.FAST, 1.0,
 			SpeedFactor.SLOW, 0.4);
 	private static SpeedFactor activeSpeedFactor = SpeedFactor.DEFAULT_SPEED;
+	private static double deadBandDrive = 0.15;
+	private static double deadBandTurn = 0.15;
 
 	private static double accelerationSensitivity = speedFactors.get(activeSpeedFactor);
-	private static double turnSensitivity = 0.8;
+	private static double turnSensitivity = 0.6;
 
 	public static void setActiveSpeedFactor(SpeedFactor speedFactor) {
 		activeSpeedFactor = speedFactor;
@@ -50,5 +52,13 @@ public class Controls extends Module {
 				val -> speedFactors.put(SpeedFactor.SLOW, val));
 		builder.addDoubleProperty("fastSpeedFactor", () -> speedFactors.get(SpeedFactor.FAST),
 				val -> speedFactors.put(SpeedFactor.FAST, val));
+	}
+
+	public static double getDriveDeadband() {
+		return deadBandDrive;
+	}
+
+	public static double getTurnDeadband() {
+		return deadBandTurn;
 	}
 }

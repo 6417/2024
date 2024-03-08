@@ -117,8 +117,8 @@ public class ClimberSubsystem extends BClimber {
 
 	@Override
 	public void oneStepUp(double speed) {
-		seilMotorLinks.set(-speed);
-		seilMotorRechts.set(-speed);
+		seilMotorLinks.set(speed);
+		seilMotorRechts.set(speed);
 	}
 
 	@Override

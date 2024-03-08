@@ -3,8 +3,13 @@ package frc.robot.abstraction.baseClasses;
 
 import java.util.List;
 
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.module.Module;
+import frc.robot.Config;
 import frc.robot.abstraction.interfaces.IDrive;
 
 /**
@@ -44,6 +49,17 @@ public abstract class BDrive extends Module implements IDrive {
 	@Override
 	public void init() {
 		super.init();
+	}
+
+	@Override
+	public Measure<Velocity<Angle>> percent2rotationVelocity(double val) {
+		// Attention: For swerves the turning speed of the single wheels?
+		return Config.data().auto().maxTurnSpeed().times(val);
+	}
+
+	@Override
+	public Measure<Velocity<Distance>> percent2driveVelocity(double x) {
+		return Config.data().auto().maxVelocity().times(x);
 	}
 
 }

@@ -111,7 +111,7 @@ public class SwerveModule extends BSwerveModule {
 	}
 
 	public Vector2 getModuleRotation() {
-		return Vector2.fromRad(getModuleRotationAngle());
+		return Vector2.fromRadians(getModuleRotationAngle());
 	}
 
 	public void zeroRelativeEncoder() {
@@ -120,9 +120,9 @@ public class SwerveModule extends BSwerveModule {
 
 	public double getModuleRotationAngle() {
 		return Vector2
-				.fromRad(((motors.rotation.getEncoderTicks() / config.rotationMotorTicksPerRotation) * Math.PI * 2)
+				.fromRadians(((motors.rotation.getEncoderTicks() / config.rotationMotorTicksPerRotation) * Math.PI * 2)
 						% (Math.PI * 2))
-				.toRadians();
+				.getAngleAsRadians();
 	}
 
 	public double getRawModuleRotationAngle() {
@@ -130,14 +130,14 @@ public class SwerveModule extends BSwerveModule {
 	}
 
 	public Vector2 getTargetVector() {
-		return Vector2.fromRad(desiredState.angle.getRadians());
+		return Vector2.fromRadians(desiredState.angle.getRadians());
 	}
 
 	private double angleToRotationMotorEncoderTicks(double angle) {
-		double angleDelta = Math.acos(getModuleRotation().dot(Vector2.fromRad(angle)));
+		double angleDelta = Math.acos(getModuleRotation().dot(Vector2.fromRadians(angle)));
 		if (currentRotationInverted)
 			angleDelta = Math.PI * 2 + angleDelta;
-		double steeringDirection = Math.signum(getModuleRotation().cross(Vector2.fromRad(angle)));
+		double steeringDirection = Math.signum(getModuleRotation().cross(Vector2.fromRadians(angle)));
 		return motors.rotation.getEncoderTicks()
 				+ steeringDirection * (angleDelta / (Math.PI * 2)) * config.rotationMotorTicksPerRotation;
 	}
@@ -151,11 +151,14 @@ public class SwerveModule extends BSwerveModule {
 	}
 
 	public double getSpeed() {
-		return motors.drive.getEncoderVelocity();
+		return motors.drive.getEncoderVelocity()
+			* Constants.SwerveDrive.Swerve2024.gearRatio
+			* config.wheelCircumference
+			/ config.driveMotorTicksPerRotation;
 	}
 
 	public void setDesiredState(SwerveModuleState state) {
-		var dst = Vector2.fromRad(state.angle.getRadians());
+		var dst = Vector2.fromRadians(state.angle.getRadians());
 		var src = getModuleRotation();
 		if (src.dot(dst) < 0) {
 			state.angle = state.angle.rotateBy(Rotation2d.fromDegrees(180));
@@ -255,7 +258,7 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public SwerveModulePosition getOdometryPos() {
 		return new SwerveModulePosition(
-				motors.drive.getEncoderTicks() / config.driveMotorTicksPerRotation * config.wheelCircumference * Constants.SwerveDrive.Swerve2024.gearRatio * 72, new Rotation2d(Radians.of(getModuleRotationAngle())));
+				motors.drive.getEncoderTicks() / config.driveMotorTicksPerRotation * config.wheelCircumference * Constants.SwerveDrive.Swerve2024.gearRatio, new Rotation2d(Radians.of(getModuleRotationAngle())));
 	}
 
 	@Override
@@ -291,5 +294,15 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public double getWheelSpeed() {
 		return motors.drive.getEncoderVelocity() * Constants.SwerveDrive.Swerve2024.gearRatio * config.wheelCircumference;
+	}
+
+	@Override
+	public FridolinsMotor getDriveMotor() {
+		return motors.drive;
+	}
+
+	@Override
+	public FridolinsMotor getRotationMotor() {
+		return motors.rotation;
 	}
 }

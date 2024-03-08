@@ -1,6 +1,5 @@
 package frc.robot.joystick;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.fridowpi.joystick.IJoystickButtonId;
@@ -10,22 +9,20 @@ import frc.fridowpi.joystick.joysticks.POV;
 import frc.robot.Constants;
 
 public class XBoxOneController extends WPIJoystick {
-    private XboxController xboxController;
 
 	public XBoxOneController(IJoystickId port) {
 		super(port);
 		setThrottleChannel(5);
 		setTwistChannel(4);
-		xboxController = new XboxController(port.getPort());
 	}
 
 
     public double getLtValue() {
-        return xboxController.getLeftTriggerAxis();
+        return getRawAxis(2);
     }
 
     public double getRtValue() {
-        return xboxController.getRightTriggerAxis();
+        return getRawAxis(3);
     }
 
     @Override
