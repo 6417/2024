@@ -37,7 +37,7 @@ public class CustomSwerveDrivePoseEstimator extends SwerveDrivePoseEstimator {
 	public static CustomSwerveDrivePoseEstimator fromFieldPos(double[] pos) {
 		return new CustomSwerveDrivePoseEstimator(
 				Config.drive().getSwerveKinematics().get(),
-				Constants.SwerveDrive.Swerve2024.Modules.SWERVE_MODULE_POSITIONS,
+				Constants.SwerveDrive.Swerve2024.SWERVE_MODULE_POSITIONS,
 				FridoNavx.getInstance().getRotation2d(),
 				new Pose2d(pos[0], pos[1], new Rotation2d(pos[5])));
 	}

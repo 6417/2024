@@ -173,8 +173,10 @@ public class SwerveModule extends BSwerveModule {
 
 	@Override
 	public void driveForward(double speedFactor) {
+		var vel = MetersPerSecond.of(speedFactor * desiredState.speedMetersPerSecond);
+		var encoderVel = velocity2driveMotorEncoderVelocityUnits(vel);
 		motors.rotation.setPosition(angleToRotationMotorEncoderTicks(desiredState.angle.getRadians()));
-		((FridoFalcon500v6) motors.drive).asTalonFX().setControl(new VelocityVoltage(speedFactor * desiredState.speedMetersPerSecond));
+		((FridoFalcon500v6) motors.drive).asTalonFX().setControl(new VelocityVoltage(encoderVel));
 	}
 
 	public void setDriveMotorSpeed(double velocity) {

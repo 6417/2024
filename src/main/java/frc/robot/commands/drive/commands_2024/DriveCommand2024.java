@@ -27,10 +27,10 @@ public class DriveCommand2024 extends FridoCommand {
 	public void execute() {
 		var joystick = Joystick2024.getInstance().getPrimaryJoystick();
 		var xy = new Vector2(joystick.getX(), joystick.getY());
-		var rot = joystick.getTwist();
+		var rot = -joystick.getTwist();
 
 		if (xy.magnitude() < Controls.getDriveDeadband()
-				&& rot < Controls.getTurnDeadband()) {
+				&& abs(rot) < Controls.getTurnDeadband()) {
 			Config.drive().stopAllMotors();
 			return;
 		}
@@ -44,7 +44,6 @@ public class DriveCommand2024 extends FridoCommand {
 		xy.y = Config.drive().percent2driveVelocity(xy.y).in(MetersPerSecond);
 		rot = Config.drive().percent2rotationVelocityDouble(rot);
 
-		System.out.println(xy.toString());
 		setChassisSpeeds(xy, rot);
 	}
 

@@ -59,7 +59,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	}
 
 	private void setUpSwerveModules() {
-		modules = Constants.SwerveDrive.Swerve2024.Modules.swerveModuleConfigs.entrySet().stream()
+		modules = Constants.SwerveDrive.Swerve2024.swerveModuleConfigs.entrySet().stream()
 				.map(Algorithms.mapEntryFunction(SwerveModule::new))
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		forEachModuleEntry(moduleEntry -> Shuffleboard.getTab("Drive")

@@ -12,7 +12,7 @@ import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
  */
 public class Controls extends Module {
 	public static Map<SpeedFactor, Double> speedFactors = Map.of(
-			SpeedFactor.DEFAULT_SPEED, 0.8,
+			SpeedFactor.DEFAULT_SPEED, 0.1,
 			SpeedFactor.FAST, 1.0,
 			SpeedFactor.SLOW, 0.4);
 	private static SpeedFactor activeSpeedFactor = SpeedFactor.DEFAULT_SPEED;
@@ -20,7 +20,7 @@ public class Controls extends Module {
 	private static double deadBandTurn = 0.08;
 
 	private static double accelerationSensitivity = speedFactors.get(activeSpeedFactor);
-	private static double turnSensitivity = 0.6;
+	private static double turnSensitivity = 0.06;
 
 	public static void setActiveSpeedFactor(SpeedFactor speedFactor) {
 		activeSpeedFactor = speedFactor;
