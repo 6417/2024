@@ -1,6 +1,7 @@
 package frc.robot.commands.drive.commands_2024;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -153,7 +154,7 @@ public class OldDriveCommand2024 extends Command {
 				xyr.r = MathUtilities.map(Math.abs(xyr.r), Constants.SwerveDrive.Swerve2024.deadBand, 1, 0, 1)
 						* Math.signum(xyr.r);
 			}
-			double rotationSpeed = xyr.r * Constants.SwerveDrive.Swerve2024.maxRotationSpeed;
+			double rotationSpeed = xyr.r * Constants.SwerveDrive.Swerve2024.maxTurnSpeed.in(RadiansPerSecond);
 			setChassisSpeeds(xyVector, rotationSpeed);
 		} else {
 			Config.drive().stopAllMotors();

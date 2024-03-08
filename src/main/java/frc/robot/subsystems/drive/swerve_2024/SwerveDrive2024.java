@@ -2,7 +2,6 @@ package frc.robot.subsystems.drive.swerve_2024;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,7 +12,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -78,22 +76,22 @@ public class SwerveDrive2024 extends BSwerveDrive {
 		consumer.accept(modules.get(mountingLocation));
 	}
 
-	private double getMaxSpeed(Map<MountingLocations, SwerveModuleState> states) {
-		return states.values().stream().max(Comparator.comparing(state -> state.speedMetersPerSecond))
-				.get().speedMetersPerSecond;
-	}
+	// private double getMaxSpeed(Map<MountingLocations, SwerveModuleState> states) {
+	// 	return states.values().stream().max(Comparator.comparing(state -> state.speedMetersPerSecond))
+	// 			.get().speedMetersPerSecond;
+	// }
 
-	private Map<MountingLocations, SwerveModuleState> normalizeStates(
-			Map<MountingLocations, SwerveModuleState> states) {
-		if (getMaxSpeed(states) > Constants.SwerveDrive.Swerve2024.maxSpeedOfDrive * Controls.getAccelerationSensitivity())
-			return states.entrySet().stream()
-					.map(Algorithms.mapEntryFunction(
-							Algorithms.mapSwerveModuleStateSpeed(speed -> speed / getMaxSpeed(states))))
-					.map(Algorithms.mapEntryFunction(
-							Algorithms.mapSwerveModuleStateSpeed(speed -> speed * Controls.getAccelerationSensitivity())))
-					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-		return states;
-	}
+	// private Map<MountingLocations, SwerveModuleState> normalizeStates(
+	// 		Map<MountingLocations, SwerveModuleState> states) {
+	// 	if (getMaxSpeed(states) > Constants.SwerveDrive.Swerve2024.maxVelocity.in(MetersPerSecond) * Controls.getAccelerationSensitivity())
+	// 		return states.entrySet().stream()
+	// 				.map(Algorithms.mapEntryFunction(
+	// 						Algorithms.mapSwerveModuleStateSpeed(speed -> speed / getMaxSpeed(states))))
+	// 				.map(Algorithms.mapEntryFunction(
+	// 						Algorithms.mapSwerveModuleStateSpeed(speed -> speed * Controls.getAccelerationSensitivity())))
+	// 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+	// 	return states;
+	// }
 
 	@Override
 	public void drive(double vxPercent, double vyPercent, double rotPercent) {

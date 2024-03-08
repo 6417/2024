@@ -11,6 +11,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.fridowpi.module.IModule;
@@ -38,7 +41,7 @@ public class SwerveModule extends BSwerveModule {
 		public double driveMotorTicksPerRotation;
 		public double wheelCircumference; // in meter
 		public Translation2d mountingPoint; // in meter
-		public double maxVelocity; // in drive motor encoder velocity units
+		public Measure<Velocity<Distance>> maxVelocity; // in drive motor encoder velocity units
 		public FridoFeedBackDevice driveEncoderType;
 		public FridoFeedBackDevice rotationEncoderType;
 		public Optional<Boolean> driveSensorInverted = Optional.empty();
@@ -142,12 +145,13 @@ public class SwerveModule extends BSwerveModule {
 				+ steeringDirection * (angleDelta / (Math.PI * 2)) * config.rotationMotorTicksPerRotation;
 	}
 
-	private double meterPerSecondToDriveMotorEncoderVelocityUnits(double speedMs) {
-		return (speedMs / config.wheelCircumference) * config.driveMotorTicksPerRotation;
+	private double velocity2driveMotorEncoderVelocityUnits(Measure<Velocity<Distance>> speed) {
+		return speed.in(MetersPerSecond) / 10 / config.wheelCircumference * config.driveMotorTicksPerRotation;
 	}
 
+	@SuppressWarnings("unused")
 	private double driveMotorEncoderVelocityToPercent(double encoderSpeed) {
-		return encoderSpeed / meterPerSecondToDriveMotorEncoderVelocityUnits(config.maxVelocity);
+		return encoderSpeed / velocity2driveMotorEncoderVelocityUnits(config.maxVelocity);
 	}
 
 	public double getSpeed() {
@@ -258,7 +262,7 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public SwerveModulePosition getOdometryPos() {
 		return new SwerveModulePosition(
-				motors.drive.getEncoderTicks() / config.driveMotorTicksPerRotation * config.wheelCircumference * Constants.SwerveDrive.Swerve2024.gearRatio, new Rotation2d(Radians.of(getModuleRotationAngle())));
+				getSpeed(), new Rotation2d(Radians.of(getModuleRotationAngle())));
 	}
 
 	@Override
