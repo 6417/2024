@@ -9,11 +9,16 @@ import frc.fridowpi.command.FridoCommand;
  */
 public class QuickCmd {
 
-	public static FridoCommand init(Runnable init) {
+	public static FridoCommand withInit(Runnable init) {
 		return new FridoCommand() {
 			@Override
 			public void initialize() {
 				init.run();
+			}
+
+			@Override
+			public boolean isFinished() {
+				return true;
 			}
 		};
 	}

@@ -23,7 +23,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
 
 		FridoNavx.setup(SPI.Port.kMXP);
-		FridoNavx.setPitchOffset(180);
+		FridoNavx.setPitchOffset(90);
 
 		Config.active.initAll();
 
@@ -41,7 +41,6 @@ public class Robot extends TimedRobot {
         SignalLogger.setPath("/home/lvuser/logs");
 
 		Config.drive().setOrientation(DriveOrientation.FieldOriented);
-		Config.active.getClimber().ifPresent(climber -> climber.lock());
     }
 
 	double maxSpeed = 0;

@@ -16,10 +16,10 @@ import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.Controls;
-import frc.robot.Constants.SwerveDrive.Swerve2024;
 import frc.robot.abstraction.baseClasses.BDrive.MountingLocations;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
 
 /**
@@ -58,13 +58,15 @@ public class JoystickBindings2024 {
 			quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
 		// quickBind(XboxOne.lb, () -> SwervedriveAuto.getInstance().startCommand());
-		quickBind(XboxOne.rb, () -> Config.drive().getMotor(MountingLocations.FrontRight));
 
 		Config.active.getClimber().ifPresent(climber -> {
 			// quickBind(Xbox360.y, State.ENDGAME, climber::oneStepUp);
 			// quickBind(Xbox360.a, State.ENDGAME, climber::oneStepDown);
-			quickBind(POV.DPadUp, climber::release);
-			quickBind(POV.DPadDown, climber::lock);
+			quickBind(POV.DPadRight, climber::release);
+			quickBind(POV.DPadLeft, ((ClimberSubsystem) climber)::lock);
+			quickBind(XboxOne.x, climber::stop);
+			quickBind(POV.DPadUp, () -> climber.oneStepUp(0.03));
+			quickBind(POV.DPadDown, () -> climber.oneStepUp(-0.03));
 		});
 
 		return tmp_bindings;
