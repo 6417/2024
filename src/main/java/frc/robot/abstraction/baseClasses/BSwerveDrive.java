@@ -35,7 +35,7 @@ public abstract class BSwerveDrive extends BDrive {
 	}
 
 	private void setUpSwerveKinematics() {
-		Map<MountingLocations, Translation2d> mountingPoints = Constants.SwerveDrive.Swerve2024.swerveModuleConfigs
+		Map<MountingLocations, Translation2d> mountingPoints = Constants.SwerveDrive.Swerve2024.Modules.swerveModuleConfigs
 				.entrySet().stream().map(Algorithms.mapEntryFunction(config -> config.mountingPoint))
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		kinematics = new SwerveKinematics<MountingLocations>(mountingPoints);

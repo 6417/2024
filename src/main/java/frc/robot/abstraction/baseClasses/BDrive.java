@@ -1,6 +1,9 @@
 
 package frc.robot.abstraction.baseClasses;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import java.util.List;
 
 import edu.wpi.first.units.Angle;
@@ -49,6 +52,12 @@ public abstract class BDrive extends Module implements IDrive {
 	@Override
 	public void init() {
 		super.init();
+	}
+
+	@Override
+	public double percent2rotationVelocityDouble(double val) {
+		// Attention: For swerves the turning speed of the single wheels?
+		return Config.data().auto().maxTurnSpeed().in(RadiansPerSecond) * val;
 	}
 
 	@Override

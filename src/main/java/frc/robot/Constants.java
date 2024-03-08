@@ -258,21 +258,18 @@ public class Constants {
 			public static final double absoluteEncoderZeroPositionTolerance = 0.01;
 			public static final boolean joystickYinverted = true;
 			public static final boolean joystickXinverted = true;
-			public static final double deadBand = 0.18;
+			public static final double deadBand = 0.08;
 			public static final double yOffsetMapperMaxVoltage = 12.5;
 			public static final double yOffsetMapperMinVoltage = 9;
 
 			public static final Measure<Velocity<Distance>> maxVelocity = MetersPerSecond.of(2.5);
-			public static final Measure<Velocity<Velocity<Distance>>> maxAcceleration = MetersPerSecondPerSecond.of(1); // Not
-																														// yet
-																														// tested
+			// Not yet tested
+			public static final Measure<Velocity<Velocity<Distance>>> maxAcceleration = MetersPerSecondPerSecond.of(1);
 			public static final Measure<Velocity<Angle>> maxTurnSpeed = RadiansPerSecond
 					.of(maxVelocity.in(MetersPerSecond) // v (m/x)
 							/ Math.hypot(Modules.xOffset, Modules.yOffset) // radius of the circle described by motors
 																			// during the turn movement
 							* 2 * Math.PI); // 2 * pi * radius
-
-			public static final Map<MountingLocations, frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config> swerveModuleConfigs = new HashMap<>();
 
 			public static final double absoluteEncoderToMeters = 1;
 			public static final double metersToRelativeEncoder = 1;
@@ -281,7 +278,9 @@ public class Constants {
 					1, 2, 3, 4,
 					11, 12, 13, 14);
 
-			public static class Modules {
+			public static final class Modules {
+
+				public static final Map<MountingLocations, frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config> swerveModuleConfigs = new HashMap<>();
 
 				public static frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config commonConfigurations = new frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config();
 
@@ -347,7 +346,7 @@ public class Constants {
 					frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontLeftConfig = commonConfigurations
 							.clone();
 					frontLeftConfig.absoluteEncoderZeroPosition = 0.5348;
-					frontLeftConfig.mountingPoint = new Translation2d(-xOffset, yOffset);
+					frontLeftConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[0];
 					frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(1);
 					frontLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(11, MotorType.kBrushless);
 					frontLeftConfig.driveMotorInverted = false;
@@ -357,7 +356,7 @@ public class Constants {
 					frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontRightConfig = commonConfigurations
 							.clone();
 					frontRightConfig.absoluteEncoderZeroPosition = 0.201;
-					frontRightConfig.mountingPoint = new Translation2d(-xOffset, -yOffset);
+					frontLeftConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[0];
 					frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(2);
 					frontRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(12, MotorType.kBrushless);
 					frontRightConfig.driveMotorInverted = false;
@@ -367,7 +366,7 @@ public class Constants {
 					frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backLeftConfig = commonConfigurations
 							.clone();
 					backLeftConfig.absoluteEncoderZeroPosition = 0.4605;
-					backLeftConfig.mountingPoint = new Translation2d(xOffset, yOffset);
+					frontLeftConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[0];
 					backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(3);
 					backLeftConfig.rotationMotorInitializer = () -> angleMotorInitializer(13, MotorType.kBrushless);
 					backLeftConfig.driveMotorInverted = false;
@@ -377,7 +376,7 @@ public class Constants {
 					frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backRightConfig = commonConfigurations
 							.clone();
 					backRightConfig.absoluteEncoderZeroPosition = 0.115;
-					backRightConfig.mountingPoint = new Translation2d(xOffset, -yOffset);
+					frontLeftConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[0];
 					backRightConfig.driveMotorInitializer = () -> driveMotorInitializer(4);
 					backRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(14, MotorType.kBrushless);
 					backRightConfig.driveMotorInverted = false;

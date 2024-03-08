@@ -16,8 +16,8 @@ public class Controls extends Module {
 			SpeedFactor.FAST, 1.0,
 			SpeedFactor.SLOW, 0.4);
 	private static SpeedFactor activeSpeedFactor = SpeedFactor.DEFAULT_SPEED;
-	private static double deadBandDrive = 0.15;
-	private static double deadBandTurn = 0.15;
+	private static double deadBandDrive = 0.08;
+	private static double deadBandTurn = 0.08;
 
 	private static double accelerationSensitivity = speedFactors.get(activeSpeedFactor);
 	private static double turnSensitivity = 0.6;

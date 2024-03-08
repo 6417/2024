@@ -42,7 +42,7 @@ public class DriveCommand2024 extends FridoCommand {
 
 		xy.x = Config.drive().percent2driveVelocity(xy.x).in(MetersPerSecond);
 		xy.y = Config.drive().percent2driveVelocity(xy.y).in(MetersPerSecond);
-		rot = Config.drive().percent2rotationVelocity(rot).in(RadiansPerSecond);
+		rot = Config.drive().percent2rotationVelocityDouble(rot);
 
 		System.out.println(xy.toString());
 		setChassisSpeeds(xy, rot);

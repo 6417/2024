@@ -65,6 +65,7 @@ public interface IDrive extends IModule, Sendable, JoystickBindable {
 	public void zeroRelativeEncoders();
 
 	public Measure<Velocity<Angle>> percent2rotationVelocity(double val);
+	public double percent2rotationVelocityDouble(double val);
 
 	public Measure<Velocity<Distance>> percent2driveVelocity(double x);
 

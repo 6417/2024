@@ -22,6 +22,9 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
 
+		System.out.println("<<<ModulesPrint>>>");
+		Constants.SwerveDrive.Swerve2024.Modules.swerveModuleConfigs.entrySet().forEach(mod -> System.out.println(mod.getKey() + ": " + mod.getValue()));
+
 		FridoNavx.setup(SPI.Port.kMXP);
 
 		Config.active.initAll();
