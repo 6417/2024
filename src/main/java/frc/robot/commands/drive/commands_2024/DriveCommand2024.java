@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static java.lang.Math.abs;
 import static java.lang.Math.signum;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.fridowpi.command.FridoCommand;
@@ -18,9 +19,9 @@ import frc.robot.joystick.Joystick2024;
  */
 public class DriveCommand2024 extends FridoCommand {
 
-	// private SlewRateLimiter xLimiter = new SlewRateLimiter(0.5);
-	// private SlewRateLimiter yLimiter = new SlewRateLimiter(0.5);
-	// private SlewRateLimiter rotLimiter = new SlewRateLimiter(0.5);
+	private SlewRateLimiter xLimiter = new SlewRateLimiter(Controls.getSlewRateLimit());
+	private SlewRateLimiter yLimiter = new SlewRateLimiter(Controls.getSlewRateLimit());
+	private SlewRateLimiter rotLimiter = new SlewRateLimiter(Controls.getSlewRateLimit());
 
 	public DriveCommand2024() {
 		addRequirements(Config.drive());
@@ -33,27 +34,34 @@ public class DriveCommand2024 extends FridoCommand {
 		var rot = -joystick.getTwist();
 
 		if (Controls.getControlMode() == Controls.ControlMode.SEPARATE_ACCELERATION) {
-			xy.normalized().scaled(joystick.getZ());
+			xy = xy.normalized().scaled(joystick.getZ());
 			System.out.println("Z: " + joystick.getZ());
 		}
 
 		// Brake if input is 0
-		if (xy.magnitude() < Controls.getDriveDeadband()
-				&& abs(rot) < Controls.getTurnDeadband()) {
+		if (xy.magnitude() < Controls.getDeadBandDrive()
+				&& abs(rot) < Controls.getDeadBandTurn()) {
 			Config.drive().stopAllMotors();
 			return;
 		}
 
 		// Apply deadband
-		xy = applyDeadband(xy, Controls.getDriveDeadband())
+		xy = applyDeadband(xy, Controls.getDeadBandDrive())
 				.scaled(Controls.getAccelerationSensitivity());
-		rot = applyDeadband(rot, Controls.getTurnDeadband())
+		rot = applyDeadband(rot, Controls.getDeadBandTurn())
 				* Controls.getTurnSensitivity();
 
+		// Square
+		if (Controls.isInputsSquared()) {
+			xy = xy.mulElementWise(xy).scaled(signum(xy.x * xy.y));
+		}
+
 		// Apply slew rate
-		// xy.x = xLimiter.calculate(xy.x);
-		// xy.y = yLimiter.calculate(xy.y);
-		// rot = rotLimiter.calculate(rot);
+		if (Controls.isSlewRateLimited()) {
+			xy.x = xLimiter.calculate(xy.x);
+			xy.y = yLimiter.calculate(xy.y);
+			rot = rotLimiter.calculate(rot);
+		}
 
 		// Convert to velocity
 		xy.x = Config.drive().percent2driveVelocity(xy.x).in(MetersPerSecond);
@@ -68,7 +76,7 @@ public class DriveCommand2024 extends FridoCommand {
 	}
 
 	private double applyDeadband(double x, double deadBand) {
-		return abs(x) < Controls.getDriveDeadband() ? 0 : (abs(x) - deadBand) / (1 - deadBand) * signum(x);
+		return abs(x) < deadBand ? 0 : (abs(x) - deadBand) / (1 - deadBand) * signum(x);
 	}
 
 	private void setChassisSpeeds(Vector2 vxy, double vRot) {
