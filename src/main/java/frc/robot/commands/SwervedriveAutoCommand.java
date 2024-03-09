@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
@@ -9,32 +8,32 @@ import frc.robot.Config;
 
 public class SwervedriveAutoCommand extends Command {
 
-  Timer timer = new Timer();
-  Trajectory trajectory;
+	Timer timer = new Timer();
+	Trajectory trajectory;
 
-  public SwervedriveAutoCommand(Trajectory tra) {
-    trajectory = tra;
-    //addRequirements(subsystem);
-  }
+	public SwervedriveAutoCommand(Trajectory tra) {
+		trajectory = tra;
+	}
 
-  @Override
-  public void initialize() {
-    timer.start();
-  }
+	@Override
+	public void initialize() {
+		timer.start();
+	}
 
-  @Override
-  public void execute() {
-    double t = timer.get();
-    ChassisSpeeds speeds = SwervedriveAuto.getInstance().getVelocities(trajectory, t);
-    Config.drive().drive(speeds);
-  }
+	@Override
+	public void execute() {
+		double t = timer.get();
+		ChassisSpeeds speeds = Config.active.getAuto().get().getVelocitiesAtTimepoint(trajectory, t);
+		Config.drive().drive(speeds);
+	}
 
-  @Override
-  public void end(boolean interrupted) {}
+	@Override
+	public void end(boolean interrupted) {
+	}
 
-  @Override
-  public boolean isFinished() {
-    // return timer.hasElapsed(trajectory.getTotalTimeSeconds());
-	return false;
-  }
+	@Override
+	public boolean isFinished() {
+		// return timer.hasElapsed(trajectory.getTotalTimeSeconds());
+		return false;
+	}
 }

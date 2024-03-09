@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.utils.Algorithms;
+import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.Controls;
 import frc.robot.abstraction.baseClasses.BSwerveDrive;
@@ -46,7 +47,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 
 	@Override
 	public void periodic() {
-		if (isInitialized()) {
+		if (Config.drive() == this) {
 			poseEstimator.update();
 		}
 	}

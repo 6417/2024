@@ -15,7 +15,7 @@ import frc.fridowpi.motors.FridolinsMotor;
 import frc.robot.joystick.JoystickBindings2024;
 import frc.robot.subsystems.drive.tankdrive.MotorSet;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
-import frc.robot.subsystems.visionAutonomous.TankDrivePoseEstimator;
+import frc.robot.subsystems.visionAutonomous.tankdrive.TankDrivePoseEstimator;
 
 /**
  * BTankDrive: Base class for the tank drive. Main functionality defined in BDrive or rather IDrive

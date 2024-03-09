@@ -43,8 +43,7 @@ public class JoystickBindings2024 {
 			quickBindToggle(XboxOne.rt,
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW),
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
-		}
-		;
+		};
 
 		quickBind(XboxOne.back, new InstantCommand(() -> {
 			FridoNavx.getInstance().reset();
@@ -62,7 +61,7 @@ public class JoystickBindings2024 {
 		// quickBind(XboxOne.lb, () -> SwervedriveAuto.getInstance().startCommand());
 
 		Config.active.getClimber().ifPresent(climber -> {
-			quickBind(XboxOne.x, climber::stop);
+			// quickBind(XboxOne.x, climber::stop);
 
 			quickBind(POV.DPadRight, climber::release);
 			quickBind(POV.DPadLeft, ((ClimberSubsystem) climber)::lockServos);

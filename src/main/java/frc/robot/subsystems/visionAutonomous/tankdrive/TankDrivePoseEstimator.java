@@ -1,4 +1,4 @@
-package frc.robot.subsystems.visionAutonomous;
+package frc.robot.subsystems.visionAutonomous.tankdrive;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
@@ -44,12 +44,4 @@ public class TankDrivePoseEstimator extends DifferentialDrivePoseEstimator {
 		// Convert robot pose from Pose3d to Pose2d needed to apply vision measurements.
 		// Pose2d visionMeasurement2d = visionMeasurement3d.toPose2d();
 	}
-
-	public static TankDrivePoseEstimator getInstance() {
-		if (instance == null) {
-			instance = new TankDrivePoseEstimator();
-		}
-		return instance;
-	}
-
 }

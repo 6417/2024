@@ -4,8 +4,6 @@ import static frc.robot.Utils.log;
 
 import java.util.List;
 
-import javax.swing.GroupLayout.ParallelGroup;
-
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
@@ -26,7 +24,6 @@ import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.robot.Config;
 import frc.robot.Constants;
-import frc.robot.Constants.Shooter;
 import frc.robot.abstraction.baseClasses.BShooter;
 
 public class ShooterSubsystem extends BShooter {
@@ -37,7 +34,6 @@ public class ShooterSubsystem extends BShooter {
 	private FridolinsMotor motorFeeder;
 	private FridolinsMotor motorBrushes;
 
-	public ShooterSubsystem shooter;
 	private double speedRpm = 5000.0;
 	private double targetSpeedRpm = 0;
 	private boolean enabled = true;
@@ -77,7 +73,6 @@ public class ShooterSubsystem extends BShooter {
 	}
 
 	public ShooterSubsystem() {
-		shooter = this;
 	}
 
 	@Override
@@ -175,8 +170,11 @@ public class ShooterSubsystem extends BShooter {
 	public void run() {
 	}
 
+	boolean pidEnabled = false;
+
 	@Override
 	public void stopMotors() {
+		pidEnabled = false;
 		motorBrushes.stopMotor();
 		motorFeeder.stopMotor();
 		motorLeft.stopMotor();
@@ -197,12 +195,12 @@ public class ShooterSubsystem extends BShooter {
 
 	public class IntakeCommand extends ParallelCommandGroup {
 		public IntakeCommand() {
-			addRequirements(shooter);
+			addRequirements(ShooterSubsystem.this);
 			addCommands(
 					new SetShooterMotorsPID(ShooterConfig.INTAKE) {
 						@Override
 						public boolean isFinished() {
-							return false;
+							return !pidEnabled;
 						}
 					},
 					setSpeedBrushes(ShooterConfig.INTAKE),
@@ -212,15 +210,15 @@ public class ShooterSubsystem extends BShooter {
 
 	public class ShootAmp extends ParallelRaceGroup {
 		public ShootAmp() {
-			var shooter = Config.active.getShooter().get();
 			var config = ShooterConfig.AMP;
+			var shooter = ShooterSubsystem.this;
 			addRequirements(shooter);
 			addCommands(
 					// Set shooter and keep pid
 					new SetShooterMotorsPID(config) {
 						@Override
 						public boolean isFinished() {
-							return false;
+							return !pidEnabled;
 						}
 					},
 					new SequentialCommandGroup(
@@ -239,7 +237,7 @@ public class ShooterSubsystem extends BShooter {
 
 	public class ShootSpeaker extends ParallelRaceGroup {
 		public ShootSpeaker() {
-			var shooter = Config.active.getShooter().get();
+			var shooter = ShooterSubsystem.this;
 			var config = ShooterConfig.SPEAKER;
 			addRequirements(shooter);
 			addCommands(
@@ -247,7 +245,7 @@ public class ShooterSubsystem extends BShooter {
 					new SetShooterMotorsPID(config) {
 						@Override
 						public boolean isFinished() {
-							return false;
+							return !pidEnabled;
 						}
 					},
 					new SequentialCommandGroup(
@@ -276,19 +274,23 @@ public class ShooterSubsystem extends BShooter {
 		@Override
 		public void initialize() {
 			setSpeedPercent(targetSpeed);
+			pidEnabled = true;
 		}
 
 		@Override
 		public void execute() {
-			speedRpm = motorLeft.getEncoderVelocity();
-			var pidOut = pid.calculate(speedRpm, targetSpeedRpm);
-			var ffOut = ff.calculate(targetSpeedRpm);
-			motorLeft.setVoltage(pidOut + ffOut);
+			if (ShooterSubsystem.this.pidEnabled) {
+				speedRpm = motorLeft.getEncoderVelocity();
+				var pidOut = pid.calculate(speedRpm, targetSpeedRpm);
+				var ffOut = ff.calculate(targetSpeedRpm);
+				motorLeft.setVoltage(pidOut + ffOut);
+			}
 		}
 
 		@Override
 		public void end(boolean interrupted) {
 			log("<<ShooterSubsytem>> ShooterMotors on full speed");
+			stopMotors();
 		}
 
 		@Override
