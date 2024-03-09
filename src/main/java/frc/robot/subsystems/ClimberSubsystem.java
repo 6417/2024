@@ -66,13 +66,18 @@ public class ClimberSubsystem extends BClimber {
 
 	@Override
 	public void release() {
-		QuickCmd.withInit(() -> {
-			servoRechts.setAngle(Constants.Climber.servoRightReleaseAngle);
-			servoLinks.setAngle(Constants.Climber.servoLeftReleaseAngle);
-		}).schedule();
+		new SequentialCommandGroup(
+				QuickCmd.withInit(this::releaseServos),
+				new WaitCommand(1),
+				QuickCmd.withInit(this::lockServos)).schedule();
 	}
 
-	public void lock() {
+	public void releaseServos() {
+		servoRechts.setAngle(Constants.Climber.servoRightReleaseAngle);
+		servoLinks.setAngle(Constants.Climber.servoLeftReleaseAngle);
+	}
+
+	public void lockServos() {
 		servoRechts.setAngle(Constants.Climber.servoRightLockAngle);
 		servoLinks.setAngle(Constants.Climber.servoLeftLockAngle);
 	}
@@ -117,6 +122,7 @@ public class ClimberSubsystem extends BClimber {
 	public void stop() {
 		seilMotorLinks.stopMotor();
 		seilMotorRechts.stopMotor();
+		speed = 0;
 	}
 
 	@Override

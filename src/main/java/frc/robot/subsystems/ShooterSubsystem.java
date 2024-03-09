@@ -19,8 +19,6 @@ import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
-import frc.fridowpi.motors.utils.PidValues;
-import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BShooter;

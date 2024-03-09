@@ -1,7 +1,6 @@
 package frc.robot.commands.drive.commands_2024;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static java.lang.Math.abs;
 import static java.lang.Math.signum;
 
@@ -53,6 +52,13 @@ public class DriveCommand2024 extends FridoCommand {
 
 	private double applyDeadband(double x, double deadBand) {
 		return abs(x) < Controls.getDriveDeadband() ? 0 : (abs(x) - deadBand) / (1 - deadBand) * signum(x);
+	}
+
+	private void applySkewLimit(Vector2 vec) {
+		/*
+		 * vec.x *= vec.x * Math.signum(vec.x);
+		 * vec.y *= vec.y * Math.signum(vec.y);
+		 */
 	}
 
 	private void setChassisSpeeds(Vector2 vxy, double vRot) {

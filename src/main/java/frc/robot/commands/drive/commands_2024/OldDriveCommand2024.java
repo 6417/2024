@@ -3,6 +3,7 @@ package frc.robot.commands.drive.commands_2024;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,6 +17,9 @@ import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
 
 public class OldDriveCommand2024 extends Command {
 	private final SwerveDrive2024 drive;
+	private final SlewRateLimiter xLimiter = new SlewRateLimiter(0.5);
+	private final SlewRateLimiter yLimiter = new SlewRateLimiter(0.5);
+	private final SlewRateLimiter rotLimiter = new SlewRateLimiter(0.5);
 
 	public OldDriveCommand2024() {
 		assert Config.drive() instanceof SwerveDrive2024 : "Not implemented for " + Config.drive().getClass();
@@ -122,11 +126,21 @@ public class OldDriveCommand2024 extends Command {
 		}
 	}
 
-	private void applySkewLimit(Vector2 vec) {
-		/*
-		 * vec.x *= vec.x * Math.signum(vec.x);
-		 * vec.y *= vec.y * Math.signum(vec.y);
-		 */
+	private double applySkewLimit(double x) {
+		return x == 0? 0: rotLimiter.calculate(x);
+	}
+
+	private Vector2 applySkewLimit(Vector2 vec) {
+		if (vec.magnitude() == 0) {
+			return vec;
+		}
+		return new Vector2(xLimiter.calculate(vec.x),
+				yLimiter.calculate(vec.y));
+	}
+
+	private void square(Vector2 vec) {
+		vec.x *= vec.x * Math.signum(vec.x);
+		vec.y *= vec.y * Math.signum(vec.y);
 	}
 
 	@Override
