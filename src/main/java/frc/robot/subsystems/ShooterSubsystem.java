@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Utils.log;
+
 import java.util.List;
+
+import javax.swing.GroupLayout.ParallelGroup;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -191,7 +195,7 @@ public class ShooterSubsystem extends BShooter {
 		}
 	}
 
-	public class ShootAmp extends SequentialCommandGroup {
+	public class ShootAmp extends ParallelRaceGroup {
 		private BShooter shooter;
 
 		public ShootAmp() {
@@ -199,12 +203,22 @@ public class ShooterSubsystem extends BShooter {
 			var config = ShooterConfig.AMP;
 			addRequirements(shooter);
 			addCommands(
-					new SetBrushMotor(config),
-					new SetShooterMotors(config),
-					new WaitCommand(1.0),
-					new SetFeederMotor(config),
-					new WaitCommand(3.0),
-					new InstantCommand(shooter::stopMotors));
+					new InstantCommand(() -> motorBrushes.set(speedsMapFeeder.get(config.asInt()))) {
+						@Override
+						public boolean isFinished() {
+							return false;
+						}
+					},
+					new SetShooterMotorsPID(config) {
+						@Override
+						public boolean isFinished() {
+							return false;
+						}
+					},
+					new SequentialCommandGroup(
+							new InstantCommand(() -> motorFeeder.set(speedsMapFeeder.get(config.asInt()))),
+							new WaitCommand(3.0),
+							new InstantCommand(shooter::stopMotors)));
 		}
 	}
 
@@ -216,34 +230,15 @@ public class ShooterSubsystem extends BShooter {
 			var config = ShooterConfig.SPEAKER;
 			addRequirements(shooter);
 			addCommands(
-					new SequentialCommandGroup(
-							new SetBrushMotor(config),
-							new Command() {
-								@Override
-								public boolean isFinished() {
-									return false;
-								}
-							}),
+					new InstantCommand(
+							() -> motorFeeder.set(speedsMapFeeder.get(config.asInt()))) {
+						@Override
+						public boolean isFinished() {
+							return false;
+						}
+					},
 					// Shooter
-					new Command() {
-						@Override
-						public void initialize() {
-							setSpeedPercent(speedsMapShooter.get(config.asInt()));
-						}
-
-						@Override
-						public void execute() {
-							speedRpm = motorLeft.getEncoderVelocity();
-							var pidOut = pid.calculate(speedRpm, targetSpeedRpm);
-							var ffOut = ff.calculate(targetSpeedRpm);
-							motorLeft.setVoltage(pidOut + ffOut);
-						}
-
-						@Override
-						public void end(boolean interrupted) {
-							motorLeft.stopMotor();
-						}
-
+					new SetShooterMotorsPID(config) {
 						@Override
 						public boolean isFinished() {
 							return false;
@@ -252,7 +247,6 @@ public class ShooterSubsystem extends BShooter {
 					// Feeder
 					new SequentialCommandGroup(
 							new WaitCommand(1.0),
-
 							new InstantCommand(() -> System.out.println("feeder set")),
 							new InstantCommand(
 									() -> motorFeeder.set(speedsMapFeeder.get(config.asInt()))),
@@ -262,79 +256,34 @@ public class ShooterSubsystem extends BShooter {
 	}
 
 	// Helper Commands
-	public class SetBrushMotor extends FridoCommand {
+	public class SetShooterMotorsPID extends FridoCommand {
 		private double targetSpeed;
 
-		public SetBrushMotor(double speed) {
-			targetSpeed = speed;
-		}
-
-		public SetBrushMotor(ShooterConfig config) {
-			targetSpeed = speedsMapBrushes.get(config.asInt());
-		}
-
-		@Override
-		public void initialize() {
-			motorBrushes.set(targetSpeed);
-		}
-
-		@Override
-		public boolean isFinished() {
-			// return motorLeft.pidAtTarget();
-			return true;
-		}
-	}
-
-	public class SetShooterMotors extends FridoCommand {
-		private double targetSpeed;
-
-		public SetShooterMotors(double speed) {
-			targetSpeed = speed;
-		}
-
-		public SetShooterMotors(ShooterConfig config) {
+		public SetShooterMotorsPID(ShooterConfig config) {
 			targetSpeed = speedsMapShooter.get(config.asInt());
 		}
 
 		@Override
 		public void initialize() {
-			// shooter.setSpeedPercent(targetSpeed);
-			motorLeft.set(targetSpeed);
-		}
-
-		@Override
-		public boolean isFinished() {
-			// return motorLeft.pidAtTarget();
-			return true;
-		}
-	}
-
-	public class SetFeederMotor extends FridoCommand {
-		private double targetSpeed;
-
-		public SetFeederMotor(double speed) {
-			targetSpeed = speed;
-		}
-
-		public SetFeederMotor(ShooterConfig config) {
-			targetSpeed = speedsMapFeeder.get(config.asInt());
-		}
-
-		@Override
-		public void initialize() {
-			// motorFeeder.setPidTarget(targetSpeed * maxSpeedRpm, PidType.velocity);
-			motorFeeder.set(targetSpeed);
+			setSpeedPercent(targetSpeed);
 		}
 
 		@Override
 		public void execute() {
-			// motorFeeder.setVelocity(targetSpeed);
+			speedRpm = motorLeft.getEncoderVelocity();
+			var pidOut = pid.calculate(speedRpm, targetSpeedRpm);
+			var ffOut = ff.calculate(targetSpeedRpm);
+			motorLeft.setVoltage(pidOut + ffOut);
+		}
+
+		@Override
+		public void end(boolean interrupted) {
+			log("<<ShooterSubsytem>> ShooterMotors on full speed");
 		}
 
 		@Override
 		public boolean isFinished() {
-			// return motorFeeder.pidAtTarget();
-			return true;
+			return motorLeft.pidAtTarget();
 		}
 	}
 
