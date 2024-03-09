@@ -32,17 +32,30 @@ public class DriveCommand2024 extends FridoCommand {
 		var xy = new Vector2(joystick.getX(), joystick.getY());
 		var rot = -joystick.getTwist();
 
+		if (Controls.getControlMode() == Controls.ControlMode.SEPARATE_ACCELERATION) {
+			xy.normalized().scaled(joystick.getZ());
+			System.out.println("Z: " + joystick.getZ());
+		}
+
+		// Brake if input is 0
 		if (xy.magnitude() < Controls.getDriveDeadband()
 				&& abs(rot) < Controls.getTurnDeadband()) {
 			Config.drive().stopAllMotors();
 			return;
 		}
 
+		// Apply deadband
 		xy = applyDeadband(xy, Controls.getDriveDeadband())
 				.scaled(Controls.getAccelerationSensitivity());
 		rot = applyDeadband(rot, Controls.getTurnDeadband())
 				* Controls.getTurnSensitivity();
 
+		// Apply slew rate
+		// xy.x = xLimiter.calculate(xy.x);
+		// xy.y = yLimiter.calculate(xy.y);
+		// rot = rotLimiter.calculate(rot);
+
+		// Convert to velocity
 		xy.x = Config.drive().percent2driveVelocity(xy.x).in(MetersPerSecond);
 		xy.y = Config.drive().percent2driveVelocity(xy.y).in(MetersPerSecond);
 		rot = Config.drive().percent2rotationVelocityDouble(rot);

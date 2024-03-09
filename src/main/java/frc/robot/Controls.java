@@ -11,16 +11,23 @@ import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
  * either to the entire program or get exported to the shuffleboard
  */
 public class Controls extends Module {
+
+	public static enum ControlMode {
+		CONVENTIONAL,
+		SEPARATE_ACCELERATION; // Nice controls: Joystick for direction only
+	}
+
 	public static Map<SpeedFactor, Double> speedFactors = Map.of(
-			SpeedFactor.DEFAULT_SPEED, 0.1,
-			SpeedFactor.FAST, 0.2,
-			SpeedFactor.SLOW, 0.05);
+			SpeedFactor.DEFAULT_SPEED, 0.2,
+			SpeedFactor.FAST, 0.4,
+			SpeedFactor.SLOW, 0.1);
 	private static SpeedFactor activeSpeedFactor = SpeedFactor.DEFAULT_SPEED;
 	private static double deadBandDrive = 0.08;
 	private static double deadBandTurn = 0.08;
 
 	private static double accelerationSensitivity = speedFactors.get(activeSpeedFactor);
 	private static double turnSensitivity = 0.06;
+	private static ControlMode controlMode = ControlMode.CONVENTIONAL;
 
 	public static void setActiveSpeedFactor(SpeedFactor speedFactor) {
 		activeSpeedFactor = speedFactor;
@@ -39,6 +46,22 @@ public class Controls extends Module {
 		return activeSpeedFactor;
 	}
 
+	public static ControlMode getControlMode() {
+		return controlMode;
+	}
+
+	public static void setControlMode(ControlMode controlMode) {
+		Controls.controlMode = controlMode;
+	}
+
+	public static double getDriveDeadband() {
+		return deadBandDrive;
+	}
+
+	public static double getTurnDeadband() {
+		return deadBandTurn;
+	}
+
 	// Shuffleboard
 	public void initSendable(SendableBuilder builder) {
 		builder.setSmartDashboardType("Motor Controller");
@@ -52,13 +75,5 @@ public class Controls extends Module {
 				val -> speedFactors.put(SpeedFactor.SLOW, val));
 		builder.addDoubleProperty("fastSpeedFactor", () -> speedFactors.get(SpeedFactor.FAST),
 				val -> speedFactors.put(SpeedFactor.FAST, val));
-	}
-
-	public static double getDriveDeadband() {
-		return deadBandDrive;
-	}
-
-	public static double getTurnDeadband() {
-		return deadBandTurn;
 	}
 }
