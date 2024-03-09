@@ -36,6 +36,7 @@ public class SwerveModule extends BSwerveModule {
 		public Supplier<FridolinsMotor> rotationMotorInitializer;
 		public PidValues drivePID;
 		public FeedForwardValues driveFeedForward;
+		public double driveAccelerationLimitRotationsPerS2;
 		public PidValues rotationPID;
 		public double rotationMotorTicksPerRotation;
 		public double driveMotorTicksPerRotation;
@@ -61,6 +62,7 @@ public class SwerveModule extends BSwerveModule {
 				copy.rotationMotorInitializer = rotationMotorInitializer;
 				copy.drivePID = drivePID.clone();
 				copy.driveFeedForward = driveFeedForward.clone();
+				copy.driveAccelerationLimitRotationsPerS2 = driveAccelerationLimitRotationsPerS2;
 				copy.rotationPID = rotationPID.clone();
 				copy.rotationMotorTicksPerRotation = rotationMotorTicksPerRotation;
 				copy.driveMotorTicksPerRotation = driveMotorTicksPerRotation;
@@ -85,6 +87,7 @@ public class SwerveModule extends BSwerveModule {
 			config.driveSensorInverted.ifPresent(drive::setEncoderDirection);
 			drive.setInverted(config.driveMotorInverted);
 			drive.setPID(config.drivePID, config.driveFeedForward);
+			drive.setAccelerationLimit(config.driveAccelerationLimitRotationsPerS2);
 
 			rotation = config.rotationMotorInitializer.get();
 			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);

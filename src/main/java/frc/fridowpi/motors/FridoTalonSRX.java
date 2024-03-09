@@ -258,4 +258,10 @@ public class FridoTalonSRX extends WPI_TalonSRX implements FridolinsMotor {
 	public void runPid() {
 		/* Software pid calculations here */
 	}
+
+	@Override
+	public void setAccelerationLimit(double maxAcceleration) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'setAccelerationLimit'");
+	}
 }

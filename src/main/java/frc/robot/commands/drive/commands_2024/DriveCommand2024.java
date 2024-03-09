@@ -18,6 +18,10 @@ import frc.robot.joystick.Joystick2024;
  */
 public class DriveCommand2024 extends FridoCommand {
 
+	// private SlewRateLimiter xLimiter = new SlewRateLimiter(0.5);
+	// private SlewRateLimiter yLimiter = new SlewRateLimiter(0.5);
+	// private SlewRateLimiter rotLimiter = new SlewRateLimiter(0.5);
+
 	public DriveCommand2024() {
 		addRequirements(Config.drive());
 	}
@@ -52,13 +56,6 @@ public class DriveCommand2024 extends FridoCommand {
 
 	private double applyDeadband(double x, double deadBand) {
 		return abs(x) < Controls.getDriveDeadband() ? 0 : (abs(x) - deadBand) / (1 - deadBand) * signum(x);
-	}
-
-	private void applySkewLimit(Vector2 vec) {
-		/*
-		 * vec.x *= vec.x * Math.signum(vec.x);
-		 * vec.y *= vec.y * Math.signum(vec.y);
-		 */
 	}
 
 	private void setChassisSpeeds(Vector2 vxy, double vRot) {

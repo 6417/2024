@@ -33,7 +33,8 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	private Map<MountingLocations, BSwerveModule> modules = new HashMap<>();
 	private ChassisSpeeds currentChassisSpeeds = new ChassisSpeeds();
 
-	public SwerveDrive2024() { }
+	public SwerveDrive2024() {
+	}
 
 	@Override
 	public void init() {
@@ -45,7 +46,9 @@ public class SwerveDrive2024 extends BSwerveDrive {
 
 	@Override
 	public void periodic() {
-		poseEstimator.update();
+		if (isInitialized()) {
+			poseEstimator.update();
+		}
 	}
 
 	@Override
@@ -76,21 +79,26 @@ public class SwerveDrive2024 extends BSwerveDrive {
 		consumer.accept(modules.get(mountingLocation));
 	}
 
-	// private double getMaxSpeed(Map<MountingLocations, SwerveModuleState> states) {
-	// 	return states.values().stream().max(Comparator.comparing(state -> state.speedMetersPerSecond))
-	// 			.get().speedMetersPerSecond;
+	// private double getMaxSpeed(Map<MountingLocations, SwerveModuleState> states)
+	// {
+	// return states.values().stream().max(Comparator.comparing(state ->
+	// state.speedMetersPerSecond))
+	// .get().speedMetersPerSecond;
 	// }
 
 	// private Map<MountingLocations, SwerveModuleState> normalizeStates(
-	// 		Map<MountingLocations, SwerveModuleState> states) {
-	// 	if (getMaxSpeed(states) > Constants.SwerveDrive.Swerve2024.maxVelocity.in(MetersPerSecond) * Controls.getAccelerationSensitivity())
-	// 		return states.entrySet().stream()
-	// 				.map(Algorithms.mapEntryFunction(
-	// 						Algorithms.mapSwerveModuleStateSpeed(speed -> speed / getMaxSpeed(states))))
-	// 				.map(Algorithms.mapEntryFunction(
-	// 						Algorithms.mapSwerveModuleStateSpeed(speed -> speed * Controls.getAccelerationSensitivity())))
-	// 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-	// 	return states;
+	// Map<MountingLocations, SwerveModuleState> states) {
+	// if (getMaxSpeed(states) >
+	// Constants.SwerveDrive.Swerve2024.maxVelocity.in(MetersPerSecond) *
+	// Controls.getAccelerationSensitivity())
+	// return states.entrySet().stream()
+	// .map(Algorithms.mapEntryFunction(
+	// Algorithms.mapSwerveModuleStateSpeed(speed -> speed / getMaxSpeed(states))))
+	// .map(Algorithms.mapEntryFunction(
+	// Algorithms.mapSwerveModuleStateSpeed(speed -> speed *
+	// Controls.getAccelerationSensitivity())))
+	// .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+	// return states;
 	// }
 
 	@Override
@@ -178,7 +186,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	public <T> FridolinsMotor getMotor(T motor) {
 		assert motor instanceof BSwerveDrive.SwerveMotor;
 		var swerveMotor = (BSwerveDrive.SwerveMotor) motor;
-		return switch(swerveMotor.getMotorType()) {
+		return switch (swerveMotor.getMotorType()) {
 			case DRIVE -> modules.get(swerveMotor.getLocation()).getDriveMotor();
 			case ROTATE -> modules.get(swerveMotor.getLocation()).getRotationMotor();
 		};

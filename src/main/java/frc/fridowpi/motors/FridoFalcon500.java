@@ -262,4 +262,10 @@ public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 	public void runPid() {
 		/* Software pid calculations here */
 	}
+
+	@Override
+	public void setAccelerationLimit(double maxAcceleration) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'setAccelerationLimit'");
+	}
 }

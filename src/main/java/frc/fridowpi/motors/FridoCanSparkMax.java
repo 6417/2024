@@ -1,12 +1,11 @@
 package frc.fridowpi.motors;
 
+import static java.lang.Math.abs;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import frc.fridowpi.motors.utils.FeedForwardValues;
-import frc.fridowpi.motors.utils.PidValues;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -16,10 +15,10 @@ import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import frc.fridowpi.module.Module;
 import frc.fridowpi.module.IModule;
-
-import static java.lang.Math.abs;
+import frc.fridowpi.module.Module;
+import frc.fridowpi.motors.utils.FeedForwardValues;
+import frc.fridowpi.motors.utils.PidValues;
 
 public class FridoCanSparkMax extends CANSparkMax implements FridolinsMotor {
     public static List<FridoCanSparkMax> allMotorsWithShitySoftware = new ArrayList<>();
@@ -357,4 +356,10 @@ public class FridoCanSparkMax extends CANSparkMax implements FridolinsMotor {
     public boolean isInitialized() {
         return initialized;
     }
+
+	@Override
+	public void setAccelerationLimit(double maxAcceleration) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'setAccelerationLimit'");
+	}
 }

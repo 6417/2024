@@ -1,5 +1,7 @@
 package frc.fridowpi.motors;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import java.util.Collection;
 import java.util.Optional;
 
@@ -10,6 +12,7 @@ import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -19,6 +22,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import frc.fridowpi.module.IModule;
 import frc.fridowpi.module.Module;
 import frc.fridowpi.motors.utils.FeedForwardValues;
@@ -33,6 +39,7 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 	Module moduleProxy = new Module();
 	Optional<Integer> pidSlotIdx = Optional.empty();
 	TalonFXConfiguration config = new TalonFXConfiguration();
+	Optional<FeedForwardValues> feedForwardValues;
 	double pidF = 0;
 
 	public FridoFalcon500v6(int deviceNumber) {
@@ -129,12 +136,18 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 
 	@Override
 	public void setVelocity(double velocity) {
-		motorProxy.setControl(new VelocityVoltage(velocity));
+		motorProxy.setControl(new MotionMagicVelocityVoltage(velocity, config.MotionMagic.MotionMagicAcceleration,
+					false, 0, pidSlotIdx.get(), true, true, true)); // 0 -> pidF?
 	}
 
 	@Override
 	public void setPosition(double position) {
 		motorProxy.setControl(new PositionVoltage(position));
+	}
+
+	@Override
+	public void setAccelerationLimit(double maxAccelerationRotationsPerSecond) {
+		config.MotionMagic.MotionMagicAcceleration = maxAccelerationRotationsPerSecond;
 	}
 
 	@Override
@@ -144,7 +157,7 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 				motorProxy.setControl(new PositionVoltage(value).withFeedForward(pidF));
 				break;
 			case velocity:
-				motorProxy.setControl(new VelocityVoltage(value).withFeedForward(pidF));
+				motorProxy.setControl(new VelocityVoltage(value).withFeedForward(pidF)); // TODO: Just call setVelocity?
 				break;
 			default:
 				throw new Error("Not implemented: " + type);
@@ -206,6 +219,7 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 
 		pid.SlotNumber = pidSlotIdx.orElse(0);
 		tolerance = pidValues.tolerance;
+		this.feedForwardValues = Optional.of(feedForwardValues);
 
 		motorProxy.getConfigurator().apply(pid);
 	}
@@ -225,8 +239,7 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 
 	@Override
 	public boolean pidAtTarget() {
-		return Math.abs(motorProxy.getClosedLoopError().getValueAsDouble()
-				- tolerance.orElse(0.01)) < tolerance.orElse(0.01);
+		return Math.abs(motorProxy.getClosedLoopError().getValueAsDouble()) < tolerance.orElse(0.01);
 	}
 
 	private NeutralModeValue convertFromFridoIdleMode(IdleMode mode) {
