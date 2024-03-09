@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.fridowpi.command.FridoCommand;
+import frc.fridowpi.command.ParallelCommandGroup;
 import frc.fridowpi.command.SequentialCommandGroup;
 import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridolinsMotor;
@@ -25,6 +26,7 @@ import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.robot.Config;
 import frc.robot.Constants;
+import frc.robot.Constants.Shooter;
 import frc.robot.abstraction.baseClasses.BShooter;
 
 public class ShooterSubsystem extends BShooter {
@@ -181,34 +183,40 @@ public class ShooterSubsystem extends BShooter {
 		motorRight.stopMotor();
 	}
 
-	public class IntakeCommand extends SequentialCommandGroup {
-		private BShooter shooter;
-
-		public IntakeCommand() {
-			shooter = Config.active.getShooter().get();
-			var config = ShooterConfig.INTAKE.asInt();
-			addRequirements(shooter);
-			addCommands(
-					new InstantCommand(() -> motorBrushes.set(speedsMapBrushes.get(config))),
-					new InstantCommand(() -> motorLeft.set(speedsMapShooter.get(config))),
-					new InstantCommand(() -> motorFeeder.set(speedsMapFeeder.get(config))));
-		}
+	private Command setSpeedBrushes(ShooterConfig config) {
+		return new InstantCommand(() -> motorBrushes.set(speedsMapBrushes.get(config.asInt())));
 	}
 
-	public class ShootAmp extends ParallelRaceGroup {
-		private BShooter shooter;
+	private Command setSpeedFeeder(ShooterConfig config) {
+		return new InstantCommand(() -> motorFeeder.set(speedsMapFeeder.get(config.asInt())));
+	}
 
-		public ShootAmp() {
-			shooter = Config.active.getShooter().get();
-			var config = ShooterConfig.AMP;
+	private Command setSpeedShooterMotors(ShooterConfig config) {
+		return new InstantCommand(() -> motorLeft.set(speedsMapShooter.get(config.asInt())));
+	}
+
+	public class IntakeCommand extends ParallelCommandGroup {
+		public IntakeCommand() {
 			addRequirements(shooter);
 			addCommands(
-					new InstantCommand(() -> motorBrushes.set(speedsMapFeeder.get(config.asInt()))) {
+					new SetShooterMotorsPID(ShooterConfig.INTAKE) {
 						@Override
 						public boolean isFinished() {
 							return false;
 						}
 					},
+					setSpeedBrushes(ShooterConfig.INTAKE),
+					setSpeedFeeder(ShooterConfig.INTAKE));
+		}
+	}
+
+	public class ShootAmp extends ParallelRaceGroup {
+		public ShootAmp() {
+			var shooter = Config.active.getShooter().get();
+			var config = ShooterConfig.AMP;
+			addRequirements(shooter);
+			addCommands(
+					// Set shooter and keep pid
 					new SetShooterMotorsPID(config) {
 						@Override
 						public boolean isFinished() {
@@ -216,40 +224,42 @@ public class ShooterSubsystem extends BShooter {
 						}
 					},
 					new SequentialCommandGroup(
-							new InstantCommand(() -> motorFeeder.set(speedsMapFeeder.get(config.asInt()))),
+							setSpeedBrushes(config),
+							new Command() {
+								@Override
+								public boolean isFinished() {
+									return motorLeft.pidAtTarget();
+								}
+							},
+							setSpeedFeeder(config),
 							new WaitCommand(3.0),
 							new InstantCommand(shooter::stopMotors)));
 		}
 	}
 
 	public class ShootSpeaker extends ParallelRaceGroup {
-		private BShooter shooter;
-
 		public ShootSpeaker() {
-			shooter = Config.active.getShooter().get();
+			var shooter = Config.active.getShooter().get();
 			var config = ShooterConfig.SPEAKER;
 			addRequirements(shooter);
 			addCommands(
-					new InstantCommand(
-							() -> motorFeeder.set(speedsMapFeeder.get(config.asInt()))) {
-						@Override
-						public boolean isFinished() {
-							return false;
-						}
-					},
-					// Shooter
+					// Set shooter and keep pid
 					new SetShooterMotorsPID(config) {
 						@Override
 						public boolean isFinished() {
 							return false;
 						}
 					},
-					// Feeder
 					new SequentialCommandGroup(
-							new WaitCommand(1.0),
-							new InstantCommand(() -> System.out.println("feeder set")),
-							new InstantCommand(
-									() -> motorFeeder.set(speedsMapFeeder.get(config.asInt()))),
+							setSpeedBrushes(config),
+							// Wait for shooter to get to full speed
+							new Command() {
+								@Override
+								public boolean isFinished() {
+									return motorLeft.pidAtTarget();
+								}
+							},
+							setSpeedFeeder(config),
 							new WaitCommand(1.5),
 							new InstantCommand(shooter::stopMotors)));
 		}
