@@ -1,5 +1,7 @@
 package frc.fridowpi.utils;
 
+import static java.lang.Math.signum;
+
 public class Vector2 {
     public double x;
     public double y;
@@ -23,6 +25,10 @@ public class Vector2 {
         return new Vector2(x - other.x, y - other.y);
     }
 
+    public Vector2 signs() {
+        return new Vector2(signum(x), signum(y));
+    }
+
     public Vector2 neg() {
         return new Vector2(-x, -y);
     }
@@ -38,6 +44,10 @@ public class Vector2 {
 
 	public Vector2 mulElementWise(Vector2 other) {
 		return new Vector2(x * other.x, y * other.y);
+	}
+
+	public Vector2 squaredSigned() {
+		return mulElementWise(this).mulElementWise(signs());
 	}
 
     public Vector2 withLength(double length) {

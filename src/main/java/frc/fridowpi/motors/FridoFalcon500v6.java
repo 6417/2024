@@ -136,8 +136,7 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 
 	@Override
 	public void setVelocity(double velocity) {
-		motorProxy.setControl(new MotionMagicVelocityVoltage(velocity, config.MotionMagic.MotionMagicAcceleration,
-					false, 0, pidSlotIdx.get(), true, true, true)); // 0 -> pidF?
+		motorProxy.setControl(new VelocityVoltage(velocity));
 	}
 
 	@Override
@@ -147,6 +146,7 @@ public class FridoFalcon500v6 implements FridolinsMotor {
 
 	@Override
 	public void setAccelerationLimit(double maxAccelerationRotationsPerSecond) {
+		// TODO: may not work correctly
 		config.MotionMagic.MotionMagicAcceleration = maxAccelerationRotationsPerSecond;
 	}
 

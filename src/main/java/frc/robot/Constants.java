@@ -265,7 +265,7 @@ public class Constants {
 			public static final double modulesXOffset = 0.275;
 			public static final double modulesYOffset = 0.275;
 
-			public static final Measure<Velocity<Distance>> maxVelocity = MetersPerSecond.of(2.5);
+			public static final Measure<Velocity<Distance>> maxVelocity = MetersPerSecond.of(5.2);
 			// Not yet tested
 			public static final Measure<Velocity<Velocity<Distance>>> maxAcceleration = MetersPerSecondPerSecond.of(1);
 			public static final Measure<Velocity<Angle>> maxTurnSpeed = RadiansPerSecond
@@ -295,7 +295,7 @@ public class Constants {
 				commonConfigurations.rotationMotorTicksPerRotation = 47.691;
 				commonConfigurations.drivePID = new PidValues(0.029, 0, 0);
 				commonConfigurations.driveFeedForward = new FeedForwardValues(0.179, 0.270);
-				commonConfigurations.driveAccelerationLimitRotationsPerS2 = 10;
+				commonConfigurations.driveAccelerationLimitRotationsPerS2 = 100;
 				commonConfigurations.drivePID.slotIdX = Optional.of(0);
 				commonConfigurations.rotationPID = new PidValues(1.05, 0.01, 1);
 				commonConfigurations.rotationPID.slotIdX = Optional.of(0);

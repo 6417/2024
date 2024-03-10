@@ -1,11 +1,13 @@
 package frc.robot.subsystems.drive.swerve_2024;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -87,7 +89,6 @@ public class SwerveModule extends BSwerveModule {
 			config.driveSensorInverted.ifPresent(drive::setEncoderDirection);
 			drive.setInverted(config.driveMotorInverted);
 			drive.setPID(config.drivePID, config.driveFeedForward);
-			drive.setAccelerationLimit(config.driveAccelerationLimitRotationsPerS2);
 
 			rotation = config.rotationMotorInitializer.get();
 			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);
@@ -149,19 +150,14 @@ public class SwerveModule extends BSwerveModule {
 	}
 
 	private double velocity2driveMotorEncoderVelocityUnits(Measure<Velocity<Distance>> speed) {
-		return speed.in(MetersPerSecond) / 10 / config.wheelCircumference * config.driveMotorTicksPerRotation;
+		return speed.in(MetersPerSecond)
+			/ config.wheelCircumference
+			* Constants.SwerveDrive.Swerve2024.gearRatio;
 	}
 
 	@SuppressWarnings("unused")
 	private double driveMotorEncoderVelocityToPercent(double encoderSpeed) {
 		return encoderSpeed / velocity2driveMotorEncoderVelocityUnits(config.maxVelocity);
-	}
-
-	public double getSpeed() {
-		return motors.drive.getEncoderVelocity()
-			* Constants.SwerveDrive.Swerve2024.gearRatio
-			* config.wheelCircumference
-			/ config.driveMotorTicksPerRotation;
 	}
 
 	public void setDesiredState(SwerveModuleState state) {
@@ -234,12 +230,13 @@ public class SwerveModule extends BSwerveModule {
 	public void initSendable(SendableBuilder builder) {
 		builder.addDoubleProperty("Desired speed", () -> desiredState.speedMetersPerSecond, null);
 		builder.addDoubleProperty("Desired angle", desiredState.angle::getDegrees, null);
-		builder.addDoubleProperty("Current speed", this::getSpeed, null);
+		builder.addDoubleProperty("Current speed", this::getWheelSpeed, null);
 		builder.addDoubleProperty("Current angel", () -> getModuleRotationAngle() * 180 / Math.PI, null);
 		builder.addDoubleProperty("Rotation Encoder Ticks", motors.rotation::getEncoderTicks, null);
+		builder.addDoubleProperty("Encoder Ticks", motors.drive::getEncoderTicks, null);
 		builder.addDoubleProperty("Absolute Encoder", motors.absoluteEncoder::get, null);
 		builder.addDoubleProperty("Absolute Pos", motors.absoluteEncoder::getAbsolutePosition, null);
-		builder.addDoubleProperty("Velocity Error", () -> Math.abs(getSpeed()) - Math.abs(desiredState.speedMetersPerSecond * 0.075), null);
+		builder.addDoubleProperty("Velocity Error", () -> Math.abs(getWheelSpeed()) - Math.abs(desiredState.speedMetersPerSecond * 0.075), null);
 		builder.addDoubleProperty("Set abs enc", () -> absPos, val -> {
 			absPos = val;
 			motors.absoluteEncoder.reset();
@@ -249,6 +246,8 @@ public class SwerveModule extends BSwerveModule {
 
 		builder.addDoubleProperty("Target", motors.rotation::getPidTarget, null);
 		builder.addBooleanProperty("Coast", () -> mode == IdleMode.kCoast, val -> mode = val? IdleMode.kCoast: IdleMode.kBrake);
+
+		builder.addDoubleProperty("WheelSpeeds", this::getWheelSpeed, null);
 	}
 
 	@Override
@@ -267,7 +266,7 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public SwerveModulePosition getOdometryPos() {
 		return new SwerveModulePosition(
-				getSpeed(), new Rotation2d(Radians.of(getModuleRotationAngle())));
+				getWheelSpeed(), new Rotation2d(Radians.of(getModuleRotationAngle())));
 	}
 
 	@Override
@@ -280,12 +279,6 @@ public class SwerveModule extends BSwerveModule {
 	public Collection<IModule> getSubModules() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'getSubModules'");
-	}
-
-	@Override
-	public void registerSubmodule(IModule... subModule) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'registerSubmodule'");
 	}
 
 	@Override
@@ -302,7 +295,9 @@ public class SwerveModule extends BSwerveModule {
 
 	@Override
 	public double getWheelSpeed() {
-		return motors.drive.getEncoderVelocity() * Constants.SwerveDrive.Swerve2024.gearRatio * config.wheelCircumference;
+		return motors.drive.getEncoderVelocity() // Rotations per second
+			* Constants.SwerveDrive.Swerve2024.gearRatio // Wheel rotations per second
+			* config.wheelCircumference; // Meters per second
 	}
 
 	@Override
@@ -313,5 +308,11 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public FridolinsMotor getRotationMotor() {
 		return motors.rotation;
+	}
+
+	@Override
+	public void registerSubmodule(IModule... subModule) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'registerSubmodule'");
 	}
 }

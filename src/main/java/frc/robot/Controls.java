@@ -18,15 +18,15 @@ public class Controls extends Module {
 	}
 
 	public static Map<SpeedFactor, Double> speedFactors = Map.of(
-			SpeedFactor.DEFAULT_SPEED, 0.15,
+			SpeedFactor.DEFAULT_SPEED, 0.3,
 			SpeedFactor.FAST, 0.2,
 			SpeedFactor.SLOW, 0.01);
 	private static SpeedFactor activeSpeedFactor = SpeedFactor.DEFAULT_SPEED;
 	private static double deadBandDrive = 0.08;
 	private static double deadBandTurn = 0.08;
-	private static boolean inputsSquared = true;
+	private static boolean inputsSquared = false;
 
-	private static boolean slewRateLimited = false;
+	private static boolean slewRateLimited = true;
 	private static double slewRateLimit = 0.08;
 
 	private static double accelerationSensitivity = speedFactors.get(activeSpeedFactor);

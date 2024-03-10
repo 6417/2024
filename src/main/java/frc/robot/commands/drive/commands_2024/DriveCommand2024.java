@@ -19,9 +19,11 @@ import frc.robot.joystick.Joystick2024;
  */
 public class DriveCommand2024 extends FridoCommand {
 
-	private SlewRateLimiter xLimiter = new SlewRateLimiter(Controls.getSlewRateLimit());
-	private SlewRateLimiter yLimiter = new SlewRateLimiter(Controls.getSlewRateLimit());
-	private SlewRateLimiter rotLimiter = new SlewRateLimiter(Controls.getSlewRateLimit());
+	private SlewRateLimiter xLimiter = new SlewRateLimiter(Controls.getSlewRateLimit(), -1000, 0);
+	private SlewRateLimiter yLimiter = new SlewRateLimiter(Controls.getSlewRateLimit(), -1000, 0);
+	private SlewRateLimiter rotLimiter = new SlewRateLimiter(Controls.getSlewRateLimit(), -1000, 0);
+
+	private double maxSpeed = 0;
 
 	public DriveCommand2024() {
 		addRequirements(Config.drive());
@@ -29,6 +31,12 @@ public class DriveCommand2024 extends FridoCommand {
 
 	@Override
 	public void execute() {
+		var speed = abs(Config.drive().getSwerveWheelSpeeds().in(MetersPerSecond));
+		if (speed > maxSpeed) {
+			maxSpeed = speed;
+			System.out.println("MaxSpeed: " + speed);
+		}
+
 		var joystick = Joystick2024.getInstance().getPrimaryJoystick();
 		var xy = new Vector2(joystick.getX(), joystick.getY());
 		var rot = -joystick.getTwist();
@@ -51,16 +59,11 @@ public class DriveCommand2024 extends FridoCommand {
 		rot = applyDeadband(rot, Controls.getDeadBandTurn())
 				* Controls.getTurnSensitivity();
 
-		// Square
-		if (Controls.isInputsSquared()) {
-			xy = xy.mulElementWise(xy).scaled(signum(xy.x * xy.y));
-		}
-
 		// Apply slew rate
 		if (Controls.isSlewRateLimited()) {
-			xy.x = xLimiter.calculate(xy.x);
-			xy.y = yLimiter.calculate(xy.y);
-			rot = rotLimiter.calculate(rot);
+			xy.x = xLimiter.calculate(abs(xy.x)) * signum(xy.x);
+			xy.y = yLimiter.calculate(abs(xy.y)) * signum(xy.y);
+			rot = rotLimiter.calculate(abs(rot)) * signum(rot);
 		}
 
 		// Convert to velocity
