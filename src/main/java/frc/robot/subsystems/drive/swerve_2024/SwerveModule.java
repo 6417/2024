@@ -152,7 +152,9 @@ public class SwerveModule extends BSwerveModule {
 	private double velocity2driveMotorEncoderVelocityUnits(Measure<Velocity<Distance>> speed) {
 		return speed.in(MetersPerSecond)
 			/ config.wheelCircumference
-			* Constants.SwerveDrive.Swerve2024.gearRatio;
+			/ 10
+			* Constants.SwerveDrive.Swerve2024.gearRatio
+			* config.driveMotorTicksPerRotation;
 	}
 
 	@SuppressWarnings("unused")

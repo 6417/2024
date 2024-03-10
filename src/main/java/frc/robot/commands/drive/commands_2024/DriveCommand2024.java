@@ -61,9 +61,15 @@ public class DriveCommand2024 extends FridoCommand {
 
 		// Apply slew rate
 		if (Controls.isSlewRateLimited()) {
-			xy.x = xLimiter.calculate(abs(xy.x)) * signum(xy.x);
-			xy.y = yLimiter.calculate(abs(xy.y)) * signum(xy.y);
-			rot = rotLimiter.calculate(abs(rot)) * signum(rot);
+			var xLimited = xLimiter.calculate(abs(xy.x)) * signum(xy.x);
+			var yLimited = yLimiter.calculate(abs(xy.y)) * signum(xy.y);
+			// rot = rotLimiter.calculate(abs(rot)) * signum(rot);
+			if (Double.isNaN(xLimited) || Double.isNaN(yLimited)) {
+				xLimiter.reset(xy.x);
+				yLimiter.reset(xy.y);
+			} else {
+				xy = new Vector2(xLimited, yLimited);
+			}
 		}
 
 		// Convert to velocity
@@ -72,6 +78,7 @@ public class DriveCommand2024 extends FridoCommand {
 		rot = Config.drive().percent2rotationVelocityDouble(rot);
 
 		setChassisSpeeds(xy, rot);
+		System.out.println(xy.toString() + rot);
 	}
 
 	private Vector2 applyDeadband(Vector2 xy, double deadBand) {
