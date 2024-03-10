@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,8 +65,8 @@ public class Constants {
 		public static final double feedIntakeSpeed = 0;
 		public static final double brushesIntakeSpeed = -0.1;
 
-		public static final double shooterAmpSpeed = 0.12;
-		public static final double feedAmpSpeed = 0.12;
+		public static final double shooterAmpSpeed = 0.0925;
+		public static final double feedAmpSpeed = 0.093;
 		public static final double brushesAmpSpeed = 0.2;
 
 		public static final double shooterSpeakerSpeed = 0.7;
@@ -77,9 +78,9 @@ public class Constants {
 
 		public static final ShooterData data = new ShooterData(
 				List.of(20, 21, 22, 23),
-				List.of(shooterIntakeSpeed, shooterAmpSpeed, shooterSpeakerSpeed,
+				new ArrayList<Double>(List.of(shooterIntakeSpeed, shooterAmpSpeed, shooterSpeakerSpeed,
 						feedIntakeSpeed, feedAmpSpeed, feedSpeakerSpeed,
-						brushesIntakeSpeed, brushesAmpSpeed, brushesSpeakerSpeed),
+						brushesIntakeSpeed, brushesAmpSpeed, brushesSpeakerSpeed)),
 				1);
 	};
 

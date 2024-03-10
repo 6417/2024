@@ -226,7 +226,7 @@ public class ShooterSubsystem extends BShooter {
 							new Command() {
 								@Override
 								public boolean isFinished() {
-									return motorLeft.pidAtTarget();
+									return shooterAtTargetSpeed() && pidEnabled;
 								}
 							},
 							setSpeedFeeder(config),
@@ -239,7 +239,7 @@ public class ShooterSubsystem extends BShooter {
 		public ShootSpeaker() {
 			var shooter = ShooterSubsystem.this;
 			var config = ShooterConfig.SPEAKER;
-			addRequirements(shooter);
+		addRequirements(shooter);
 			addCommands(
 					// Set shooter and keep pid
 					new SetShooterMotorsPID(config) {
@@ -254,7 +254,7 @@ public class ShooterSubsystem extends BShooter {
 							new Command() {
 								@Override
 								public boolean isFinished() {
-									return motorLeft.pidAtTarget();
+									return shooterAtTargetSpeed() && pidEnabled;
 								}
 							},
 							setSpeedFeeder(config),
@@ -291,17 +291,22 @@ public class ShooterSubsystem extends BShooter {
 		public void end(boolean interrupted) {
 			log("<<ShooterSubsytem>> ShooterMotors on full speed");
 			stopMotors();
+			pidEnabled = false;
 		}
 
 		@Override
 		public boolean isFinished() {
-			return motorLeft.pidAtTarget();
+			return shooterAtTargetSpeed();
 		}
 	}
 
 	@Override
 	public void enable() {
 		enabled = true;
+	}
+
+	private boolean shooterAtTargetSpeed() {
+		return Math.abs(targetSpeedRpm - motorLeft.getEncoderVelocity()) / Math.abs(targetSpeedRpm) < 0.08;
 	}
 
 	@Override
@@ -324,7 +329,8 @@ public class ShooterSubsystem extends BShooter {
 				() -> speedsMapBrushes.get(ShooterConfig.AMP.asInt()),
 				val -> speedsMapBrushes.set(ShooterConfig.AMP.asInt(), val));
 		builder.addDoubleProperty("ampFeederSpeed",
-				() -> speedsMapShooter.get(ShooterConfig.AMP.asInt()),
-				val -> speedsMapShooter.set(ShooterConfig.AMP.asInt(), val));
+				() -> speedsMapFeeder.get(ShooterConfig.AMP.asInt()),
+				val -> speedsMapFeeder.set(ShooterConfig.AMP.asInt(), val));
+		builder.addDoubleProperty("Left Speed", motorLeft::getEncoderVelocity, null);
 	}
 }
