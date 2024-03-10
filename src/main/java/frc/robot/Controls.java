@@ -26,7 +26,7 @@ public class Controls extends Module {
 	private static double deadBandTurn = 0.08;
 	private static boolean inputsSquared = false;
 
-	private static boolean slewRateLimited = true;
+	private static boolean slewRateLimited = false;
 	private static double slewRateLimit = 0.08;
 
 	private static double accelerationSensitivity = speedFactors.get(activeSpeedFactor);

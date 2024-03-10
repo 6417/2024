@@ -22,7 +22,6 @@ import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
-import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BShooter;
 
@@ -35,14 +34,13 @@ public class ShooterSubsystem extends BShooter {
 	private FridolinsMotor motorBrushes;
 
 	private double speedRpm = 5000.0;
-	private double targetSpeedRpm = 0;
-	private boolean enabled = true;
-	private double maxVolts = 12.0;
+	private double shooterTargetSpeedRpm = 0;
+	private double feederTargetSpeedRpm = 0;
 	public List<Double> speedsMapShooter;
 	public List<Double> speedsMapFeeder;
 	public List<Double> speedsMapBrushes;
 
-	private final PIDController pid = new PIDController(0.0005, 0.0, 0.0);
+	private final PIDController pid = new PIDController(0.0005, 0.000001, 0.0);
 	private final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.081, 0.0020075);
 
 	// private PidValues pidValues = new PidValues(0.0005, 0.0, 0.0);
@@ -134,12 +132,11 @@ public class ShooterSubsystem extends BShooter {
 		((CANSparkMax) motorLeft).enableVoltageCompensation(12);
 		((CANSparkMax) motorFeeder).enableVoltageCompensation(12);
 
-		pid.setTolerance(50);
+		pid.setTolerance(30);
 		pid.setIntegratorRange(-0.015, 0.015);
 	}
 
-	@Override
-	public void setSpeedPercent(double speed) {
+	public void setShooterSpeedPercent(double speed) {
 		if (speed > 1.0) {
 			System.out.println("<Warning> Speed too high: " + speed);
 			speed = 1.0;
@@ -147,7 +144,18 @@ public class ShooterSubsystem extends BShooter {
 			System.out.println("<Warning> Speed too low: " + speed);
 			speed = -1.0;
 		}
-		targetSpeedRpm = speed * maxSpeedRpm;
+		shooterTargetSpeedRpm = speed * maxSpeedRpm;
+	}
+
+	public void setFeederSpeedPercent(double speed) {
+		if (speed > 1.0) {
+			System.out.println("<Warning> Speed too high: " + speed);
+			speed = 1.0;
+		} else if (speed < -1.0) {
+			System.out.println("<Warning> Speed too low: " + speed);
+			speed = -1.0;
+		}
+		feederTargetSpeedRpm = speed * maxSpeedRpm;
 	}
 
 	@Override
@@ -170,11 +178,13 @@ public class ShooterSubsystem extends BShooter {
 	public void run() {
 	}
 
-	boolean pidEnabled = false;
+	boolean pidShooterEnabled = false;
+	boolean pidFeederEnabled = false;
 
 	@Override
 	public void stopMotors() {
-		pidEnabled = false;
+		pidShooterEnabled = false;
+		pidFeederEnabled = false;
 		motorBrushes.stopMotor();
 		motorFeeder.stopMotor();
 		motorLeft.stopMotor();
@@ -197,10 +207,10 @@ public class ShooterSubsystem extends BShooter {
 		public IntakeCommand() {
 			addRequirements(ShooterSubsystem.this);
 			addCommands(
-					new SetShooterMotorsPID(ShooterConfig.INTAKE) {
+					new SetShooterMotorsPid(ShooterConfig.INTAKE) {
 						@Override
 						public boolean isFinished() {
-							return !pidEnabled;
+							return !pidShooterEnabled;
 						}
 					},
 					setSpeedBrushes(ShooterConfig.INTAKE),
@@ -214,11 +224,18 @@ public class ShooterSubsystem extends BShooter {
 			var shooter = ShooterSubsystem.this;
 			addRequirements(shooter);
 			addCommands(
-					// Set shooter and keep pid
-					new SetShooterMotorsPID(config) {
+					// Set feeder and keep pid
+					new SetFeederPid(config) {
 						@Override
 						public boolean isFinished() {
-							return !pidEnabled;
+							return !pidFeederEnabled;
+						}
+					},
+					// Set shooter and keep pid
+					new SetShooterMotorsPid(config) {
+						@Override
+						public boolean isFinished() {
+							return !pidShooterEnabled;
 						}
 					},
 					new SequentialCommandGroup(
@@ -226,7 +243,7 @@ public class ShooterSubsystem extends BShooter {
 							new Command() {
 								@Override
 								public boolean isFinished() {
-									return shooterAtTargetSpeed() && pidEnabled;
+									return shooterAtTargetSpeed() && pidShooterEnabled;
 								}
 							},
 							setSpeedFeeder(config),
@@ -239,13 +256,13 @@ public class ShooterSubsystem extends BShooter {
 		public ShootSpeaker() {
 			var shooter = ShooterSubsystem.this;
 			var config = ShooterConfig.SPEAKER;
-		addRequirements(shooter);
+			addRequirements(shooter);
 			addCommands(
-					// Set shooter and keep pid
-					new SetShooterMotorsPID(config) {
+					// Set shooter and feeder and keep pid
+					new SetShooterMotorsPid(config) {
 						@Override
 						public boolean isFinished() {
-							return !pidEnabled;
+							return !pidShooterEnabled;
 						}
 					},
 					new SequentialCommandGroup(
@@ -254,35 +271,41 @@ public class ShooterSubsystem extends BShooter {
 							new Command() {
 								@Override
 								public boolean isFinished() {
-									return shooterAtTargetSpeed() && pidEnabled;
+									return shooterAtTargetSpeed() && pidShooterEnabled;
 								}
 							},
-							setSpeedFeeder(config),
-							new WaitCommand(1.5),
+							new ParallelRaceGroup(
+									new SetFeederPid(config) {
+										@Override
+										public boolean isFinished() {
+											return !pidFeederEnabled;
+										}
+									},
+									new WaitCommand(2)),
 							new InstantCommand(shooter::stopMotors)));
 		}
 	}
 
 	// Helper Commands
-	public class SetShooterMotorsPID extends FridoCommand {
+	public class SetShooterMotorsPid extends FridoCommand {
 		private double targetSpeed;
 
-		public SetShooterMotorsPID(ShooterConfig config) {
+		public SetShooterMotorsPid(ShooterConfig config) {
 			targetSpeed = speedsMapShooter.get(config.asInt());
 		}
 
 		@Override
 		public void initialize() {
-			setSpeedPercent(targetSpeed);
-			pidEnabled = true;
+			setShooterSpeedPercent(targetSpeed);
+			pidShooterEnabled = true;
 		}
 
 		@Override
 		public void execute() {
-			if (ShooterSubsystem.this.pidEnabled) {
+			if (ShooterSubsystem.this.pidShooterEnabled) {
 				speedRpm = motorLeft.getEncoderVelocity();
-				var pidOut = pid.calculate(speedRpm, targetSpeedRpm);
-				var ffOut = ff.calculate(targetSpeedRpm);
+				var pidOut = pid.calculate(speedRpm, shooterTargetSpeedRpm);
+				var ffOut = ff.calculate(shooterTargetSpeedRpm);
 				motorLeft.setVoltage(pidOut + ffOut);
 			}
 		}
@@ -291,7 +314,7 @@ public class ShooterSubsystem extends BShooter {
 		public void end(boolean interrupted) {
 			log("<<ShooterSubsytem>> ShooterMotors on full speed");
 			stopMotors();
-			pidEnabled = false;
+			pidShooterEnabled = false;
 		}
 
 		@Override
@@ -300,19 +323,59 @@ public class ShooterSubsystem extends BShooter {
 		}
 	}
 
+	public class SetFeederPid extends FridoCommand {
+		private double targetSpeed;
+
+		public SetFeederPid(ShooterConfig config) {
+			targetSpeed = speedsMapFeeder.get(config.asInt());
+		}
+
+		@Override
+		public void initialize() {
+			setFeederSpeedPercent(targetSpeed);
+			pidFeederEnabled = true;
+		}
+
+		@Override
+		public void execute() {
+			if (ShooterSubsystem.this.pidFeederEnabled) {
+				speedRpm = motorFeeder.getEncoderVelocity();
+				var pidOut = pid.calculate(speedRpm, feederTargetSpeedRpm);
+				var ffOut = ff.calculate(feederTargetSpeedRpm);
+				motorFeeder.setVoltage(pidOut + ffOut);
+			}
+		}
+
+		@Override
+		public void end(boolean interrupted) {
+			log("<<FeederSubsytem>> FeederMotors on full speed");
+			stopMotors();
+			pidShooterEnabled = false;
+		}
+
+		@Override
+		public boolean isFinished() {
+			return feederAtTargetSpeed();
+		}
+	}
+
 	@Override
 	public void enable() {
-		enabled = true;
+	}
+
+	private boolean feederAtTargetSpeed() {
+		return Math.abs(shooterTargetSpeedRpm - motorLeft.getEncoderVelocity())
+				/ Math.abs(shooterTargetSpeedRpm) < 0.08;
 	}
 
 	private boolean shooterAtTargetSpeed() {
-		return Math.abs(targetSpeedRpm - motorLeft.getEncoderVelocity()) / Math.abs(targetSpeedRpm) < 0.08;
+		return Math.abs(shooterTargetSpeedRpm - motorLeft.getEncoderVelocity())
+				/ Math.abs(shooterTargetSpeedRpm) < 0.08;
 	}
 
 	@Override
 	public void disable() {
 		stopMotors();
-		enabled = false;
 	}
 
 	@Override

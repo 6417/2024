@@ -65,12 +65,12 @@ public class Constants {
 		public static final double feedIntakeSpeed = 0;
 		public static final double brushesIntakeSpeed = -0.1;
 
-		public static final double shooterAmpSpeed = 0.0925;
-		public static final double feedAmpSpeed = 0.093;
+		public static final double shooterAmpSpeed = 0.082;
+		public static final double feedAmpSpeed = 0.078;
 		public static final double brushesAmpSpeed = 0.2;
 
 		public static final double shooterSpeakerSpeed = 0.7;
-		public static final double feedSpeakerSpeed = 1.0;
+		public static final double feedSpeakerSpeed = 0.7;
 		public static final double brushesSpeakerSpeed = 0;
 
 		public static final PidValues velocityPidShooter = new PidValues(0.0005, 0.0, 0.0);
