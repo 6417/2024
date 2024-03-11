@@ -47,6 +47,7 @@ public class JoystickBindings2024 {
 
 		quickBind(XboxOne.back, new InstantCommand(() -> {
 			FridoNavx.getInstance().reset();
+			FridoNavx.setPitchOffset(90);
 			Config.drive().resetOdometry();
 			System.out.println("<<<[ Zeroed ]>>>");
 		}));
