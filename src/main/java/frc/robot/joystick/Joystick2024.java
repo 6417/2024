@@ -4,12 +4,7 @@ import java.util.List;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.fridowpi.joystick.Binding;
 import frc.fridowpi.joystick.IJoystick;
-import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.joystick.XBoxJoystick;
 import frc.robot.Config;
@@ -48,19 +43,6 @@ public class Joystick2024 implements Sendable {
 	}
 
 	public void run() {
-
-		if (JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId) != null) {
-			var js = getPrimaryJoystick();
-			if (IdsWithState.activeState == State.ENDGAME && js.getY() > 0.1) {
-				Config.active.getClimber().ifPresent((climber) -> climber.oneStepUp(js.getY()));
-			}
-		}
-	}
-
-	// Setters //
-	public void setState(State state) {
-		IdsWithState.activeState = state;
-	}
 
 	@Override
 	public void initSendable(SendableBuilder builder) {

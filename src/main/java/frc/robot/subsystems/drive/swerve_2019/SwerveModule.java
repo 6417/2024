@@ -110,14 +110,14 @@ public class SwerveModule implements Sendable {
 	}
 
     public Vector2 getModuleRotation() {
-        return Vector2.fromRad(getModuleRotationAngle());
+        return Vector2.fromRadians(getModuleRotationAngle());
     }
 
     public double getModuleRotationAngle() {
         return Vector2
-                .fromRad(((motors.rotation.getEncoderTicks() / motors.rotationMotorTicksPerRotation) * Math.PI * 2)
+                .fromRadians(((motors.rotation.getEncoderTicks() / motors.rotationMotorTicksPerRotation) * Math.PI * 2)
                         % (Math.PI * 2))
-                .toRadians();
+                .getAngleAsRadians();
     }
 
     public double getRawModuleRotationAngle() {
@@ -125,14 +125,14 @@ public class SwerveModule implements Sendable {
     }
 
     public Vector2 getTargetVector() {
-        return Vector2.fromRad(desiredState.angle.getRadians());
+        return Vector2.fromRadians(desiredState.angle.getRadians());
     }
 
     private double angleToRotationMotorEncoderTicks(double angle) {
-        double angleDelta = Math.acos(getModuleRotation().dot(Vector2.fromRad(angle)));
+        double angleDelta = Math.acos(getModuleRotation().dot(Vector2.fromRadians(angle)));
         if (currentRotationInverted)
             angleDelta = Math.PI * 2 + angleDelta;
-        double steeringDirection = Math.signum(getModuleRotation().cross(Vector2.fromRad(angle)));
+        double steeringDirection = Math.signum(getModuleRotation().cross(Vector2.fromRadians(angle)));
         return motors.rotation.getEncoderTicks()
                 + steeringDirection * (angleDelta / (Math.PI * 2)) * motors.rotationMotorTicksPerRotation;
     }
@@ -154,7 +154,7 @@ public class SwerveModule implements Sendable {
     }
 
     public void setDesiredState(SwerveModuleState state) {
-		var dst = Vector2.fromRad(state.angle.getRadians());
+		var dst = Vector2.fromRadians(state.angle.getRadians());
 		var src = getModuleRotation();
 		if (src.dot(dst) < 0) {
 			state.angle = state.angle.rotateBy(Rotation2d.fromDegrees(180));

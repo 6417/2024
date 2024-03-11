@@ -15,14 +15,10 @@ import frc.robot.Constants;
 import frc.robot.commands.CSVLoggerCommand;
 import frc.robot.Config;
 
-public class getRamsetCommand {
+public class getRamseteCommand {
 
-    static getRamsetCommand instance;
-
-    private RamseteCommand getTrajectory(Pose2d endPose, int type) {
-
+    public RamseteCommand getTrajectory(Pose2d endPose, int type) {
         Trajectory trajectory = getAutonomousTrajectory.getInstance().createTrajectory(endPose, type);
-
         Trajectory.State state = new Trajectory.State(0, 0, 0,
                 trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters, 0);
         Trajectory waitoAtEnd = new Trajectory(List.of(state));
@@ -66,12 +62,4 @@ public class getRamsetCommand {
         // this.setDefaultCommand(new AutoCommand(this));
         return command;
     }
-
-    public static getRamsetCommand getInstance(){
-        if (instance == null){
-            instance = new getRamsetCommand();
-        }
-        return instance;
-    }
-
 }

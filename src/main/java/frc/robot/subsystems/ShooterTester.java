@@ -81,7 +81,7 @@ public class ShooterTester extends BShooter {
 	}
 
 	@Override
-	public void setSpeedPercent(double speed) {
+	public void setShooterSpeedPercent(double speed) {
 	}
 
 	@Override

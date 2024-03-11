@@ -2,15 +2,16 @@ package frc.robot.abstraction.interfaces;
 
 import java.util.Optional;
 
-import edu.wpi.first.math.estimator.PoseEstimator;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.WheelPositions;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -54,7 +55,7 @@ public interface IDrive extends IModule, Sendable, JoystickBindable {
 
     public Pose2d getPos();
 
-    public SwerveModulePosition[] getOdometryPoses(); // For swerve drive: the positions of all modules
+    public SwerveModulePosition[] getModulePositions(); // For swerve drive: the positions of all modules
 
     public double getLeftEncoderPos();
 
@@ -62,6 +63,11 @@ public interface IDrive extends IModule, Sendable, JoystickBindable {
 
 	public void zeroAbsoluteEncoders();
 	public void zeroRelativeEncoders();
+
+	public Measure<Velocity<Angle>> percent2rotationVelocity(double val);
+	public double percent2rotationVelocityDouble(double val);
+
+	public Measure<Velocity<Distance>> percent2driveVelocity(double x);
 
 
     // Couldn't (yet) generalize these:
@@ -72,6 +78,7 @@ public interface IDrive extends IModule, Sendable, JoystickBindable {
 
 	// Swerve only
     public Optional<SwerveDriveKinematics> getSwerveKinematics();
+	public Measure<Velocity<Distance>> getSwerveWheelSpeeds();
 
     // Abstraction stuff
     public boolean isSwerve();

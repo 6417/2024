@@ -1,18 +1,20 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc.robot.Utils.log;
 import static frc.robot.Utils.logerr;
 
 import java.util.Optional;
 
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.WheelPositions;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -121,12 +123,17 @@ public class EmptyDrive extends BDrive {
 	}
 
 	@Override
-	public SwerveModulePosition[] getOdometryPoses() {
+	public SwerveModulePosition[] getModulePositions() {
 		log("<Drive> getOdometryPoses");
 		return new SwerveModulePosition[4];
 	}
 
 	@Override
 	public void resetOdometry() {
+	}
+
+	@Override
+	public Measure<Velocity<Distance>> getSwerveWheelSpeeds() {
+		return MetersPerSecond.of(0.0);
 	}
 }

@@ -15,7 +15,7 @@ public interface IShooter extends IModule {
 	public void shoot(IShooterConfig configuration);
 
 	// Sets the motor speed of the shooter
-	public void setSpeedPercent(double speed);
+	public void setShooterSpeedPercent(double speed);
 
 	// Must be called in a .periodic() function, so that the motors are fed
 	public void run();

@@ -17,11 +17,12 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import frc.fridowpi.module.IModule;
 import frc.fridowpi.module.Module;
+import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.fridowpi.motors.utils.PidValues;
 
 public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 	Module moduleProxy = new Module();
-	Optional<Integer> pidSlotIdx;
+	Optional<Integer> pidSlotIdx = Optional.empty();
 
 	public FridoFalcon500(int deviceNumber) {
 		super(deviceNumber);
@@ -177,9 +178,6 @@ public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 
 	@Override
 	public void setPID(PidValues pidValues) {
-		if (pidSlotIdx == null || !pidSlotIdx.isPresent()) {
-			pidSlotIdx = Optional.of(0);
-		}
 		super.config_kP(pidSlotIdx.get(), pidValues.kP);
 		super.config_kI(pidSlotIdx.get(), pidValues.kI);
 		super.config_kD(pidSlotIdx.get(), pidValues.kD);
@@ -191,8 +189,12 @@ public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 	}
 
 	@Override
+	public void setPID(PidValues pidValues, FeedForwardValues feedForwardValues) {
+	}
+
+	@Override
 	public boolean pidAtTarget() {
-		return abs(super.getClosedLoopError() - tolerance.orElse(0.0)) < tolerance.orElse(0.0);
+		return abs(super.getClosedLoopError() - tolerance.orElse(0.01)) < tolerance.orElse(0.01);
 	}
 
 	private NeutralMode convertFromFridoIdleMode(IdleMode mode) {
@@ -254,5 +256,16 @@ public class FridoFalcon500 extends TalonFX implements FridolinsMotor {
 	@Override
 	public boolean isInitialized() {
 		return initialized;
+	}
+
+	@Override
+	public void runPid() {
+		/* Software pid calculations here */
+	}
+
+	@Override
+	public void setAccelerationLimit(double maxAcceleration) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'setAccelerationLimit'");
 	}
 }
