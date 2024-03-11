@@ -40,7 +40,7 @@ public class ShooterSubsystem extends BShooter {
 	public List<Double> speedsMapFeeder;
 	public List<Double> speedsMapBrushes;
 
-	private final PIDController pid = new PIDController(0.0005, 0.000001, 0.0);
+	private final PIDController pid = new PIDController(0.0005, 0.0001, 0.0);
 	private final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.081, 0.0020075);
 
 	// private PidValues pidValues = new PidValues(0.0005, 0.0, 0.0);
@@ -112,13 +112,13 @@ public class ShooterSubsystem extends BShooter {
 
 		motorFeeder.setInverted(true);
 
-		// pidValues.setTolerance(50);
-		// motorRight.setPID(pidValues, ffValues);
-
 		motorRight.configEncoder(FridoFeedBackDevice.kBuildin, getData().countsPerRevolution);
 		motorRight.selectPidSlot(0);
 		motorFeeder.configEncoder(FridoFeedBackDevice.kBuildin, getData().countsPerRevolution);
 		motorFeeder.selectPidSlot(0);
+
+		pid.setTolerance(30);
+		pid.setIntegratorRange(-0.015, 0.015);
 
 		motorRight.setIdleMode(IdleMode.kCoast);
 		motorLeft.setIdleMode(IdleMode.kCoast);
@@ -131,9 +131,6 @@ public class ShooterSubsystem extends BShooter {
 		((CANSparkMax) motorRight).enableVoltageCompensation(12);
 		((CANSparkMax) motorLeft).enableVoltageCompensation(12);
 		((CANSparkMax) motorFeeder).enableVoltageCompensation(12);
-
-		pid.setTolerance(30);
-		pid.setIntegratorRange(-0.015, 0.015);
 	}
 
 	public void setShooterSpeedPercent(double speed) {
