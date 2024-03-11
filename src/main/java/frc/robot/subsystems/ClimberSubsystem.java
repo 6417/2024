@@ -73,23 +73,23 @@ public class ClimberSubsystem extends BClimber {
 
 	@Override
 	public void retract() {
-		new ClimberPid(this, Constants.Climber.zielPosition).schedule();
+		new ClimberPid(this, Constants.Climber.pidPosClimbedUp).schedule();
 	}
 
 	public class ClimberPid extends FridoCommand {
 		private ClimberSubsystem subsystem;
-		private double target;
+		private double target = Constants.Climber.pidPosClimbedUp;
 
 		public ClimberPid(ClimberSubsystem subsystem, double target) {
-			if (target > Constants.Climber.ausfahrBereich) {
-				target = Constants.Climber.ausfahrBereich;
-				System.err.println("<ClimberSubsystem::ClimberPid> ausfahrBereich ueberschritten");
-			}
-			if (target < Constants.Climber.minimumAusfahrBereich) {
-				target = Constants.Climber.minimumAusfahrBereich;
-				System.err.println("<ClimberSubsystem::ClimberPid> minimaler ausfahrBereich ueberschritten");
-			}
-			this.target = target;
+			// if (target > Constants.Climber.ausfahrBereich) {
+			// 	target = Constants.Climber.ausfahrBereich;
+			// 	System.err.println("<ClimberSubsystem::ClimberPid> ausfahrBereich ueberschritten");
+			// }
+			// if (target < Constants.Climber.minimumAusfahrBereich) {
+			// 	target = Constants.Climber.minimumAusfahrBereich;
+			// 	System.err.println("<ClimberSubsystem::ClimberPid> minimaler ausfahrBereich ueberschritten");
+			// }
+			// this.target = target;
 			this.subsystem = subsystem;
 			addRequirements(subsystem);
 		}

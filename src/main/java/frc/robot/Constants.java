@@ -87,13 +87,7 @@ public class Constants {
 		public static final int servoRechtsId = 1;
 
 		public static final PidValues pidValuesSlot0 = new PidValues(0, 0, 0);
-		public static final double toleranzDerHoheDerMotoren = 0.1;
-		public static final double runterZiehSpeed = 0.2;
-		public static final double ausfahrBereich = 24;
-		public static final double minimumAusfahrBereich = 0;
-		public static final double zielPosition = 2;
-
-		public static final double manualClimberMovementSpeed = 0.5;
+		public static final double pidPosClimbedUp = 0;
 
 		public static final double maxServoPos = 130;
 		public static final double servoZeroTollerance = 5.0;
