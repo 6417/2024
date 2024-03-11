@@ -4,14 +4,17 @@ import java.util.Optional;
 
 import frc.robot.Constants;
 import frc.robot.abstraction.RobotData;
+import frc.robot.abstraction.baseClasses.BAutoHandler;
 import frc.robot.abstraction.baseClasses.BClimber;
 import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.abstraction.interfaces.ISwerveModule;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.EmptyDrive;
 import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
 import frc.robot.subsystems.drive.tankdrive.FourFalconsTankDrive;
+import frc.robot.subsystems.visionAutonomous.swerve.SwervedriveAuto;
 
 /** Preset robot configurations
  *
@@ -41,8 +44,9 @@ public enum RobotPreset {
 	Diplodocus(Constants.Diplodocus.robotData, new FourFalconsTankDrive()),
 	Swerve2024(Constants.SwerveDrive.Swerve2024.robotData,
 			new SwerveDrive2024(),
-			new ShooterSubsystem()),
-			// new ClimberSubsystem()),
+			new ShooterSubsystem(),
+			new ClimberSubsystem(),
+			new SwervedriveAuto())
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))
 
 	// DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),
@@ -58,6 +62,7 @@ public enum RobotPreset {
 	public Optional<BClimber> CLIMBER = Optional.empty();
 	public Optional<BShooter> SHOOTER = Optional.empty();
 	public Optional<ISwerveModule> SINGLE_SWERVE_MODULE = Optional.empty();
+	public Optional<BAutoHandler> AUTO = Optional.empty();
 	public RobotData ROBOT_DATA = null;
 
 	// Functions //
@@ -66,6 +71,7 @@ public enum RobotPreset {
 		SHOOTER.ifPresent(s -> s.init());
 		CLIMBER.ifPresent(s -> s.init());
 		// SINGLE_SWERVE_MODULE.ifPresent(s -> s.init());
+		AUTO.ifPresent(s -> s.init());
 	}
 
 	// Getters / Accessors //
@@ -79,6 +85,10 @@ public enum RobotPreset {
 
 	public Optional<BShooter> getShooter() {
 		return SHOOTER;
+	}
+
+	public Optional<BAutoHandler> getAuto() {
+		return AUTO;
 	}
 
 	public RobotData getData() {
@@ -108,5 +118,13 @@ public enum RobotPreset {
 		DRIVE = Optional.of(drive);
 		SHOOTER = Optional.of(shooter);
 		CLIMBER = Optional.of(climber);
+	}
+
+	private RobotPreset(RobotData data, BDrive drive, BShooter shooter, BClimber climber, BAutoHandler autoHandler) {
+		ROBOT_DATA = data;
+		DRIVE = Optional.of(drive);
+		SHOOTER = Optional.of(shooter);
+		CLIMBER = Optional.of(climber);
+		AUTO = Optional.of(autoHandler);
 	}
 }

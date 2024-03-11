@@ -15,6 +15,7 @@ public class PidValues {
     public Optional<Double> cruiseVelocity = Optional.empty();
     public Optional<Double> acceleration = Optional.empty();
     public Optional<Double> tolerance = Optional.empty();
+	// TODO IZone
 
     public PidValues(double kP, double kI, double kD) {
         this.kP = kP;
@@ -80,4 +81,13 @@ public class PidValues {
             return copy;
         }
     }
+
+	public void setIZone(double iZone) {
+	}
+
+	public PidValues withIZone(double iZone) {
+		var copy = this.clone();
+		copy.setIZone(iZone);
+		return copy;
+	}
 }

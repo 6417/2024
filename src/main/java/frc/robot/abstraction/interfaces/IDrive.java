@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -62,6 +63,11 @@ public interface IDrive extends IModule, Sendable, JoystickBindable {
 
 	public void zeroAbsoluteEncoders();
 	public void zeroRelativeEncoders();
+
+	public Measure<Velocity<Angle>> percent2rotationVelocity(double val);
+	public double percent2rotationVelocityDouble(double val);
+
+	public Measure<Velocity<Distance>> percent2driveVelocity(double x);
 
 
     // Couldn't (yet) generalize these:

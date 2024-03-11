@@ -12,6 +12,8 @@ import frc.robot.Config;
 
 public class SwervedriveAutoCommand extends Command {
 
+	Timer timer = new Timer();
+	Trajectory trajectory;
   Timer timer = new Timer();
   Trajectory trajectory;
   ChassisSpeeds speeds;
@@ -21,10 +23,10 @@ public class SwervedriveAutoCommand extends Command {
     // addRequirements(subsystem);
   }
 
-  @Override
-  public void initialize() {
-    timer.start();
-  }
+	@Override
+	public void initialize() {
+		timer.start();
+	}
 
   @Override
   public void execute() {

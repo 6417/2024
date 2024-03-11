@@ -1,16 +1,21 @@
 package frc.robot.subsystems.drive.swerve_2024;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.fridowpi.module.IModule;
@@ -18,6 +23,7 @@ import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
+import frc.fridowpi.motors.utils.FeedForwardValues;
 import frc.fridowpi.motors.utils.PidValues;
 import frc.fridowpi.utils.Vector2;
 import frc.robot.Constants;
@@ -31,16 +37,20 @@ public class SwerveModule extends BSwerveModule {
 		public Supplier<FridolinsMotor> driveMotorInitializer;
 		public Supplier<FridolinsMotor> rotationMotorInitializer;
 		public PidValues drivePID;
+		public FeedForwardValues driveFeedForward;
+		public double driveAccelerationLimitRotationsPerS2;
 		public PidValues rotationPID;
 		public double rotationMotorTicksPerRotation;
 		public double driveMotorTicksPerRotation;
 		public double wheelCircumference; // in meter
 		public Translation2d mountingPoint; // in meter
-		public double maxVelocity; // in drive motor encoder velocity units
+		public Measure<Velocity<Distance>> maxVelocity; // in drive motor encoder velocity units
 		public FridoFeedBackDevice driveEncoderType;
 		public FridoFeedBackDevice rotationEncoderType;
 		public Optional<Boolean> driveSensorInverted = Optional.empty();
 		public boolean driveMotorInverted;
+		public IdleMode driveIdleMode;
+		public IdleMode rotationIdleMode;
 
 		@Override
 		public Config clone() {
@@ -53,12 +63,16 @@ public class SwerveModule extends BSwerveModule {
 				copy.driveMotorInitializer = driveMotorInitializer;
 				copy.rotationMotorInitializer = rotationMotorInitializer;
 				copy.drivePID = drivePID.clone();
+				copy.driveFeedForward = driveFeedForward.clone();
+				copy.driveAccelerationLimitRotationsPerS2 = driveAccelerationLimitRotationsPerS2;
 				copy.rotationPID = rotationPID.clone();
 				copy.rotationMotorTicksPerRotation = rotationMotorTicksPerRotation;
 				copy.driveMotorTicksPerRotation = driveMotorTicksPerRotation;
 				copy.wheelCircumference = wheelCircumference;
 				copy.mountingPoint = new Translation2d(mountingPoint.getX(), mountingPoint.getY());
 				copy.driveMotorInverted = driveMotorInverted;
+				copy.driveIdleMode = driveIdleMode;
+				copy.rotationIdleMode = rotationIdleMode;
 				return copy;
 			}
 		}
@@ -72,10 +86,9 @@ public class SwerveModule extends BSwerveModule {
 		public Motors(Config config) {
 			drive = config.driveMotorInitializer.get();
 			drive.configEncoder(config.driveEncoderType, (int) config.driveMotorTicksPerRotation);
-			config.driveSensorInverted.ifPresent(this.drive::setEncoderDirection);
+			config.driveSensorInverted.ifPresent(drive::setEncoderDirection);
 			drive.setInverted(config.driveMotorInverted);
-			drive.setIdleMode(IdleMode.kBrake);
-			//drive.setPID(config.drivePID);
+			drive.setPID(config.drivePID, config.driveFeedForward);
 
 			rotation = config.rotationMotorInitializer.get();
 			rotation.configEncoder(config.rotationEncoderType, (int) config.rotationMotorTicksPerRotation);
@@ -105,7 +118,7 @@ public class SwerveModule extends BSwerveModule {
 	}
 
 	public Vector2 getModuleRotation() {
-		return Vector2.fromRad(getModuleRotationAngle());
+		return Vector2.fromRadians(getModuleRotationAngle());
 	}
 
 	public void zeroRelativeEncoder() {
@@ -114,9 +127,9 @@ public class SwerveModule extends BSwerveModule {
 
 	public double getModuleRotationAngle() {
 		return Vector2
-				.fromRad(((motors.rotation.getEncoderTicks() / config.rotationMotorTicksPerRotation) * Math.PI * 2)
+				.fromRadians(((motors.rotation.getEncoderTicks() / config.rotationMotorTicksPerRotation) * Math.PI * 2)
 						% (Math.PI * 2))
-				.toRadians();
+				.getAngleAsRadians();
 	}
 
 	public double getRawModuleRotationAngle() {
@@ -124,32 +137,33 @@ public class SwerveModule extends BSwerveModule {
 	}
 
 	public Vector2 getTargetVector() {
-		return Vector2.fromRad(desiredState.angle.getRadians());
+		return Vector2.fromRadians(desiredState.angle.getRadians());
 	}
 
 	private double angleToRotationMotorEncoderTicks(double angle) {
-		double angleDelta = Math.acos(getModuleRotation().dot(Vector2.fromRad(angle)));
+		double angleDelta = Math.acos(getModuleRotation().dot(Vector2.fromRadians(angle)));
 		if (currentRotationInverted)
 			angleDelta = Math.PI * 2 + angleDelta;
-		double steeringDirection = Math.signum(getModuleRotation().cross(Vector2.fromRad(angle)));
+		double steeringDirection = Math.signum(getModuleRotation().cross(Vector2.fromRadians(angle)));
 		return motors.rotation.getEncoderTicks()
 				+ steeringDirection * (angleDelta / (Math.PI * 2)) * config.rotationMotorTicksPerRotation;
 	}
 
-	private double meterPerSecondToDriveMotorEncoderVelocityUnits(double speedMs) {
-		return (speedMs / config.wheelCircumference) * config.driveMotorTicksPerRotation;
+	private double velocity2driveMotorEncoderVelocityUnits(Measure<Velocity<Distance>> speed) {
+		return speed.in(MetersPerSecond)
+			/ config.wheelCircumference
+			/ 10
+			* Constants.SwerveDrive.Swerve2024.gearRatio
+			* config.driveMotorTicksPerRotation;
 	}
 
+	@SuppressWarnings("unused")
 	private double driveMotorEncoderVelocityToPercent(double encoderSpeed) {
-		return encoderSpeed / meterPerSecondToDriveMotorEncoderVelocityUnits(config.maxVelocity);
-	}
-
-	public double getSpeed() {
-		return motors.drive.getEncoderVelocity();
+		return encoderSpeed / velocity2driveMotorEncoderVelocityUnits(config.maxVelocity);
 	}
 
 	public void setDesiredState(SwerveModuleState state) {
-		var dst = Vector2.fromRad(state.angle.getRadians());
+		var dst = Vector2.fromRadians(state.angle.getRadians());
 		var src = getModuleRotation();
 		if (src.dot(dst) < 0) {
 			state.angle = state.angle.rotateBy(Rotation2d.fromDegrees(180));
@@ -160,8 +174,10 @@ public class SwerveModule extends BSwerveModule {
 
 	@Override
 	public void driveForward(double speedFactor) {
+		var vel = MetersPerSecond.of(speedFactor * desiredState.speedMetersPerSecond);
+		var encoderVel = velocity2driveMotorEncoderVelocityUnits(vel);
 		motors.rotation.setPosition(angleToRotationMotorEncoderTicks(desiredState.angle.getRadians()));
-		((FridoFalcon500v6) motors.drive).asTalonFX().setControl(new VelocityVoltage(speedFactor * desiredState.speedMetersPerSecond));
+		((FridoFalcon500v6) motors.drive).asTalonFX().setControl(new VelocityVoltage(encoderVel));
 	}
 
 	public void setDriveMotorSpeed(double velocity) {
@@ -216,12 +232,13 @@ public class SwerveModule extends BSwerveModule {
 	public void initSendable(SendableBuilder builder) {
 		builder.addDoubleProperty("Desired speed", () -> desiredState.speedMetersPerSecond, null);
 		builder.addDoubleProperty("Desired angle", desiredState.angle::getDegrees, null);
-		builder.addDoubleProperty("Current speed", this::getSpeed, null);
+		builder.addDoubleProperty("Current speed", this::getWheelSpeed, null);
 		builder.addDoubleProperty("Current angel", () -> getModuleRotationAngle() * 180 / Math.PI, null);
 		builder.addDoubleProperty("Rotation Encoder Ticks", motors.rotation::getEncoderTicks, null);
+		builder.addDoubleProperty("Encoder Ticks", motors.drive::getEncoderTicks, null);
 		builder.addDoubleProperty("Absolute Encoder", motors.absoluteEncoder::get, null);
 		builder.addDoubleProperty("Absolute Pos", motors.absoluteEncoder::getAbsolutePosition, null);
-		builder.addDoubleProperty("Velocity Error", () -> Math.abs(getSpeed()) - Math.abs(desiredState.speedMetersPerSecond * 0.075), null);
+		builder.addDoubleProperty("Velocity Error", () -> Math.abs(getWheelSpeed()) - Math.abs(desiredState.speedMetersPerSecond * 0.075), null);
 		builder.addDoubleProperty("Set abs enc", () -> absPos, val -> {
 			absPos = val;
 			motors.absoluteEncoder.reset();
@@ -231,6 +248,8 @@ public class SwerveModule extends BSwerveModule {
 
 		builder.addDoubleProperty("Target", motors.rotation::getPidTarget, null);
 		builder.addBooleanProperty("Coast", () -> mode == IdleMode.kCoast, val -> mode = val? IdleMode.kCoast: IdleMode.kBrake);
+
+		builder.addDoubleProperty("WheelSpeeds", this::getWheelSpeed, null);
 	}
 
 	@Override
@@ -249,7 +268,7 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public SwerveModulePosition getOdometryPos() {
 		return new SwerveModulePosition(
-				motors.drive.getEncoderTicks() / config.driveMotorTicksPerRotation * 65 *  config.wheelCircumference * Constants.SwerveDrive.Swerve2024.gearRatio, new Rotation2d(Radians.of(getModuleRotationAngle())));
+				getWheelSpeed(), new Rotation2d(Radians.of(getModuleRotationAngle())));
 	}
 
 	@Override
@@ -262,12 +281,6 @@ public class SwerveModule extends BSwerveModule {
 	public Collection<IModule> getSubModules() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'getSubModules'");
-	}
-
-	@Override
-	public void registerSubmodule(IModule... subModule) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'registerSubmodule'");
 	}
 
 	@Override
@@ -284,6 +297,24 @@ public class SwerveModule extends BSwerveModule {
 
 	@Override
 	public double getWheelSpeed() {
-		return motors.drive.getEncoderVelocity() * Constants.SwerveDrive.Swerve2024.gearRatio * config.wheelCircumference;
+		return motors.drive.getEncoderVelocity() // Rotations per second
+			* Constants.SwerveDrive.Swerve2024.gearRatio // Wheel rotations per second
+			* config.wheelCircumference; // Meters per second
+	}
+
+	@Override
+	public FridolinsMotor getDriveMotor() {
+		return motors.drive;
+	}
+
+	@Override
+	public FridolinsMotor getRotationMotor() {
+		return motors.rotation;
+	}
+
+	@Override
+	public void registerSubmodule(IModule... subModule) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'registerSubmodule'");
 	}
 }

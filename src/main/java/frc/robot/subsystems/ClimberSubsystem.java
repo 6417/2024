@@ -4,10 +4,9 @@ import java.util.List;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.fridolib.QuickCmd;
 import frc.fridowpi.command.FridoCommand;
-import frc.fridowpi.command.ParallelCommandGroup;
 import frc.fridowpi.command.SequentialCommandGroup;
 import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridoServoMotor;
@@ -21,8 +20,10 @@ import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BClimber;
 
 public class ClimberSubsystem extends BClimber {
-	private FridolinsMotor seilMotorLinks = new FridoCanSparkMax(Constants.Climber.seilZiehMotorLinks, MotorType.kBrushless);
-	private FridolinsMotor seilMotorRechts = new FridoCanSparkMax(Constants.Climber.seilZiehMotorRechts, MotorType.kBrushless);
+	private FridolinsMotor seilMotorLinks = new FridoCanSparkMax(Constants.Climber.seilZiehMotorLinks,
+			MotorType.kBrushless);
+	private FridolinsMotor seilMotorRechts = new FridoCanSparkMax(Constants.Climber.seilZiehMotorRechts,
+			MotorType.kBrushless);
 	private FridoServoMotor servoLinks = new FridoServoMotor(Constants.Climber.servoLinksId);
 	private FridoServoMotor servoRechts = new FridoServoMotor(Constants.Climber.servoRechtsId);
 
@@ -35,14 +36,28 @@ public class ClimberSubsystem extends BClimber {
 		seilMotorLinks.factoryDefault();
 		seilMotorRechts.factoryDefault();
 
+		seilMotorLinks.setIdleMode(IdleMode.kCoast);
+		seilMotorRechts.setIdleMode(IdleMode.kCoast);
+
 		seilMotorLinks.setPID(Constants.Climber.pidValuesSlot0);
 		seilMotorRechts.setPID(Constants.Climber.pidValuesSlot0);
-		seilMotorLinks.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen, true);
-		seilMotorRechts.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen, true);
-		seilMotorRechts.follow(seilMotorLinks, DirectionType.followMaster);
-		seilMotorLinks.setIdleMode(IdleMode.kBrake);
+
+		// seilMotorLinks.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen,
+		// true);
+		// seilMotorRechts.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen,
+		// true);
+
+		seilMotorLinks.setInverted(true);
+		seilMotorRechts.setInverted(false);
+		seilMotorRechts.follow(seilMotorLinks, DirectionType.invertMaster);
+
+		servoRechts.setBoundsMicroseconds(2200, 1499, 1500, 1501, 800);
+		servoRechts.setMaxAngle(130);
 		servoLinks.setBoundsMicroseconds(2200, 1499, 1500, 1501, 800);
 		servoLinks.setMaxAngle(130);
+
+		servoLinks.setAngle(Constants.Climber.servoLeftLockAngle);
+		servoRechts.setAngle(Constants.Climber.servoRightLockAngle);
 	}
 
 	@Override
@@ -52,12 +67,19 @@ public class ClimberSubsystem extends BClimber {
 	@Override
 	public void release() {
 		new SequentialCommandGroup(
-				new ParallelCommandGroup(
-						new InstantCommand(
-								() -> this.servoLinks.setAngle(Constants.Climber.maxServoPos)),
-						new InstantCommand(
-								() -> this.servoRechts.setAngle(Constants.Climber.maxServoPos))),
-				new ClimberPid(this, Constants.Climber.ausfahrBereich)).schedule();
+				QuickCmd.withInit(this::releaseServos),
+				new WaitCommand(1),
+				QuickCmd.withInit(this::lockServos)).schedule();
+	}
+
+	public void releaseServos() {
+		servoRechts.setAngle(Constants.Climber.servoRightReleaseAngle);
+		servoLinks.setAngle(Constants.Climber.servoLeftReleaseAngle);
+	}
+
+	public void lockServos() {
+		servoRechts.setAngle(Constants.Climber.servoRightLockAngle);
+		servoLinks.setAngle(Constants.Climber.servoLeftLockAngle);
 	}
 
 	@Override
@@ -100,6 +122,7 @@ public class ClimberSubsystem extends BClimber {
 	public void stop() {
 		seilMotorLinks.stopMotor();
 		seilMotorRechts.stopMotor();
+		speed = 0;
 	}
 
 	@Override
@@ -110,14 +133,23 @@ public class ClimberSubsystem extends BClimber {
 		return new ClimberData(List.of(motorLeft, motorRight, servo));
 	}
 
+	double speed = 0;
+
 	@Override
-	public void oneStepUp(double speed) {
-		seilMotorLinks.set(-speed);
-		seilMotorRechts.set(-speed);
+	public void oneStepUp(double speedAdditon) {
+		speed += speedAdditon;
+		System.out.println(speed);
+		seilMotorLinks.set(speed);
+		seilMotorRechts.set(speed);
 	}
 
 	@Override
-	public Servo getServo() {
+	public FridoServoMotor getServoLeft() {
 		return servoLinks;
+	}
+
+	@Override
+	public FridoServoMotor getServoRight() {
+		return servoRechts;
 	}
 }

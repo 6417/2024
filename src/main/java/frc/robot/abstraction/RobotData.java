@@ -1,15 +1,19 @@
 package frc.robot.abstraction;
 
-import java.util.List;
-import java.util.Map;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
-import edu.wpi.first.units.*;
+import java.util.List;
+
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Time;
+import edu.wpi.first.units.Velocity;
 import frc.fridowpi.motors.utils.PidValues;
-import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.subsystems.drive.tankdrive.MotorSet.MotorRole;
 
 /**
@@ -30,13 +34,13 @@ public record RobotData(
 	public record DriveData(
 			boolean enabled,
 			List<Integer> motorIds,
-			List<MotorRole> inverted,
-			Map<SpeedFactor, Double> speedFactors) {
+			List<MotorRole> inverted) {
 	}
 
 	public record AutoData(
 			Measure<Velocity<Distance>> maxVelocity,
 			Measure<Velocity<Velocity<Distance>>> maxAcceleration,
+			Measure<Velocity<Angle>> maxTurnSpeed,
 			Measure<Distance> ksVolts,
 			Measure<Velocity<Distance>> kvVolts,
 			Measure<Velocity<Velocity<Distance>>> kaVolts,
@@ -59,11 +63,11 @@ public record RobotData(
 				new DriveData(
 						false,
 						List.of(),
-						List.of(),
-						Map.of()),
+						List.of()),
 				new AutoData(
 						MetersPerSecond.of(0),
 						MetersPerSecondPerSecond.of(0),
+						RotationsPerSecond.of(0),
 						Meters.of(0),
 						MetersPerSecond.of(0),
 						MetersPerSecondPerSecond.of(0),

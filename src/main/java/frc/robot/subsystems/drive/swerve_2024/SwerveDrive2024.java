@@ -2,7 +2,6 @@ package frc.robot.subsystems.drive.swerve_2024;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -24,23 +24,22 @@ import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.utils.Algorithms;
 import frc.robot.Config;
 import frc.robot.Constants;
+import frc.robot.Controls;
 import frc.robot.abstraction.baseClasses.BSwerveDrive;
 import frc.robot.abstraction.baseClasses.BSwerveModule;
 import frc.robot.commands.drive.commands_2024.DriveCommand2024;
 
-// TODO: use velocity PIDs
 public class SwerveDrive2024 extends BSwerveDrive {
 
 	private Map<MountingLocations, BSwerveModule> modules = new HashMap<>();
 	private ChassisSpeeds currentChassisSpeeds = new ChassisSpeeds();
-	private double speedFactor;
 
-	public SwerveDrive2024() { }
+	public SwerveDrive2024() {
+	}
 
 	@Override
 	public void init() {
 		super.init();
-		speedFactor = Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED);
 		setUpSwerveModules();
 		zeroRelativeEncoders();
 		setDefaultCommand(new DriveCommand2024());
@@ -48,7 +47,9 @@ public class SwerveDrive2024 extends BSwerveDrive {
 
 	@Override
 	public void periodic() {
-		poseEstimator.update();
+		if (Config.drive() == this) {
+			poseEstimator.update();
+		}
 	}
 
 	@Override
@@ -79,21 +80,34 @@ public class SwerveDrive2024 extends BSwerveDrive {
 		consumer.accept(modules.get(mountingLocation));
 	}
 
-	private double getMaxSpeed(Map<MountingLocations, SwerveModuleState> states) {
-		return states.values().stream().max(Comparator.comparing(state -> state.speedMetersPerSecond))
-				.get().speedMetersPerSecond;
-	}
+	// private double getMaxSpeed(Map<MountingLocations, SwerveModuleState> states)
+	// {
+	// return states.values().stream().max(Comparator.comparing(state ->
+	// state.speedMetersPerSecond))
+	// .get().speedMetersPerSecond;
+	// }
 
-	private Map<MountingLocations, SwerveModuleState> normalizeStates(
-			Map<MountingLocations, SwerveModuleState> states) {
-		if (getMaxSpeed(states) > Constants.SwerveDrive.Swerve2024.maxSpeedOfDrive * speedFactor)
-			return states.entrySet().stream()
-					.map(Algorithms.mapEntryFunction(
-							Algorithms.mapSwerveModuleStateSpeed(speed -> speed / getMaxSpeed(states))))
-					.map(Algorithms.mapEntryFunction(
-							Algorithms.mapSwerveModuleStateSpeed(speed -> speed * speedFactor)))
-					.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-		return states;
+	// private Map<MountingLocations, SwerveModuleState> normalizeStates(
+	// Map<MountingLocations, SwerveModuleState> states) {
+	// if (getMaxSpeed(states) >
+	// Constants.SwerveDrive.Swerve2024.maxVelocity.in(MetersPerSecond) *
+	// Controls.getAccelerationSensitivity())
+	// return states.entrySet().stream()
+	// .map(Algorithms.mapEntryFunction(
+	// Algorithms.mapSwerveModuleStateSpeed(speed -> speed / getMaxSpeed(states))))
+	// .map(Algorithms.mapEntryFunction(
+	// Algorithms.mapSwerveModuleStateSpeed(speed -> speed *
+	// Controls.getAccelerationSensitivity())))
+	// .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+	// return states;
+	// }
+
+	@Override
+	public void drive(double vxPercent, double vyPercent, double rotPercent) {
+		var requestedMovement = new ChassisSpeeds(
+				percent2driveVelocity(vxPercent), percent2driveVelocity(vyPercent),
+				percent2rotationVelocity(rotPercent));
+		drive(requestedMovement);
 	}
 
 	@Override
@@ -107,7 +121,7 @@ public class SwerveDrive2024 extends BSwerveDrive {
 				(Entry<MountingLocations, SwerveModuleState> labeledState) -> modules
 						.get(labeledState.getKey()).setDesiredState(labeledState.getValue()));
 
-		forEachModule(module -> module.driveForward(speedFactor));
+		forEachModule(module -> module.driveForward(Controls.getAccelerationSensitivity()));
 	}
 
 	@Override
@@ -118,14 +132,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	@Override
 	public void setRotationToHome(MountingLocations moduleLocation) {
 		modules.get(moduleLocation).setCurrentRotationToEncoderHome();
-	}
-
-	public static double joystickInputToMetersPerSecond(double joystickValue) {
-		return joystickValue * Constants.SwerveDrive.Swerve2024.maxSpeedOfDrive;
-	}
-
-	public static double joystickInputToRadPerSecond(double joystickValue) {
-		return joystickValue * Constants.SwerveDrive.Swerve2024.maxRotationSpeed;
 	}
 
 	@Override
@@ -147,7 +153,6 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	@Override
 	public void setSpeedFactor(double speedFactor) {
 		assert speedFactor > 0.0 : "speedFactor must be grater than zero";
-		this.speedFactor = speedFactor;
 	}
 
 	@Override
@@ -180,7 +185,12 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	// TODO: abstraction over motorrole
 	@Override
 	public <T> FridolinsMotor getMotor(T motor) {
-		throw new UnsupportedOperationException("Unimplemented method 'getMotor'");
+		assert motor instanceof BSwerveDrive.SwerveMotor;
+		var swerveMotor = (BSwerveDrive.SwerveMotor) motor;
+		return switch (swerveMotor.getMotorType()) {
+			case DRIVE -> modules.get(swerveMotor.getLocation()).getDriveMotor();
+			case ROTATE -> modules.get(swerveMotor.getLocation()).getRotationMotor();
+		};
 	}
 
 	@Override
@@ -194,13 +204,12 @@ public class SwerveDrive2024 extends BSwerveDrive {
 	}
 
 	@Override
-	public void drive(double v_x, double v_y, double rot) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'drive'");
+	public Measure<Velocity<Distance>> getSwerveWheelSpeeds() {
+		return MetersPerSecond.of(modules.get(MountingLocations.FrontLeft).getWheelSpeed());
 	}
 
 	@Override
-	public Measure<Velocity<Distance>> getSwerveWheelSpeeds() {
-		return MetersPerSecond.of(modules.get(MountingLocations.FrontLeft).getWheelSpeed());
+	public void initSendable(SendableBuilder builder) {
+		/* Controls in Controls */
 	}
 }

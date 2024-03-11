@@ -15,10 +15,11 @@ import frc.fridowpi.joystick.joysticks.XboxOne;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.Config;
 import frc.robot.Constants;
+import frc.robot.Controls;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
-import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 
 /**
  * JoystickBindings2024
@@ -35,21 +36,19 @@ public class JoystickBindings2024 {
 		tmp_bindings.clear();
 
 		// Drive
-		quickBindToggle(XboxOne.lt, 
-				() -> Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.FAST)),
-				() -> Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED)));
-		quickBindToggle(XboxOne.rt,
-				() -> Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.SLOW)),
-				() -> Config.drive().setSpeedFactor(
-						Config.data().drive().speedFactors().get(SpeedFactor.DEFAULT_SPEED)));
+		if (Controls.getControlMode() == Controls.ControlMode.CONVENTIONAL) {
+			quickBindToggle(XboxOne.lt,
+					() -> Controls.setActiveSpeedFactor(SpeedFactor.FAST),
+					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
+			quickBindToggle(XboxOne.rt,
+					() -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW),
+					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
+		};
 
 		quickBind(XboxOne.back, new InstantCommand(() -> {
-					FridoNavx.getInstance().reset();
-					Config.drive().resetOdometry();
-					System.out.println("<<<[zeroed]>>>");
+			FridoNavx.getInstance().reset();
+			Config.drive().resetOdometry();
+			System.out.println("<<<[ Zeroed ]>>>");
 		}));
 
 		// TODO: make better CONFIG
@@ -59,21 +58,16 @@ public class JoystickBindings2024 {
 			quickBind(XboxOne.x, s::stopMotors);
 			quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
-		quickBind(XboxOne.lb, () -> SwervedriveAuto.getInstance().startCommand());
+		// quickBind(XboxOne.lb, () -> SwervedriveAuto.getInstance().startCommand());
 
-		// Config.active.getClimber().ifPresent(climber -> {
-		// quickBind(Xbox360.y, State.ENDGAME, climber::oneStepUp);
-		// quickBind(Xbox360.a, State.ENDGAME, climber::oneStepDown);
-		// quickBind(Xbox360.x, State.ENDGAME, climber::release);
-		// quickBind(Xbox360.b, State.ENDGAME, climber::retract);
-		// });
+		Config.active.getClimber().ifPresent(climber -> {
+			// quickBind(XboxOne.x, climber::stop);
 
-// 		quickBind(Xbox360.y, () ->
-// 			Config.active.getClimber().get().getServo().setSpeed(0.1));
-// 		quickBind(Xbox360.x, () ->
-// 			Config.active.getClimber().get().getServo().setSpeed(0));
-// 		quickBind(Xbox360.a, () ->
-// 			Config.active.getClimber().get().getServo().setSpeed(-0.1));
+			quickBind(POV.DPadRight, climber::release);
+			quickBind(POV.DPadLeft, ((ClimberSubsystem) climber)::lockServos);
+			quickBind(POV.DPadUp, () -> climber.oneStepUp(0.03));
+			quickBind(POV.DPadDown, () -> climber.oneStepUp(-0.03));
+		});
 
 		return tmp_bindings;
 	}
@@ -134,10 +128,8 @@ public class JoystickBindings2024 {
 
 	public static List<Binding> getBindingsTankdriveLogitech() {
 		tmp_bindings.clear();
-		quickBindWhileHeld(Logitech.lt, () -> Config.drive().setSpeedFactor(
-				Config.data().drive().speedFactors().get(SpeedFactor.FAST)));
-		quickBindWhileHeld(Logitech.rt, () -> Config.drive().setSpeedFactor(
-				Config.data().drive().speedFactors().get(SpeedFactor.SLOW)));
+		quickBindWhileHeld(Logitech.lt, () -> Controls.setActiveSpeedFactor(SpeedFactor.FAST));
+		quickBindWhileHeld(Logitech.rt, () -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW));
 
 		quickBind(Logitech.back, new InstantCommand(() -> FridoNavx.getInstance().reset())
 				.andThen(() -> System.out.println("<<<[zeroing]>>>")));
@@ -157,8 +149,10 @@ public class JoystickBindings2024 {
 		// quickBind(Logitech.b, State.ENDGAME, climber::retract);
 		// });
 		//
-		quickBind(Logitech.b, () -> Config.active.getClimber().get().getServo().setSpeed(-0.1));
-		quickBind(Logitech.a, () -> Config.active.getClimber().get().getServo().setSpeed(0.1));
+		// quickBind(Logitech.b, () ->
+		// Config.active.getClimber().get().getServo().setSpeed(-0.1));
+		// quickBind(Logitech.a, () ->
+		// Config.active.getClimber().get().getServo().setSpeed(0.1));
 		Config.active.getClimber().ifPresent(climber -> {
 			quickBind(Logitech.x, State.ENDGAME, climber::release);
 		});
@@ -198,10 +192,10 @@ public class JoystickBindings2024 {
 
 	// Toggle
 	public static void quickBindToggle(IJoystickButtonId button, Runnable on, Runnable off) {
-		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue, 
-					new InstantCommand(on)));
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue,
+				new InstantCommand(on)));
 		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onFalse,
-					new InstantCommand(off)));
+				new InstantCommand(off)));
 	}
 
 	// If using different States

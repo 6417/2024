@@ -17,6 +17,7 @@ public class FridoCommand extends Command implements ICommand {
 
         addRequirements(requirements);
 
+		// Add submodule requirements
         Set<Subsystem> subModuleRequirements = Arrays.stream(requirements)
                 .filter((req) -> req instanceof IModule)
                 .map((mod) -> (IModule) mod)

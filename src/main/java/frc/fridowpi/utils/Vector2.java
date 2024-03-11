@@ -1,22 +1,20 @@
 package frc.fridowpi.utils;
 
+import static java.lang.Math.signum;
+
 public class Vector2 {
     public double x;
     public double y;
 
-    static final Vector2 ZERO = new Vector2(0, 0);
-    static final Vector2 LEFT = new Vector2(-1, 0);
-    static final Vector2 RIGHT = new Vector2(1, 0);
-    static final Vector2 UP = new Vector2(0, 1);
-    static final Vector2 DOWN = new Vector2(0, -1);
+    public static final Vector2 ZERO = new Vector2(0, 0);
+    public static final Vector2 LEFT = new Vector2(-1, 0);
+    public static final Vector2 RIGHT = new Vector2(1, 0);
+    public static final Vector2 UP = new Vector2(0, 1);
+    public static final Vector2 DOWN = new Vector2(0, -1);
 
     public Vector2(double x, double y) {
         this.x = x;
         this.y = y;
-    }
-
-    public static Vector2 zero() {
-        return new Vector2(0.0, 0.0);
     }
 
     public Vector2 add(Vector2 other) {
@@ -27,12 +25,37 @@ public class Vector2 {
         return new Vector2(x - other.x, y - other.y);
     }
 
+    public Vector2 signs() {
+        return new Vector2(signum(x), signum(y));
+    }
+
     public Vector2 neg() {
         return new Vector2(-x, -y);
     }
 
-    public Vector2 smul(double s) {
+    public void scale(double s) {
+        this.x *= s;
+		this.y *= s;
+    }
+
+    public Vector2 scaled(double s) {
         return new Vector2(s * x, s * y);
+    }
+
+	public Vector2 mulElementWise(Vector2 other) {
+		return new Vector2(x * other.x, y * other.y);
+	}
+
+	public Vector2 squaredSigned() {
+		return mulElementWise(this).mulElementWise(signs());
+	}
+
+    public Vector2 withLength(double length) {
+        return normalized().scaled(length);
+    }
+
+    public double length() {
+        return magnitude();
     }
 
     public double magnitude() {
@@ -55,21 +78,25 @@ public class Vector2 {
         return Math.acos(this.dot(other) / (other.magnitude() * this.magnitude()));
     }
 
-    public static Vector2 fromRad(double angle) {
+    public void normalize() {
+        this.x /= magnitude();
+        this.y /= magnitude();
+    }
+
+    public Vector2 normalized() {
+		return new Vector2(x / magnitude(), y / magnitude());
+    }
+
+    public static Vector2 fromRadians(double angle) {
         return new Vector2(Math.cos(angle), Math.sin(angle));
     }
 
-    public double toRadians() {
+    public double getAngleAsRadians() {
         return Math.atan2(y, x);
     }
 
     @Override
     public String toString() {
         return String.format("{ %f, %f }", x, y);
-    }
-
-    public void normalize() {
-        this.x /= magnitude();
-        this.y /= magnitude();
     }
 }
