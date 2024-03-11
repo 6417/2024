@@ -10,6 +10,7 @@ import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.abstraction.interfaces.ISwerveModule;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.ServoOnlyClimber;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.EmptyDrive;
 import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
@@ -41,7 +42,9 @@ public enum RobotPreset {
 	// Enum variants //
 	Empty(new RobotData(), new EmptyDrive()),
 	TestChassisDrive(Constants.Testchassis.robotData, new FourFalconsTankDrive()),
-	Diplodocus(Constants.Diplodocus.robotData, new FourFalconsTankDrive()),
+	Diplodocus(Constants.Diplodocus.robotData,
+			new FourFalconsTankDrive(), 
+			new ServoOnlyClimber()),
 	Swerve2024(Constants.SwerveDrive.Swerve2024.robotData,
 			new SwerveDrive2024(),
 			new ShooterSubsystem(),
@@ -105,6 +108,12 @@ public enum RobotPreset {
 		ROBOT_DATA = data;
 		DRIVE = Optional.of(drive);
 		SINGLE_SWERVE_MODULE = Optional.of(swerveModule);
+	}
+
+	private RobotPreset(RobotData data, BDrive drive, BClimber climber) {
+		ROBOT_DATA = data;
+		DRIVE = Optional.of(drive);
+		CLIMBER = Optional.of(climber);
 	}
 
 	private RobotPreset(RobotData data, BDrive drive, BShooter shooter) {

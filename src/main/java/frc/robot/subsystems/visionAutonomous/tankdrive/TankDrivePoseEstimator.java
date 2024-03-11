@@ -11,12 +11,12 @@ import frc.fridowpi.sensors.FridoNavx;
 public class TankDrivePoseEstimator extends DifferentialDrivePoseEstimator {
 	public static TankDrivePoseEstimator instance;
 
-	private TankDrivePoseEstimator() {
+	public TankDrivePoseEstimator(Pose2d pos) {
 		super(Config.drive().getDifferentialKinematics().get(),
 				FridoNavx.getInstance().getRotation2d(),
 				Config.drive().getLeftEncoderPos(),
 				Config.drive().getRightEncoderPos(),
-				new Pose2d(),
+				pos,
 				VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
 				VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 		assert Config.drive().isSwerve();

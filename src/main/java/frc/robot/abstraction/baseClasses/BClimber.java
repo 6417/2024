@@ -20,9 +20,6 @@ public abstract class BClimber extends Module implements IClimber {
 		}
 	}
 
-	abstract public FridoServoMotor getServoLeft();
-	abstract public FridoServoMotor getServoRight();
-
 	abstract public ClimberData getData();
 
 }

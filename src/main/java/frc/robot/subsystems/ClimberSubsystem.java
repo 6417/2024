@@ -20,12 +20,10 @@ import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BClimber;
 
 public class ClimberSubsystem extends BClimber {
-	private FridolinsMotor seilMotorLinks = new FridoCanSparkMax(Constants.Climber.seilZiehMotorLinks,
-			MotorType.kBrushless);
-	private FridolinsMotor seilMotorRechts = new FridoCanSparkMax(Constants.Climber.seilZiehMotorRechts,
-			MotorType.kBrushless);
-	private FridoServoMotor servoLinks = new FridoServoMotor(Constants.Climber.servoLinksId);
-	private FridoServoMotor servoRechts = new FridoServoMotor(Constants.Climber.servoRechtsId);
+	private FridolinsMotor seilMotorLinks;
+	private FridolinsMotor seilMotorRechts;
+	private FridoServoMotor servoLinks;
+	private FridoServoMotor servoRechts;
 
 	/** Creates a new ClimberSubsystem. */
 	public ClimberSubsystem() {
@@ -33,6 +31,14 @@ public class ClimberSubsystem extends BClimber {
 
 	@Override
 	public void init() {
+		seilMotorLinks = new FridoCanSparkMax(
+				Constants.Climber.seilZiehMotorLinks, MotorType.kBrushless);
+		seilMotorRechts = new FridoCanSparkMax(
+				Constants.Climber.seilZiehMotorRechts, MotorType.kBrushless);
+
+		servoLinks = new FridoServoMotor(Constants.Climber.servoLinksId);
+		servoRechts = new FridoServoMotor(Constants.Climber.servoRechtsId);
+
 		seilMotorLinks.factoryDefault();
 		seilMotorRechts.factoryDefault();
 
@@ -66,6 +72,7 @@ public class ClimberSubsystem extends BClimber {
 
 	@Override
 	public void release() {
+		System.out.println("test erfolgreich");
 		new SequentialCommandGroup(
 				QuickCmd.withInit(this::releaseServos),
 				new WaitCommand(1),
@@ -83,16 +90,6 @@ public class ClimberSubsystem extends BClimber {
 	}
 
 	@Override
-	public void lock() {
-		new SequentialCommandGroup(
-				new ParallelCommandGroup(
-						new InstantCommand(
-							() -> this.servoLinks.setAngle(Constants.Climber.servoLockPositionLeft)),
-						new InstantCommand(
-							() -> this.servoRechts.setAngle(Constants.Climber.servoLockPositionRight)))).schedule();
-	}
-
-	@Override
 	public void retract() {
 		new ClimberPid(this, Constants.Climber.pidPosClimbedUp).schedule();
 	}
@@ -103,12 +100,14 @@ public class ClimberSubsystem extends BClimber {
 
 		public ClimberPid(ClimberSubsystem subsystem, double target) {
 			// if (target > Constants.Climber.ausfahrBereich) {
-			// 	target = Constants.Climber.ausfahrBereich;
-			// 	System.err.println("<ClimberSubsystem::ClimberPid> ausfahrBereich ueberschritten");
+			// target = Constants.Climber.ausfahrBereich;
+			// System.err.println("<ClimberSubsystem::ClimberPid> ausfahrBereich
+			// ueberschritten");
 			// }
 			// if (target < Constants.Climber.minimumAusfahrBereich) {
-			// 	target = Constants.Climber.minimumAusfahrBereich;
-			// 	System.err.println("<ClimberSubsystem::ClimberPid> minimaler ausfahrBereich ueberschritten");
+			// target = Constants.Climber.minimumAusfahrBereich;
+			// System.err.println("<ClimberSubsystem::ClimberPid> minimaler ausfahrBereich
+			// ueberschritten");
 			// }
 			// this.target = target;
 			this.subsystem = subsystem;
@@ -136,12 +135,6 @@ public class ClimberSubsystem extends BClimber {
 	}
 
 	@Override
-	public void oneStepUp(double speed) {
-		seilMotorLinks.set(-speed);
-		seilMotorRechts.set(speed);
-	}
-
-	@Override
 	public ClimberData getData() {
 		var motorLeft = 22;
 		var motorRight = 21;
@@ -154,18 +147,9 @@ public class ClimberSubsystem extends BClimber {
 	@Override
 	public void oneStepUp(double speedAdditon) {
 		speed += speedAdditon;
+		speed = Math.max(speed, 0);
 		System.out.println(speed);
 		seilMotorLinks.set(speed);
 		seilMotorRechts.set(speed);
-	}
-
-	@Override
-	public FridoServoMotor getServoLeft() {
-		return servoLinks;
-	}
-
-	@Override
-	public FridoServoMotor getServoRight() {
-		return servoRechts;
 	}
 }

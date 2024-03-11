@@ -1,8 +1,8 @@
 package frc.robot.commands.tankdrive;
 
-import frc.robot.Config;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.abstraction.baseClasses.BDrive;
+import frc.robot.joystick.Joystick2024;
 
 public class DriveCommand extends Command {
 
@@ -18,10 +18,9 @@ public class DriveCommand extends Command {
 
   @Override
   public void execute() {
-    double rot = Config.joystick().getX();
-    double y = Config.joystick().getY();
-    double x = Config.joystick().getTwist();
-    m_subsystem.drive(y, x, rot);
+    double y = Joystick2024.getInstance().getPrimaryJoystick().getY();
+    double rot = Joystick2024.getInstance().getPrimaryJoystick().getTwist();
+    m_subsystem.drive(y, 0, rot);
   }
 
   @Override

@@ -11,8 +11,6 @@ public interface IClimber extends IModule {
 
 	public void retract();
 
-	public void lock();
-
 	// Must be called periodically
 	public void run();
 

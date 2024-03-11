@@ -1,10 +1,12 @@
 
 package frc.robot.joystick;
 
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.fridowpi.joystick.IJoystickButtonId;
 import frc.fridowpi.joystick.IJoystickId;
 import frc.fridowpi.joystick.WPIJoystick;
+import frc.fridowpi.joystick.joysticks.POV;
 import frc.robot.Constants;
 
 /**
@@ -14,14 +16,18 @@ public class LogitechWithState extends WPIJoystick {
 
 	public LogitechWithState(IJoystickId port) {
 		super(port);
+        setTwistChannel(2);
 	}
 
     @Override
     public Trigger getButton(IJoystickButtonId id) {
-        if (id.getButtonId() >= Constants.Joystick.idCounterStart) {
-            var idNew = (IdsWithState) id;
-            return idNew.toButtonOnJoystick(this);
+        if (id instanceof POV && id.getButtonId() >= 100 && id.getButtonId() < 200) {
+            return new Trigger(() -> isPressedPOV((POV) id));
         }
-        return super.getButton(id);
+        return new JoystickButton(this, id.getButtonId());
+    }
+
+    private boolean isPressedPOV(POV id) {
+        return id.pov.get().getDegrees() == getPOV();
     }
 }

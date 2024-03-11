@@ -37,15 +37,15 @@ public class JoystickBindings2024 {
 
 		// Drive
 		if (Controls.getControlMode() == Controls.ControlMode.CONVENTIONAL) {
-			quickBindToggle(XboxOne.lt,
+			quickBindToggle(Logitech.lt,
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.FAST),
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
-			quickBindToggle(XboxOne.rt,
+			quickBindToggle(Logitech.rt,
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW),
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
 		};
 
-		quickBind(XboxOne.back, new InstantCommand(() -> {
+		quickBind(Logitech.back, new InstantCommand(() -> {
 			FridoNavx.getInstance().reset();
 			Config.drive().resetOdometry();
 			System.out.println("<<<[ Zeroed ]>>>");
@@ -53,20 +53,18 @@ public class JoystickBindings2024 {
 
 		// TODO: make better CONFIG
 		Config.active.getShooter().ifPresent(s -> {
-			quickBind(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBind(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
-			quickBind(XboxOne.x, s::stopMotors);
-			quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
+			quickBind(Logitech.a, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBind(Logitech.b, () -> s.shoot(ShooterConfig.AMP));
+			quickBind(Logitech.x, s::stopMotors);
+			quickBind(Logitech.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
-		// quickBind(XboxOne.lb, () -> SwervedriveAuto.getInstance().startCommand());
 
 		Config.active.getClimber().ifPresent(climber -> {
-			// quickBind(XboxOne.x, climber::stop);
-
+			quickBind(Logitech.x, climber::stop);
+		
 			quickBind(POV.DPadRight, climber::release);
-			quickBind(POV.DPadLeft, ((ClimberSubsystem) climber)::lockServos);
-			quickBind(POV.DPadUp, () -> climber.oneStepUp(0.03));
-			quickBind(POV.DPadDown, () -> climber.oneStepUp(-0.03));
+			quickBind(POV.DPadUp, () -> climber.oneStepUp(1));
+			quickBind(POV.DPadDown, () -> climber.oneStepUp(-1));
 		});
 
 		return tmp_bindings;
@@ -74,18 +72,18 @@ public class JoystickBindings2024 {
 
 	public static List<Binding> getBindingsLogitechTest() {
 		tmp_bindings.clear();
-		quickBind(XboxOne.a, () -> System.out.println("a"));
-		quickBind(XboxOne.b, () -> System.out.println("b"));
-		quickBind(XboxOne.x, () -> System.out.println("x"));
-		quickBind(XboxOne.y, () -> System.out.println("y"));
-		quickBind(XboxOne.start, () -> System.out.println("start"));
-		quickBind(XboxOne.back, () -> System.out.println("back"));
-		quickBind(XboxOne.lb, () -> System.out.println("lb"));
-		quickBind(XboxOne.rb, () -> System.out.println("rb"));
-		quickBind(XboxOne.lt, () -> System.out.println("lt"));
-		quickBind(XboxOne.rt, () -> System.out.println("rt"));
-		quickBind(XboxOne.leftJoystick, () -> System.out.println("leftJoystick"));
-		quickBind(XboxOne.rightJoystick, () -> System.out.println("rightJoystick"));
+		quickBind(Logitech.a, () -> System.out.println("a"));
+		quickBind(Logitech.b, () -> System.out.println("b"));
+		quickBind(Logitech.x, () -> System.out.println("x"));
+		quickBind(Logitech.y, () -> System.out.println("y"));
+		quickBind(Logitech.start, () -> System.out.println("start"));
+		quickBind(Logitech.back, () -> System.out.println("back"));
+		quickBind(Logitech.lb, () -> System.out.println("lb"));
+		quickBind(Logitech.rb, () -> System.out.println("rb"));
+		quickBind(Logitech.lt, () -> System.out.println("lt"));
+		quickBind(Logitech.rt, () -> System.out.println("rt"));
+		quickBind(Logitech.leftJoystick, () -> System.out.println("leftJoystick"));
+		quickBind(Logitech.rightJoystick, () -> System.out.println("rightJoystick"));
 
 		quickBind(POV.DPadUp, () -> System.out.println("dpad up"));
 		quickBind(POV.DPadUpRight, () -> System.out.println("dpad up right"));

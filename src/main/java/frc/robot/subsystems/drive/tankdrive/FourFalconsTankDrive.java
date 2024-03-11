@@ -43,9 +43,6 @@ public class FourFalconsTankDrive extends BTankDrive {
 
 	@Override
 	public void init() {
-		if (!Config.data().drive().enabled())
-			return;
-		super.init();
 
 		// Assign ids //
 		var ids = Config.data().drive().motorIds();
@@ -70,6 +67,7 @@ public class FourFalconsTankDrive extends BTankDrive {
 		kinematics = new DifferentialDriveKinematics(Config.data().hardware().wheelCircumference());
 
 		setDefaultCommand(new DriveCommand(this));
+		super.init();
 	}
 
 	@Override
