@@ -58,15 +58,15 @@ public class JoystickBindings2024 {
 			quickBind(XboxOne.x, s::stopMotors);
 			quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
-		// quickBind(XboxOne.lb, () -> SwervedriveAuto.getInstance().startCommand());
+		quickBind(XboxOne.lb, () -> Config.active.getAuto().get().getAutoCommand().schedule());
 
 		Config.active.getClimber().ifPresent(climber -> {
-			// quickBind(XboxOne.x, climber::stop);
+			quickBind(XboxOne.x, climber::stop);
 
 			quickBind(POV.DPadRight, climber::release);
-			quickBind(POV.DPadLeft, ((ClimberSubsystem) climber)::lockServos);
-			quickBind(POV.DPadUp, () -> climber.oneStepUp(0.03));
-			quickBind(POV.DPadDown, () -> climber.oneStepUp(-0.03));
+			quickBind(POV.DPadLeft, ((ClimberSubsystem) climber)::releaseServos);
+			quickBind(POV.DPadUp, () -> climber.oneStepUp(-0.03));
+			quickBind(POV.DPadDown, () -> climber.oneStepUp(0.03));
 		});
 
 		return tmp_bindings;

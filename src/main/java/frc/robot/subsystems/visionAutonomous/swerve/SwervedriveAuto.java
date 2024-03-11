@@ -14,6 +14,7 @@ import frc.robot.Config;
 import frc.robot.abstraction.baseClasses.BAutoHandler;
 import frc.robot.commands.SwervedriveAutoCommand;
 import frc.robot.subsystems.drive.getSwerveAutonomousTrj;
+import frc.robot.subsystems.drive.getSwerveAutonomousTrj.Type;
 
 public class SwervedriveAuto extends BAutoHandler {
 
@@ -39,9 +40,9 @@ public class SwervedriveAuto extends BAutoHandler {
 		Pose2d firstApriltag = new Pose2d(15, 5.5, new Rotation2d(0));
 		Pose2d test = new Pose2d(1, 0, new Rotation2d(0));
 
-		Trajectory tra = getSwerveAutonomousTrj.getInstance().createTrajectory(firstApriltag, 1);
+		Trajectory tra = getSwerveAutonomousTrj.getInstance().createTrajectory(firstApriltag, Type.abs);
 
-		Trajectory testtra = getSwerveAutonomousTrj.getInstance().createTrajectory(test, 2);
+		Trajectory testtra = getSwerveAutonomousTrj.getInstance().createTrajectory(test, Type.rel);
 		return new SwervedriveAutoCommand(testtra);
 	}
 

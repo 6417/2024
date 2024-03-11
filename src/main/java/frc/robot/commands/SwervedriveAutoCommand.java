@@ -4,6 +4,7 @@ import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 
 import org.apache.logging.log4j.core.lookup.SystemPropertiesLookup;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
@@ -12,27 +13,47 @@ import frc.robot.Config;
 
 public class SwervedriveAutoCommand extends Command {
 
-	Timer timer = new Timer();
-	Trajectory trajectory;
+  private enum autoDriveMode {
+    trajectory,
+    pose
+  }
+
   Timer timer = new Timer();
   Trajectory trajectory;
+  Pose2d pose;
+  autoDriveMode mode;
   ChassisSpeeds speeds;
 
   public SwervedriveAutoCommand(Trajectory tra) {
     trajectory = tra;
+    mode = autoDriveMode.trajectory;
     // addRequirements(subsystem);
   }
 
-	@Override
-	public void initialize() {
-		timer.start();
-	}
+  public SwervedriveAutoCommand(Pose2d pose) {
+    this.pose = pose;
+    mode = autoDriveMode.pose;
+  }
+
+  @Override
+  public void initialize() {
+    timer.start();
+  }
 
   @Override
   public void execute() {
-    double t = timer.get();
-    speeds = SwervedriveAuto.getInstance().getVelocities(trajectory, t);
-    Config.drive().drive(speeds);
+    //man kann die trajectory brauchen, weill der holonomic die punkte ankorigiert welche die
+    //spline zurückgibt, aber eventuell stören die velocities der trajectory mit
+    //d
+    if (mode == autoDriveMode.trajectory) {
+      double t = timer.get();
+      speeds = SwervedriveAuto.getInstance().getVelocities(trajectory, t);
+      Config.drive().drive(speeds);
+    } else if (mode == autoDriveMode.pose){
+      double t = timer.get();
+      speeds = SwervedriveAuto.getInstance().getVelocities(pose, t);
+      Config.drive().drive(speeds);
+    }
   }
 
   @Override

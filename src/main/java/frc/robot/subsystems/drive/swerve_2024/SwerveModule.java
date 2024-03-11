@@ -18,6 +18,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.fridowpi.module.IModule;
 import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridolinsMotor;
@@ -250,6 +251,8 @@ public class SwerveModule extends BSwerveModule {
 		builder.addBooleanProperty("Coast", () -> mode == IdleMode.kCoast, val -> mode = val? IdleMode.kCoast: IdleMode.kBrake);
 
 		builder.addDoubleProperty("WheelSpeeds", this::getWheelSpeed, null);
+		builder.addDoubleProperty("moduleposonfield", () -> getOdometryPos().distanceMeters, null);
+		builder.addDoubleProperty("rotangle", () -> getOdometryPos().angle.getDegrees(), null);
 	}
 
 	@Override
@@ -268,7 +271,9 @@ public class SwerveModule extends BSwerveModule {
 	@Override
 	public SwerveModulePosition getOdometryPos() {
 		return new SwerveModulePosition(
-				getWheelSpeed(), new Rotation2d(Radians.of(getModuleRotationAngle())));
+				motors.drive.getEncoderTicks() *
+				 Constants.SwerveDrive.Swerve2024.gearRatio *
+				 config.wheelCircumference, new Rotation2d(Radians.of(getModuleRotationAngle())));
 	}
 
 	@Override

@@ -64,6 +64,11 @@ public class SwervedriveAuto extends Module {
         return speeds;
     }
 
+    public ChassisSpeeds getVelocities(Pose2d pose, double t){
+        speeds = controller.calculate(Config.drive().getPos(), pose, 0.0, new Rotation2d(0.0));
+        return speeds;
+    }
+
     public void driveToSource(){
         Trajectory tra = getSwerveAutonomousTrj.getInstance().createTrajectory(source, Type.abs);
         startCommand(tra);
