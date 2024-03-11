@@ -31,8 +31,8 @@ public class XBoxOneController extends WPIJoystick {
             return new Trigger(() -> isPressedPOV((POV) id));
         } else if (id instanceof POV && id.getButtonId() >= 200 && id.getButtonId() < 300) {
             return new Trigger(() -> isPressedLorRT((POV) id));
-        } else if (id instanceof POV && id.getButtonId() >= Constants.Joystick.idCounterStart) {
-			return new Trigger(() -> isPressedLorRT((POV) id));
+        } else if (id instanceof IdsWithState && id.getButtonId() >= Constants.Joystick.idCounterStart) {
+			return ((IdsWithState) id).toButtonOnJoystick(this);
 		}
         return new JoystickButton(this, id.getButtonId());
     }

@@ -17,4 +17,10 @@ public class Utils {
 		System.err.println(e);
 		e.printStackTrace();
 	}
+
+	public static class Maths {
+		public static double clamp(double value, double min, double max) {
+			return Math.min(Math.max(value, min), max);
+		}
+	}
 }

@@ -38,9 +38,6 @@ public class JoystickBindings2024 {
 
 		// Drive
 		if (Controls.getControlMode() == Controls.ControlMode.CONVENTIONAL) {
-			quickBindToggle(XboxOne.lt,
-					() -> Controls.setActiveSpeedFactor(SpeedFactor.FAST),
-					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
 			quickBindToggle(XboxOne.rt,
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW),
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
