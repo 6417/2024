@@ -1,6 +1,7 @@
 package frc.robot.subsystems.visionAutonomous;
 
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,13 +16,15 @@ import frc.robot.subsystems.drive.getSwerveAutonomousTrj.Type;
 
 public class Autonomous extends SubsystemBase {
 
+    public static Autonomous instance;
+
     // achtung man kann warscheinlich die rotationen nehmen weil sie nicht absolut, sondern relativ sind
 
     //blue autonomous
-    Pose2d bluespeaker = new Pose2d(0.45, 2.64, new Rotation2d(180));
-    Pose2d blueend1 = new Pose2d(4.419, 1.945, new Rotation2d(0));
-    Pose2d blueend2 = new Pose2d(4.419,5.4, new Rotation2d(0));
-    Pose2d blueamp = new Pose2d(1.8,7.77, new Rotation2d(90));
+    Pose2d bluespeaker = new Pose2d(1.36, 5.4, new Rotation2d(0));
+    Pose2d blueend1 = new Pose2d(4.2, 6.3, new Rotation2d(0));
+    Pose2d blueend2 = new Pose2d(4.2,1.2, new Rotation2d(0));
+    Pose2d blueamp = new Pose2d(1.8,7.77, new Rotation2d(0));
     Pose2d bluestart1 = new Pose2d(0.92,3.1, new Rotation2d(0));
     Pose2d bluestart2 = new Pose2d(0.92,2.1, new Rotation2d(0));
     ArrayList<Translation2d> redpoints1 = new ArrayList<>(); //for ampToEnd1
@@ -43,68 +46,83 @@ public class Autonomous extends SubsystemBase {
                 .createTrajectory(start, end, list,Type.futur_abs_with_waypoints);
         return Config.active.getAuto().get().getAutoCommand(first_trajectory, endRot);
     }
+
+    public Command driveToPoint(Pose2d start, Pose2d end, ArrayList<Translation2d> list, Rotation2d endRot){
+        return Config.active.getAuto().get().getPoseCommand(end, endRot);
+    }
+
+    public Command testPointdrive(){
+        return driveToPoint(bluespeaker, blueend1, emptylsit, new Rotation2d(0));
+    }
     
     public Command blueSpeakerToEnd1() {
         return new SequentialCommandGroup(
             //new ShootSpekerCommand(),
-            followPath(redspeakter, redend1, emptylsit, redend1.getRotation()));}
+            followPath(bluespeaker, blueend1, emptylsit, blueend1.getRotation()));}
 
     public Command blueSpeakerToEnd2(){
         return new SequentialCommandGroup(
             //new ShooterSpeakerCommand(),
-            followPath(redspeakter, redend2, emptylsit, redend2.getRotation()));}
+            followPath(bluespeaker, blueend2, emptylsit, blueend2.getRotation()));}
 
     public Command blueAmpToEnd1(){
         redpoints1.add(new Translation2d(2.1,6.3));
         return new SequentialCommandGroup(
             //new ShooterAmpCommand(),
-            followPath(redamp, redend1, emptylsit, redend1.getRotation()));}
+            followPath(blueamp, blueend1, emptylsit, blueend1.getRotation()));}
 
     public Command blueStart1ToSpeakerToEnd1(){
         return new SequentialCommandGroup(
-            followPath(redstart1, redspeakter, emptylsit, redspeakter.getRotation()),
+            followPath(bluestart1, bluespeaker, emptylsit, bluespeaker.getRotation()),
             //new ShooterSpeakerCommand(),
-            followPath(redspeakter, redend1, emptylsit, redend1.getRotation()));}
+            followPath(bluespeaker, blueend1, emptylsit, blueend1.getRotation()));}
 
     public Command blueStart1ToAmpToEnd1(){
         return new SequentialCommandGroup(
-            followPath(redstart1, redamp, emptylsit, redamp.getRotation()),
+            followPath(bluestart1, blueamp, emptylsit, blueamp.getRotation()),
             //new ShooterSpekerCommand(),
-            followPath(redamp, redend1, emptylsit, redend1.getRotation()));}
+            followPath(blueamp, blueend1, emptylsit, blueend1.getRotation()));}
     
     public Command blueStart2ToAmpToEnd1(){
         return new SequentialCommandGroup(
-            followPath(redstart2, redspeakter, emptylsit, redspeakter.getRotation()),
+            followPath(bluestart2, bluespeaker, emptylsit, bluespeaker.getRotation()),
             //new ShooterSpeakerCommand(),
-            followPath(redspeakter, redend1, emptylsit, redend1.getRotation()));}
+            followPath(bluespeaker, blueend1, emptylsit, blueend1.getRotation()));}
 
     public Command redSpeakerToEnd1(){
         return new SequentialCommandGroup(
             //new ShooterSpeakerCommand(),
-            followPath(bluespeaker, blueend1, emptylsit, blueend1.getRotation()));}
+            followPath(redspeakter, redend1, emptylsit, redend1.getRotation()));}
 
     public Command redSpeakerToEnd2(){
         return new SequentialCommandGroup(
             //new ShooterSpeakerCommand(),
-            followPath(bluespeaker, blueend2, emptylsit, blueend2.getRotation()));}
+            followPath(redspeakter, redend2, emptylsit, redend2.getRotation()));}
         
     public Command redAmpToEnd1(){
         bluePoints1.add(new Translation2d(14.44,6.3));
         return new SequentialCommandGroup(
             //new ShooterAmpCommand(),
-            followPath(blueamp, blueend1, emptylsit, blueend1.getRotation()));}
+            followPath(redamp, redend1, emptylsit, redend1.getRotation()));}
 
     public Command redStart1ToSpeakerToEnd1(){
         return new SequentialCommandGroup(
-            followPath(bluestart1, bluespeaker, emptylsit, bluespeaker.getRotation()),
+            followPath(redstart1, redspeakter, emptylsit, redspeakter.getRotation()),
             // new ShooterSpeakerCommand(),
-            followPath(bluespeaker, blueend1, emptylsit, blueend1.getRotation()));}
+            followPath(redspeakter, redend1, emptylsit, redend1.getRotation()));}
 
     public Command redStart2ToSpeakerToEnd1(){
         return new SequentialCommandGroup(
-            followPath(bluestart2, bluespeaker, emptylsit, bluespeaker.getRotation()),
+            followPath(redstart2, redspeakter, emptylsit, redspeakter.getRotation()),
             // new ShooterSpeakerCommand(),
-            followPath(bluespeaker, blueend1, emptylsit, blueend1.getRotation()));}
+            followPath(redspeakter, redend1, emptylsit, redend1.getRotation()));}
+
+    public static Autonomous getInstance(){
+        if (instance == null){
+            instance = new Autonomous();
+        }
+        return instance;
+    }
 
     public Autonomous() {
     }

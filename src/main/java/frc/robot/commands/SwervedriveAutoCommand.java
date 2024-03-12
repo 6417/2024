@@ -5,6 +5,7 @@ import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 import org.apache.logging.log4j.core.lookup.SystemPropertiesLookup;
 
 import com.ctre.phoenix6.hardware.ParentDevice;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,7 +34,6 @@ public class SwervedriveAutoCommand extends Command {
 
   public SwervedriveAutoCommand(Trajectory tra, Rotation2d endRot) {
     trajectory = tra;
-    System.out.println(trajectory.toString());
     mode = autoDriveMode.trajectory;
     desiredendRot = endRot;
     // addRequirements(subsystem);
@@ -60,10 +60,12 @@ public class SwervedriveAutoCommand extends Command {
     if (mode == autoDriveMode.trajectory) {
       double t = timer.get();
       speeds = Config.active.getAuto().get().getVelocitiesAtTimepoint(trajectory, t, desiredendRot);
+      // speeds = new ChassisSpeeds(-speeds.vxMetersPerSecond,
+      // -speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
       Config.drive().drive(speeds);
 
     } else if (mode == autoDriveMode.pose) {
-      speeds = ((SwervedriveAuto)Config.active.getAuto().get()).getVelocitiesToPose(pose, desiredendRot);
+      speeds = ((SwervedriveAuto) Config.active.getAuto().get()).getVelocitiesToPose(pose, desiredendRot);
       Config.drive().drive(speeds);
     }
   }
@@ -71,24 +73,34 @@ public class SwervedriveAutoCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED);
+    Config.drive().setIdleMode(frc.fridowpi.motors.FridolinsMotor.IdleMode.kBrake);
   }
 
   @Override
 
   public boolean isFinished() {
     // fist idea to stop command, not realy working, stop to eraly
-    //return timer.hasElapsed(trajectory.getTotalTimeSeconds());
-    return timer.get() > 2.0;
-    /*
-    if (Math.hypot(Config.drive().getPos().getX()
-        - trajectory.getStates().get(trajectory.getStates().size()-1).poseMeters.getX(),
-        Config.drive().getPos().getY() -
-            trajectory.getStates().get(trajectory.getStates().size()-1).poseMeters.getY()) < 0.2) {
-              return true;
-    } else{
-      return false;
+    // return timer.hasElapsed(trajectory.getTotalTimeSeconds());
+    // return timer.get() > 2.0;
+    if (mode == autoDriveMode.trajectory) {
+      if (Math.hypot(Config.drive().getPos().getX()
+          - trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getX(),
+          Config.drive().getPos().getY() -
+              trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getY()) < 0.1) {
+        return true;
+      } else {
+        return false;
+      }
     }
-    */
+    if (mode == autoDriveMode.pose) {
+      if (Math.hypot(Config.drive().getPos().getX() - pose.getX(),
+          Config.drive().getPos().getY() - pose.getY()) < 0.1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
 
     // // second attempt to sotp command, guest values, not now if it works
     // if (Math.abs(speeds.vxMetersPerSecond) <= 0.1 &&

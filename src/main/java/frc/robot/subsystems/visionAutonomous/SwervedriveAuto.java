@@ -43,7 +43,7 @@ public class SwervedriveAuto extends BAutoHandler {
     static SwervedriveAuto instance;
 
     //guest values with alsow the constraints in the constants for the trajectory generation
-    PIDController pid = new PIDController(0,0,0);
+    PIDController pid = new PIDController(0.1,0,0);
     private HolonomicDriveController controller = new HolonomicDriveController(
         pid,pid,
         new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(6.28, 3.14)));
@@ -79,7 +79,12 @@ public class SwervedriveAuto extends BAutoHandler {
 
     //alsow called  by the command
     public ChassisSpeeds getVelocitiesToPose(Pose2d pose, Rotation2d endRot){
-        speeds = controller.calculate(Config.drive().getPos(), pose, 0.0, endRot);
+        var cur = Config.drive().getPos();
+        speeds = controller.calculate(cur, 
+         new Pose2d(cur.getX() + (pose.getY() - cur.getY()),
+                    cur.getY() + (pose.getX() - cur.getX()),
+                    endRot),
+                    0.0, endRot);
         return speeds;
     }
 
@@ -104,19 +109,26 @@ public class SwervedriveAuto extends BAutoHandler {
         return new SwervedriveAutoCommand(tra, endRot);
     }
 
+    public Command getPoseCommand(Pose2d pose, Rotation2d endRot){
+        return new SwervedriveAutoCommand(pose, endRot);
+    }
+
     public Command getAutoCommand(){
 
         Pose2d firstApriltag = new Pose2d(15, 5.5, new Rotation2d(0));
         Pose2d test = new Pose2d(2, 0,new Rotation2d(0));
         ArrayList<Translation2d> points = new ArrayList<>();
-        //points.add(new Translation2d(1,0));
+        points.add(new Translation2d(1,-1));
 
         //test trajectorys
         Trajectory tra2 = getSwerveAutonomousTrj.getInstance().createTrajectory(firstApriltag, Type.abs);
-        Trajectory testtra = getSwerveAutonomousTrj.getInstance().createTrajectory(test, Type.abs);
+        Trajectory testtra = getSwerveAutonomousTrj.getInstance().createTrajectory(Config.drive().getPos(),
+         test, points, Type.futur_abs_with_waypoints);
 
         SwervedriveAutoCommand command = new SwervedriveAutoCommand(testtra, new Rotation2d(0));
-        return command;
+        //return command;
+
+        return Autonomous.getInstance().blueSpeakerToEnd1();
     }
 
 	@Override
