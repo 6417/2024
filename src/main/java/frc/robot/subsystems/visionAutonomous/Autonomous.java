@@ -52,7 +52,7 @@ public class Autonomous extends SubsystemBase {
     }
 
     public Command testPointdrive(){
-        return driveToPoint(bluespeaker, blueend1, emptylsit, new Rotation2d(0));
+        return driveToPoint(bluespeaker, blueend1, emptylsit, new Rotation2d(1.5));
     }
     
     public Command blueSpeakerToEnd1() {
