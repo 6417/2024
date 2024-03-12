@@ -14,7 +14,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.EmptyDrive;
 import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
 import frc.robot.subsystems.drive.tankdrive.FourFalconsTankDrive;
-import frc.robot.subsystems.visionAutonomous.swerve.SwervedriveAuto;
+import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 
 /** Preset robot configurations
  *

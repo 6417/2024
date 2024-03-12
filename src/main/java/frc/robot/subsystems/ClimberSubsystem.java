@@ -138,6 +138,7 @@ public class ClimberSubsystem extends BClimber {
 	@Override
 	public void oneStepUp(double speedAdditon) {
 		speed += speedAdditon;
+		speed = Math.max(speed, 0);
 		System.out.println(speed);
 		seilMotorLinks.set(speed);
 		seilMotorRechts.set(speed);

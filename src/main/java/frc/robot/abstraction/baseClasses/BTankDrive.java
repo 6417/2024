@@ -59,9 +59,4 @@ public abstract class BTankDrive extends BDrive {
     public boolean isSwerve() {
 		return false;
 	}
-
-	@Override
-	public List<Binding> getMappings() {
-		return JoystickBindings2024.getBindingsTankdriveLogitech();
-	}
 }
