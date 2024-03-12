@@ -48,8 +48,7 @@ public class JoystickBindings2024 {
 			quickBindToggle(POV.Rt,
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW),
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
-		}
-		;
+		};
 
 		quickBind(XboxOne.back, new InstantCommand(() -> {
 			FridoNavx.getInstance().reset();
@@ -73,23 +72,15 @@ public class JoystickBindings2024 {
 			quickBindS(Logitech.x, State.DEFAULT, s::stopMotors);
 			quickBindS(Logitech.y, State.DEFAULT, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
-		quickBindS(Logitech.a, State.ALL, () -> System.out.println("a"));
-		quickBindS(Logitech.b, State.ALL, () -> System.out.println("b"));
-		quickBindS(Logitech.x, State.ALL, () -> System.out.println("x"));
-		quickBindS(Logitech.y, State.ALL, () -> System.out.println("y"));
-		quickBindS(Logitech.a, State.ENDGAME, () -> System.out.println("a"));
-		quickBindS(Logitech.b, State.ENDGAME, () -> System.out.println("b"));
-		quickBindS(Logitech.x, State.ENDGAME, () -> System.out.println("x"));
-		quickBindS(Logitech.y, State.ENDGAME, () -> System.out.println("y"));
 
 		// Climber
 		Config.active.getClimber().ifPresent(climber -> {
 			quickBindS(Logitech.x, climber::stop);
 
-			quickBindS(POV.DPadRight, climber::release);
-			quickBindS(POV.DPadLeft, ((ClimberSubsystem) climber)::lockServos);
-			quickBindS(POV.DPadUp, () -> climber.oneStepUp(0.03));
-			quickBindS(POV.DPadDown, () -> climber.oneStepUp(-0.03));
+			quickBindS(POV.DPadRight, State.ENDGAME, climber::release);
+			quickBindS(POV.DPadLeft, State.ENDGAME, ((ClimberSubsystem) climber)::lockServos);
+			quickBindS(POV.DPadUp, State.ENDGAME, () -> climber.oneStepUp(0.03));
+			quickBindS(POV.DPadDown, State.ENDGAME, () -> climber.oneStepUp(-0.03));
 		});
 
 		return tmp_bindings;
