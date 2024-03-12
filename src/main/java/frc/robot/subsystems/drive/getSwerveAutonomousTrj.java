@@ -1,18 +1,25 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.core.lookup.SystemPropertiesLookup;
 
 import com.ctre.phoenix.ErrorCode;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryParameterizer.TrajectoryGenerationException;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
@@ -30,22 +37,14 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
 
     private TrajectoryConfig getTrajectoryConfig() {
         assert Config.drive().isSwerve() : "Does assert that the drive() returns a SwerveDrive";
-
-        // constraints for tankdirve useless
-        /*
-         * var voltageConstraint = new DifferentialDriveVoltageConstraint(
-         * new SimpleMotorFeedforward(Constants.Testchassi.ksVolts,
-         * Constants.Testchassi.kvVoltSevondsPerMeter,
-         * Constants.Testchassi.kaVoltSecondsSquaredPerMeter),
-         * Tankdrive.getInstance().m_kinematics, 10);
-         */
+        var kinematics = new SwerveDriveKinematics(Constants.SwerveDrive.Swerve2024.SWERVE_MODULE_TRANSLATIONS);
 
         SwerveDriveKinematicsConstraint constraint = new SwerveDriveKinematicsConstraint(
-                Config.drive().getSwerveKinematics().get(), 3.3);// const
+                kinematics, 5.2);//Constants.SwerveDrive.Swerve2024.maxVelocity.in(MetersPerSecond));// const 5,2
 
-        TrajectoryConfig config = new TrajectoryConfig(Constants.Testchassis.PathWeaver.kMaxVMetersPerSecond,
-                Constants.Testchassis.PathWeaver.kMaxAccMetersPerSecond)
-                .setKinematics(Config.drive().getSwerveKinematics().get())
+        TrajectoryConfig config = new TrajectoryConfig(5.2,
+                0.1)
+                .setKinematics(kinematics)
                 .addConstraint(constraint);
 
         return config;
@@ -70,9 +69,10 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
     private Trajectory get_abs_trajectory(Pose2d endPose) {
         TrajectoryConfig conf = getTrajectoryConfig();
         List<Translation2d> list_Translation2d = new ArrayList<Translation2d>();
+        Pose2d robotPose = new Pose2d(Config.drive().getPos().getTranslation(), new Rotation2d(0));
 
         Trajectory new_trajectory = TrajectoryGenerator.generateTrajectory(
-                Config.drive().getPos(),
+                robotPose,
                 list_Translation2d,
                 endPose,
                 conf);
@@ -84,10 +84,10 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
         TrajectoryConfig conf = getTrajectoryConfig();
         List<Translation2d> list_Translation2d = new ArrayList<Translation2d>();
 
-        Translation2d endtranslation = Config.drive().getPos().getTranslation().plus(endPose.getTranslation());
-        endPose = new Pose2d(endtranslation, endPose.getRotation());
+        Pose2d robotPose = new Pose2d(Config.drive().getPos().getTranslation(), new Rotation2d(0));
+        Translation2d endtranslation = robotPose.getTranslation().plus(endPose.getTranslation());
+        endPose = new Pose2d(endtranslation, new Rotation2d(0));
         Trajectory new_trajectory = null;
-
         new_trajectory = TrajectoryGenerator.generateTrajectory(Config.drive().getPos(),
                 list_Translation2d,
                 endPose,

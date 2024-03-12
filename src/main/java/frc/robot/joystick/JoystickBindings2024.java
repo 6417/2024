@@ -20,6 +20,7 @@ import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
+import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 
 /**
  * JoystickBindings2024
@@ -58,7 +59,7 @@ public class JoystickBindings2024 {
 			quickBind(XboxOne.x, s::stopMotors);
 			quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
-		quickBind(XboxOne.lb, () -> Config.active.getAuto().get().getAutoCommand().schedule());
+		quickBind(XboxOne.lb, () -> ((SwervedriveAuto) Config.active.getAuto().get()).getAutoCommand().schedule());
 
 		Config.active.getClimber().ifPresent(climber -> {
 			quickBind(XboxOne.x, climber::stop);

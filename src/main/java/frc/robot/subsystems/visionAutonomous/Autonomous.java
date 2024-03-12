@@ -9,6 +9,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Config;
 import frc.robot.subsystems.drive.getSwerveAutonomousTrj;
 import frc.robot.subsystems.drive.getSwerveAutonomousTrj.Type;
 
@@ -40,7 +41,7 @@ public class Autonomous extends SubsystemBase {
     public Command followPath(Pose2d start, Pose2d end, ArrayList<Translation2d> list) {
         Trajectory first_trajectory = getSwerveAutonomousTrj.getInstance()
                 .createTrajectory(start, end, list,Type.futur_abs_with_waypoints);
-        return SwervedriveAuto.getInstance().getCommand(first_trajectory);
+        return Config.active.getAuto().get().getAutoCommand(first_trajectory);
     }
     
     public Command blueSpeakerToEnd1() {

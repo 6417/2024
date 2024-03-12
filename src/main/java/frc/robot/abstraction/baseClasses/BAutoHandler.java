@@ -10,7 +10,7 @@ import frc.fridowpi.module.Module;
  */
 public abstract class BAutoHandler extends Module {
 
-	abstract public Command getAutoCommand();
+	abstract public Command getAutoCommand(Trajectory tra);
 
 	abstract public ChassisSpeeds getVelocitiesAtTimepoint(Trajectory tra, double t);
 }
