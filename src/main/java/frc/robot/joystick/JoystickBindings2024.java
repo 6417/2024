@@ -19,8 +19,8 @@ import frc.robot.Controls;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.LED.RGB;
 import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
-import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 
 /**
  * JoystickBindings2024
@@ -48,7 +48,8 @@ public class JoystickBindings2024 {
 			quickBindToggle(POV.Rt,
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW),
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
-		};
+		}
+		;
 
 		quickBind(XboxOne.back, new InstantCommand(() -> {
 			FridoNavx.getInstance().reset();
@@ -64,6 +65,22 @@ public class JoystickBindings2024 {
 			Joystick2024.getInstance().setState(State.ENDGAME);
 			System.out.println("<<<[ Endgame Activated ]>>>");
 		}));
+
+		Config.active.getLED().ifPresent(led -> {
+			quickBindS(Logitech.lb, new InstantCommand(() -> {
+				System.out.println("WHITE");
+				led.toggleContinuous(RGB.WHITE);
+			}));
+			quickBindS(Logitech.rt, new InstantCommand(() -> {
+				System.out.println("BULUDI");
+				led.setColor(RGB.BLUE);
+			}));
+			quickBindS(Logitech.lt, new InstantCommand(() -> {
+				System.out.println("RED");
+				// led.setColorFluid(RGB.RED);
+				led.setColor(RGB.RED);
+			}));
+		});
 
 		// Shooter
 		Config.active.getShooter().ifPresent(s -> {

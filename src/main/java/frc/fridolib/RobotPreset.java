@@ -10,6 +10,7 @@ import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.abstraction.interfaces.ISwerveModule;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.EmptyDrive;
 import frc.robot.subsystems.drive.swerve_2024.SwerveDrive2024;
@@ -46,7 +47,8 @@ public enum RobotPreset {
 			new SwerveDrive2024(),
 			new ShooterSubsystem(),
 			new ClimberSubsystem(),
-			new SwervedriveAuto())
+			new LED(),
+			new SwervedriveAuto()),
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))
 
 	// DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),
@@ -63,6 +65,7 @@ public enum RobotPreset {
 	public Optional<BShooter> SHOOTER = Optional.empty();
 	public Optional<ISwerveModule> SINGLE_SWERVE_MODULE = Optional.empty();
 	public Optional<BAutoHandler> AUTO = Optional.empty();
+	public Optional<LED> LED = Optional.empty();
 	public RobotData ROBOT_DATA = null;
 
 	// Functions //
@@ -70,6 +73,7 @@ public enum RobotPreset {
 		DRIVE.ifPresent(s -> s.init());
 		SHOOTER.ifPresent(s -> s.init());
 		CLIMBER.ifPresent(s -> s.init());
+		LED.ifPresent(s -> s.init());
 		// SINGLE_SWERVE_MODULE.ifPresent(s -> s.init());
 		AUTO.ifPresent(s -> s.init());
 	}
@@ -85,6 +89,10 @@ public enum RobotPreset {
 
 	public Optional<BShooter> getShooter() {
 		return SHOOTER;
+	}
+
+	public Optional<LED> getLED() {
+		return LED;
 	}
 
 	public Optional<BAutoHandler> getAuto() {
@@ -125,6 +133,15 @@ public enum RobotPreset {
 		DRIVE = Optional.of(drive);
 		SHOOTER = Optional.of(shooter);
 		CLIMBER = Optional.of(climber);
+		AUTO = Optional.of(autoHandler);
+	}
+
+	private RobotPreset(RobotData data, BDrive drive, BShooter shooter, BClimber climber, LED led, BAutoHandler autoHandler) {
+		ROBOT_DATA = data;
+		DRIVE = Optional.of(drive);
+		SHOOTER = Optional.of(shooter);
+		CLIMBER = Optional.of(climber);
+		LED = Optional.of(led);
 		AUTO = Optional.of(autoHandler);
 	}
 }

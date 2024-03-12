@@ -1,11 +1,11 @@
 package frc.robot.subsystems;
 
-import java.util.Arrays;
-
 import javax.swing.Timer;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.fridowpi.module.Module;
 import frc.fridowpi.utils.Vector3;
 
@@ -53,20 +53,70 @@ public class LED extends Module {
 		led.setLength(buffer.getLength());
 		led.setData(buffer);
 		led.start();
+		setColor(DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue? RGB.BLUE: RGB.RED);
 	}
 
 	public void setColor(RGB color) {
 		for (int i = 0; i < buffer.getLength(); i++) {
 			buffer.setRGB(i, color.r, color.g, color.b);
 		}
+		led.setData(buffer);
 	}
 
-	private int i = 0;
+	@Override
+	public void periodic() {
+	}
+
+	private Timer timerTmp = null;
+	private Timer timerContinuous1 = null;
+	private Timer timerContinuous2 = null;
+	private int iContinuous = 0;
+	private int iTmp = 0;
 
 	public void setColorFluid(RGB color) {
-		new Timer(100, e -> {
-			buffer.setRGB(i++, color.r, color.g, color.b);
-			i = buffer.getLength();
+		if (timerTmp != null) {
+			timerTmp.stop();
+		}
+		timerTmp = new Timer(100, e -> {
+			buffer.setRGB(iContinuous++, color.r, color.g, color.b);
+			led.setData(buffer);
 		});
+		timerTmp.start();
+	}
+
+	public void setColorContinuous(RGB color) {
+		timerContinuous1 = new Timer(100, e -> {
+			buffer.setRGB(iTmp, color.r, color.g, color.b);
+			led.setData(buffer);
+			iTmp %= buffer.getLength();
+		});
+		timerContinuous2 = new Timer(100, e -> {
+			buffer.setRGB(iContinuous++ - 5, color.r, color.g, color.b);
+			led.setData(buffer);
+			iContinuous %= buffer.getLength();
+		});
+		timerContinuous2.setInitialDelay(50);
+
+		timerContinuous2.setRepeats(true);
+		timerContinuous1.setRepeats(true);
+
+		timerContinuous2.start();
+		timerContinuous1.start();
+	}
+
+	public void stopContinuous() {
+		timerContinuous1.stop();
+		timerContinuous2.stop();
+	}
+
+	boolean continuousOn = false;
+
+	public void toggleContinuous(RGB color) {
+		if (continuousOn) {
+			stopContinuous();
+		} else {
+			setColorContinuous(color);
+		}
+		continuousOn = !continuousOn;
 	}
 }
