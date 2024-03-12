@@ -79,12 +79,7 @@ public class SwervedriveAuto extends BAutoHandler {
 
     //alsow called  by the command
     public ChassisSpeeds getVelocitiesToPose(Pose2d pose, Rotation2d endRot){
-        var cur = Config.drive().getPos();
-        speeds = controller.calculate(cur, 
-         new Pose2d(cur.getX() + (pose.getY() - cur.getY()),
-                    cur.getY() + (pose.getX() - cur.getX()),
-                    endRot),
-                    0.0, endRot);
+        speeds = controller.calculate(Config.drive().getPos(), pose, 0.0, endRot);
         return speeds;
     }
 

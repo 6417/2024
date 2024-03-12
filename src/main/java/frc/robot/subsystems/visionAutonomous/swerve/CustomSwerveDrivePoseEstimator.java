@@ -58,7 +58,9 @@ public class CustomSwerveDrivePoseEstimator extends SwerveDrivePoseEstimator {
 	public void update() {
 		Rotation2d gyroAngle = FridoNavx.getInstance().getRotation2d();
 		gyroAngle = new Rotation2d(-gyroAngle.getRadians());
-		updateWithTime(timer.get(), gyroAngle, Config.drive().getModulePositions());
+		SwerveModulePosition[] modules = Config.drive().getModulePositions();
+		SwerveModulePosition[] newmodules = {modules[1], modules[2], modules[3], modules[0]};
+		updateWithTime(timer.get(), gyroAngle, newmodules);
 
 		int target = Visionprocessing.getInstance().validTarget();
 
