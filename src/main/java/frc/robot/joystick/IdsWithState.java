@@ -54,6 +54,6 @@ public class IdsWithState implements IJoystickButtonId {
 	}
 
 	private boolean isActivated(IJoystick j) {
-		return j.getButton(triggerButton).getAsBoolean() && activeState == triggerState || triggerState == State.ALL;
+		return (j.getButton(triggerButton).getAsBoolean() && triggerState == activeState) || triggerState == State.ALL;
 	}
 }

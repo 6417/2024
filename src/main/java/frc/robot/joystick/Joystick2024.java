@@ -25,10 +25,10 @@ public class Joystick2024 implements Sendable {
 	}
 
 	public void setup(State state) {
-		// JoystickHandler.getInstance().setJoystickFactory(XBoxOneController::new);
-		JoystickHandler.getInstance().init();
+		JoystickHandler.getInstance().setJoystickFactory(LogitechWithState::new);
 		JoystickHandler.getInstance().setupJoysticks(List.of(
 				Constants.Joystick.secondaryJoystickId));
+		JoystickHandler.getInstance().init();
 
 		JoystickHandler.getInstance().setJoystickFactory(XBoxOneController::new);
 		JoystickHandler.getInstance().init(); // Don't ask, it works ;)
@@ -41,17 +41,14 @@ public class Joystick2024 implements Sendable {
 
 		// Create bindings //
 		JoystickHandler.getInstance().bindAll(JoystickBindings2024.getBindingsSwerve2024());
-		JoystickHandler.getInstance().bindAll(JoystickBindings2024.getBindingsLogitechTest());
 		JoystickHandler.getInstance().init();
 	}
 
+	public void setState(State state) {
+		IdsWithState.activeState = state;
+	}
+
 	public void run() {
-		// if (JoystickHandler.getInstance().getJoystick(Constants.Joystick.primaryJoystickId) != null) {
-			// var js = getPrimaryJoystick();
-		// 	if (IdsWithState.activeState == State.ENDGAME && js.getY() > 0.1) {
-		// 		Config.active.getClimber().ifPresent((climber) -> climber.oneStepUp(js.getY()));
-		// 	}
-		// }
 	}
 
 	@Override

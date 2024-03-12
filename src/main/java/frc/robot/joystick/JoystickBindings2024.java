@@ -36,17 +36,20 @@ public class JoystickBindings2024 {
 	public static List<Binding> getBindingsSwerve2024() {
 		tmp_bindings.clear();
 
-
 		/// ---- Drive ---- ///
 
 		if (Controls.getControlMode() == Controls.ControlMode.CONVENTIONAL) {
 			quickBindToggle(POV.Lt,
-					() -> Controls.setActiveSpeedFactor(SpeedFactor.FAST),
+					() -> {
+						System.out.println("Working");
+						Controls.setActiveSpeedFactor(SpeedFactor.FAST);
+					},
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
 			quickBindToggle(POV.Rt,
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW),
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
-		};
+		}
+		;
 
 		quickBind(XboxOne.back, new InstantCommand(() -> {
 			FridoNavx.getInstance().reset();
@@ -55,16 +58,31 @@ public class JoystickBindings2024 {
 			System.out.println("<<<[ Zeroed ]>>>");
 		}));
 
-
 		/// ---- Logitech ---- ///
 
-		Config.active.getShooter().ifPresent(s -> {
-			quickBindS(Logitech.a, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBindS(Logitech.b, () -> s.shoot(ShooterConfig.AMP));
-			quickBindS(Logitech.x, s::stopMotors);
-			quickBindS(Logitech.y, () -> s.shoot(ShooterConfig.SPEAKER));
-		});
+		// Switch States
+		quickBindS(Logitech.start, new InstantCommand(() -> {
+			Joystick2024.getInstance().setState(State.ENDGAME);
+			System.out.println("<<<[ Endgame Activated ]>>>");
+		}));
 
+		// Shooter
+		Config.active.getShooter().ifPresent(s -> {
+			quickBindS(Logitech.a, State.DEFAULT, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBindS(Logitech.b, State.DEFAULT, () -> s.shoot(ShooterConfig.AMP));
+			quickBindS(Logitech.x, State.DEFAULT, s::stopMotors);
+			quickBindS(Logitech.y, State.DEFAULT, () -> s.shoot(ShooterConfig.SPEAKER));
+		});
+		quickBindS(Logitech.a, State.ALL, () -> System.out.println("a"));
+		quickBindS(Logitech.b, State.ALL, () -> System.out.println("b"));
+		quickBindS(Logitech.x, State.ALL, () -> System.out.println("x"));
+		quickBindS(Logitech.y, State.ALL, () -> System.out.println("y"));
+		quickBindS(Logitech.a, State.ENDGAME, () -> System.out.println("a"));
+		quickBindS(Logitech.b, State.ENDGAME, () -> System.out.println("b"));
+		quickBindS(Logitech.x, State.ENDGAME, () -> System.out.println("x"));
+		quickBindS(Logitech.y, State.ENDGAME, () -> System.out.println("y"));
+
+		// Climber
 		Config.active.getClimber().ifPresent(climber -> {
 			quickBindS(Logitech.x, climber::stop);
 
@@ -133,7 +151,7 @@ public class JoystickBindings2024 {
 
 	// On single press
 	public static void quickBind(IJoystickButtonId button, State state, Runnable fn) {
-		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, IdsWithState.from(button),
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, IdsWithState.create(button, state),
 				Trigger::onTrue, new InstantCommand(fn)));
 	}
 
@@ -148,7 +166,7 @@ public class JoystickBindings2024 {
 
 	// While held
 	public static void quickBindWhileHeld(IJoystickButtonId button, State state, Runnable fn) {
-		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, IdsWithState.from(button),
+		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, IdsWithState.create(button, state),
 				Trigger::whileTrue, new InstantCommand(fn)));
 	}
 
@@ -169,10 +187,10 @@ public class JoystickBindings2024 {
 				new InstantCommand(off)));
 	}
 
-	///----- For secondary joystick -----///
+	/// ----- For secondary joystick -----///
 	// On single press
 	public static void quickBindS(IJoystickButtonId button, State state, Runnable fn) {
-		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, IdsWithState.from(button),
+		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, IdsWithState.create(button, state),
 				Trigger::onTrue, new InstantCommand(fn)));
 	}
 
@@ -187,7 +205,7 @@ public class JoystickBindings2024 {
 
 	// While held
 	public static void quickBindWhileHeldS(IJoystickButtonId button, State state, Runnable fn) {
-		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, IdsWithState.from(button),
+		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, IdsWithState.create(button, state),
 				Trigger::whileTrue, new InstantCommand(fn)));
 	}
 
