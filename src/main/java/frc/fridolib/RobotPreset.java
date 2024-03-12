@@ -2,6 +2,7 @@ package frc.fridolib;
 
 import java.util.Optional;
 
+import frc.fridowpi.initializer.OptionalInitialisable;
 import frc.robot.Constants;
 import frc.robot.abstraction.RobotData;
 import frc.robot.abstraction.baseClasses.BAutoHandler;
@@ -10,6 +11,7 @@ import frc.robot.abstraction.baseClasses.BDrive;
 import frc.robot.abstraction.baseClasses.BShooter;
 import frc.robot.abstraction.interfaces.ISwerveModule;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.ServoOnlyClimber;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.EmptyDrive;
@@ -49,7 +51,8 @@ public enum RobotPreset {
 			new SwerveDrive2024(),
 			new ShooterSubsystem(),
 			new ClimberSubsystem(),
-			new SwervedriveAuto())
+			new SwervedriveAuto(), 
+			new LEDs())
 	// Demogorgon(new TalonSRXSwerveDrive(-1, -1, -1, -1))
 
 	// DiplodocusSwerveModule(new FourFalconsTankDrive(-1, -1, -1, -1), new SwerveModulePhoenixSparkMax(1, 3, 0)),
@@ -60,14 +63,15 @@ public enum RobotPreset {
 
 	// Variables //
 
-	public Optional<BDrive> DRIVE = Optional.empty();
+	private Optional<BDrive> DRIVE = Optional.empty();
 	// public final Optional<IArm> ARM = null;
-	public Optional<BClimber> CLIMBER = Optional.empty();
-	public Optional<BShooter> SHOOTER = Optional.empty();
-	public Optional<ISwerveModule> SINGLE_SWERVE_MODULE = Optional.empty();
-	public Optional<BAutoHandler> AUTO = Optional.empty();
-	public RobotData ROBOT_DATA = null;
-
+	private Optional<BClimber> CLIMBER = Optional.empty();
+	private Optional<BShooter> SHOOTER = Optional.empty();
+	private Optional<ISwerveModule> SINGLE_SWERVE_MODULE = Optional.empty();
+	private Optional<BAutoHandler> AUTO = Optional.empty();
+	private Optional<LEDs> LEDS = Optional.empty();
+	private RobotData ROBOT_DATA = null;
+	
 	// Functions //
 	public void initAll() {
 		DRIVE.ifPresent(s -> s.init());
@@ -75,17 +79,18 @@ public enum RobotPreset {
 		CLIMBER.ifPresent(s -> s.init());
 		// SINGLE_SWERVE_MODULE.ifPresent(s -> s.init());
 		AUTO.ifPresent(s -> s.init());
+		LEDS.ifPresent(s -> s.init());
 	}
-
+	
 	// Getters / Accessors //
 	public Optional<BDrive> getDrive() {
 		return DRIVE;
 	}
-
+	
 	public Optional<BClimber> getClimber() {
 		return CLIMBER;
 	}
-
+	
 	public Optional<BShooter> getShooter() {
 		return SHOOTER;
 	}
@@ -93,11 +98,15 @@ public enum RobotPreset {
 	public Optional<BAutoHandler> getAuto() {
 		return AUTO;
 	}
-
+	
+	public Optional<LEDs> getLEDS() {
+		return LEDS;
+	}
+	
 	public RobotData getData() {
 		return ROBOT_DATA;
 	}
-
+	
 	// Constructors //
 	private RobotPreset(RobotData data, BDrive drive) {
 		ROBOT_DATA = data;
@@ -136,4 +145,13 @@ public enum RobotPreset {
 		CLIMBER = Optional.of(climber);
 		AUTO = Optional.of(autoHandler);
 	}
+	private RobotPreset(RobotData data, BDrive drive, BShooter shooter, BClimber climber, BAutoHandler autoHandler, LEDs leds) {
+		ROBOT_DATA = data;
+		DRIVE = Optional.of(drive);
+		SHOOTER = Optional.of(shooter);
+		CLIMBER = Optional.of(climber);
+		AUTO = Optional.of(autoHandler);
+		LEDS = Optional.of(leds);
+	}
+	
 }

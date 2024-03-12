@@ -88,8 +88,8 @@ public class Constants {
 
 		public static final int seilZiehMotorLinks = 31;
 		public static final int seilZiehMotorRechts = 30;
-		public static final int servoLinksId = 2;
-		public static final int servoRechtsId = 3;
+		public static final int servoLinksId = 0;
+		public static final int servoRechtsId = 1;
 
 		public static final PidValues pidValuesSlot0 = new PidValues(0, 0, 0);
 		public static final double pidPosClimbedUp = 0;
@@ -102,6 +102,17 @@ public class Constants {
 
 		public static final double servoRightReleaseAngle = 53;
 		public static final double servoRightLockAngle = 33;
+
+		public static final double ersatzServoLeftReleaseAngle = 107;
+		public static final double ersatzServoLeftLockAngle = 87;
+
+		public static final double ersatzServoRightReleaseAngle = 33;
+		public static final double ersatzServoRightLockAngle = 53;
+	}
+
+	public static final class LEDs{
+		public static final int bufferLength = 33;
+		public static final int pwmPort = 2;
 	}
 
 	public static final class Diplodocus {

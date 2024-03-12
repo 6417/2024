@@ -19,6 +19,7 @@ import frc.robot.Controls;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
 import frc.robot.joystick.IdsWithState.State;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.LEDs.RGB;
 import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
 
 /**
@@ -50,6 +51,9 @@ public class JoystickBindings2024 {
 			Config.drive().resetOdometry();
 			System.out.println("<<<[ Zeroed ]>>>");
 		}));
+
+		quickBind(Logitech.rb, () -> Config.active.getLEDS().get().switchLEDs(new RGB(255, 0, 0)));
+		quickBind(Logitech.lb, () -> Config.active.getLEDS().get().switchLEDs(new RGB(0, 0, 255)));
 
 		// TODO: make better CONFIG
 		Config.active.getShooter().ifPresent(s -> {

@@ -2,20 +2,10 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.fridolib.QuickCmd;
-import frc.fridowpi.command.FridoCommand;
 import frc.fridowpi.command.SequentialCommandGroup;
-import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridoServoMotor;
-import frc.fridowpi.motors.FridolinsMotor;
-import frc.fridowpi.motors.FridolinsMotor.DirectionType;
-import frc.fridowpi.motors.FridolinsMotor.IdleMode;
-import frc.fridowpi.motors.FridolinsMotor.LimitSwitchPolarity;
-import frc.fridowpi.motors.FridolinsMotor.PidType;
-import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BClimber;
 
@@ -55,13 +45,13 @@ public class ServoOnlyClimber extends BClimber {
 	}
 
 	public void releaseServos() {
-		servoRechts.setAngle(Constants.Climber.servoRightReleaseAngle);
-		servoLinks.setAngle(Constants.Climber.servoLeftReleaseAngle);
+		servoRechts.setAngle(Constants.Climber.ersatzServoRightReleaseAngle);
+		servoLinks.setAngle(Constants.Climber.ersatzServoLeftReleaseAngle);
 	}
 
 	public void lockServos() {
-		servoRechts.setAngle(Constants.Climber.servoRightLockAngle);
-		servoLinks.setAngle(Constants.Climber.servoLeftLockAngle);
+		servoRechts.setAngle(Constants.Climber.ersatzServoRightLockAngle);
+		servoLinks.setAngle(Constants.Climber.ersatzServoLeftLockAngle);
 	}
 
 	@Override
