@@ -53,6 +53,13 @@ public class Joystick2024 implements Sendable {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
+		builder.addStringProperty("Mode", () -> IdsWithState.activeState.toString(), null);
+		builder.addBooleanProperty("SetDEFAULT",
+				() -> IdsWithState.activeState == State.DEFAULT,
+				val -> IdsWithState.activeState = State.DEFAULT);
+		builder.addBooleanProperty("SetENDGAME",
+				() -> IdsWithState.activeState == State.ENDGAME,
+				val -> IdsWithState.activeState = State.ENDGAME);
 	}
 }
 // getX() -> joystick left x

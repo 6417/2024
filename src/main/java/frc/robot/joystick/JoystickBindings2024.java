@@ -84,20 +84,20 @@ public class JoystickBindings2024 {
 
 		// Shooter
 		Config.active.getShooter().ifPresent(s -> {
-			quickBindS(Logitech.a, State.DEFAULT, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBindS(Logitech.b, State.DEFAULT, () -> s.shoot(ShooterConfig.AMP));
-			quickBindS(Logitech.x, State.DEFAULT, s::stopMotors);
-			quickBindS(Logitech.y, State.DEFAULT, () -> s.shoot(ShooterConfig.SPEAKER));
+			quickBindS(Logitech.a, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBindS(Logitech.b, () -> s.shoot(ShooterConfig.AMP));
+			quickBindS(Logitech.x, s::stopMotors);
+			quickBindS(Logitech.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
 
 		// Climber
 		Config.active.getClimber().ifPresent(climber -> {
 			quickBindS(Logitech.x, climber::stop);
 
-			quickBindS(POV.DPadRight, State.ENDGAME, climber::release);
-			quickBindS(POV.DPadLeft, State.ENDGAME, ((ClimberSubsystem) climber)::lockServos);
-			quickBindS(POV.DPadUp, State.ENDGAME, () -> climber.oneStepUp(0.03));
-			quickBindS(POV.DPadDown, State.ENDGAME, () -> climber.oneStepUp(-0.03));
+			quickBindS(POV.DPadRight, climber::release);
+			quickBindS(POV.DPadLeft, ((ClimberSubsystem) climber)::releaseServos);
+			quickBindS(POV.DPadUp, () -> climber.oneStepUp(0.03));
+			quickBindS(POV.DPadDown, () -> climber.oneStepUp(-0.03));
 		});
 
 		return tmp_bindings;
