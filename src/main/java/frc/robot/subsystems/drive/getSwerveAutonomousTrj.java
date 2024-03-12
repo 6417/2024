@@ -42,8 +42,7 @@ public class getSwerveAutonomousTrj extends SubsystemBase {
         SwerveDriveKinematicsConstraint constraint = new SwerveDriveKinematicsConstraint(
                 kinematics, 5.2);//Constants.SwerveDrive.Swerve2024.maxVelocity.in(MetersPerSecond));// const 5,2
 
-        TrajectoryConfig config = new TrajectoryConfig(5.2,
-                0.1)
+        TrajectoryConfig config = new TrajectoryConfig(5.2, 1.5)
                 .setKinematics(kinematics)
                 .addConstraint(constraint);
 

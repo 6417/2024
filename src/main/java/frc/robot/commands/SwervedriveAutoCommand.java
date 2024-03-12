@@ -4,7 +4,10 @@ import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 
 import org.apache.logging.log4j.core.lookup.SystemPropertiesLookup;
 
+import com.ctre.phoenix6.hardware.ParentDevice;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
@@ -26,17 +29,20 @@ public class SwervedriveAutoCommand extends Command {
   Pose2d pose;
   autoDriveMode mode;
   ChassisSpeeds speeds;
+  Rotation2d desiredendRot;
 
-  public SwervedriveAutoCommand(Trajectory tra) {
+  public SwervedriveAutoCommand(Trajectory tra, Rotation2d endRot) {
     trajectory = tra;
     System.out.println(trajectory.toString());
     mode = autoDriveMode.trajectory;
+    desiredendRot = endRot;
     // addRequirements(subsystem);
   }
 
-  public SwervedriveAutoCommand(Pose2d pose) {
+  public SwervedriveAutoCommand(Pose2d pose, Rotation2d endRot) {
     this.pose = pose;
     mode = autoDriveMode.pose;
+    desiredendRot = endRot;
   }
 
   @Override
@@ -53,11 +59,11 @@ public class SwervedriveAutoCommand extends Command {
     // d
     if (mode == autoDriveMode.trajectory) {
       double t = timer.get();
-      speeds = Config.active.getAuto().get().getVelocitiesAtTimepoint(trajectory, t);
+      speeds = Config.active.getAuto().get().getVelocitiesAtTimepoint(trajectory, t, desiredendRot);
       Config.drive().drive(speeds);
 
     } else if (mode == autoDriveMode.pose) {
-      speeds = ((SwervedriveAuto)Config.active.getAuto().get()).getVelocitiesToPose(pose);
+      speeds = ((SwervedriveAuto)Config.active.getAuto().get()).getVelocitiesToPose(pose, desiredendRot);
       Config.drive().drive(speeds);
     }
   }
@@ -71,7 +77,8 @@ public class SwervedriveAutoCommand extends Command {
 
   public boolean isFinished() {
     // fist idea to stop command, not realy working, stop to eraly
-    return timer.hasElapsed(trajectory.getTotalTimeSeconds());
+    //return timer.hasElapsed(trajectory.getTotalTimeSeconds());
+    return timer.get() > 2.0;
     /*
     if (Math.hypot(Config.drive().getPos().getX()
         - trajectory.getStates().get(trajectory.getStates().size()-1).poseMeters.getX(),

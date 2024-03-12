@@ -38,73 +38,73 @@ public class Autonomous extends SubsystemBase {
     ArrayList<Translation2d> emptylsit = new ArrayList<>();
 
 
-    public Command followPath(Pose2d start, Pose2d end, ArrayList<Translation2d> list) {
+    public Command followPath(Pose2d start, Pose2d end, ArrayList<Translation2d> list, Rotation2d endRot) {
         Trajectory first_trajectory = getSwerveAutonomousTrj.getInstance()
                 .createTrajectory(start, end, list,Type.futur_abs_with_waypoints);
-        return Config.active.getAuto().get().getAutoCommand(first_trajectory);
+        return Config.active.getAuto().get().getAutoCommand(first_trajectory, endRot);
     }
     
     public Command blueSpeakerToEnd1() {
         return new SequentialCommandGroup(
             //new ShootSpekerCommand(),
-            followPath(redspeakter, redend1, emptylsit));}
+            followPath(redspeakter, redend1, emptylsit, redend1.getRotation()));}
 
     public Command blueSpeakerToEnd2(){
         return new SequentialCommandGroup(
             //new ShooterSpeakerCommand(),
-            followPath(redspeakter, redend2, emptylsit));}
+            followPath(redspeakter, redend2, emptylsit, redend2.getRotation()));}
 
     public Command blueAmpToEnd1(){
         redpoints1.add(new Translation2d(2.1,6.3));
         return new SequentialCommandGroup(
             //new ShooterAmpCommand(),
-            followPath(redamp, redend1, emptylsit));}
+            followPath(redamp, redend1, emptylsit, redend1.getRotation()));}
 
     public Command blueStart1ToSpeakerToEnd1(){
         return new SequentialCommandGroup(
-            followPath(redstart1, redspeakter, emptylsit),
+            followPath(redstart1, redspeakter, emptylsit, redspeakter.getRotation()),
             //new ShooterSpeakerCommand(),
-            followPath(redspeakter, redend1, emptylsit));}
+            followPath(redspeakter, redend1, emptylsit, redend1.getRotation()));}
 
     public Command blueStart1ToAmpToEnd1(){
         return new SequentialCommandGroup(
-            followPath(redstart1, redamp, emptylsit),
+            followPath(redstart1, redamp, emptylsit, redamp.getRotation()),
             //new ShooterSpekerCommand(),
-            followPath(redamp, redend1, emptylsit));}
+            followPath(redamp, redend1, emptylsit, redend1.getRotation()));}
     
     public Command blueStart2ToAmpToEnd1(){
         return new SequentialCommandGroup(
-            followPath(redstart2, redspeakter, emptylsit),
+            followPath(redstart2, redspeakter, emptylsit, redspeakter.getRotation()),
             //new ShooterSpeakerCommand(),
-            followPath(redspeakter, redend1, emptylsit));}
+            followPath(redspeakter, redend1, emptylsit, redend1.getRotation()));}
 
     public Command redSpeakerToEnd1(){
         return new SequentialCommandGroup(
             //new ShooterSpeakerCommand(),
-            followPath(bluespeaker, blueend1, emptylsit));}
+            followPath(bluespeaker, blueend1, emptylsit, blueend1.getRotation()));}
 
     public Command redSpeakerToEnd2(){
         return new SequentialCommandGroup(
             //new ShooterSpeakerCommand(),
-            followPath(bluespeaker, blueend2, emptylsit));}
+            followPath(bluespeaker, blueend2, emptylsit, blueend2.getRotation()));}
         
     public Command redAmpToEnd1(){
         bluePoints1.add(new Translation2d(14.44,6.3));
         return new SequentialCommandGroup(
             //new ShooterAmpCommand(),
-            followPath(blueamp, blueend1, emptylsit));}
+            followPath(blueamp, blueend1, emptylsit, blueend1.getRotation()));}
 
     public Command redStart1ToSpeakerToEnd1(){
         return new SequentialCommandGroup(
-            followPath(bluestart1, bluespeaker, emptylsit),
+            followPath(bluestart1, bluespeaker, emptylsit, bluespeaker.getRotation()),
             // new ShooterSpeakerCommand(),
-            followPath(bluespeaker, blueend1, emptylsit));}
+            followPath(bluespeaker, blueend1, emptylsit, blueend1.getRotation()));}
 
     public Command redStart2ToSpeakerToEnd1(){
         return new SequentialCommandGroup(
-            followPath(bluestart2, bluespeaker, emptylsit),
+            followPath(bluestart2, bluespeaker, emptylsit, bluespeaker.getRotation()),
             // new ShooterSpeakerCommand(),
-            followPath(bluespeaker, blueend1, emptylsit));}
+            followPath(bluespeaker, blueend1, emptylsit, blueend1.getRotation()));}
 
     public Autonomous() {
     }

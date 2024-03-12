@@ -292,10 +292,10 @@ public class Constants {
 			}
 
 			private static void addCommonModuleConfigurarions() {
-				commonConfigurations.driveMotorTicksPerRotation = 2048.0;
+				commonConfigurations.driveMotorTicksPerRotation = 1;
 				commonConfigurations.rotationMotorTicksPerRotation = 47.691;
-				commonConfigurations.drivePID = new PidValues(0.029, 0, 0);
-				commonConfigurations.driveFeedForward = new FeedForwardValues(0.179, 0.270);
+				commonConfigurations.drivePID = new PidValues(0.1, 0, 0);
+				commonConfigurations.driveFeedForward = new FeedForwardValues(0.39, 0.17);
 				commonConfigurations.driveAccelerationLimitRotationsPerS2 = 100;
 				commonConfigurations.drivePID.slotIdX = Optional.of(0);
 				commonConfigurations.rotationPID = new PidValues(1.05, 0.01, 1);

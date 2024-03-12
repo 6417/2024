@@ -152,10 +152,8 @@ public class SwerveModule extends BSwerveModule {
 
 	private double velocity2driveMotorEncoderVelocityUnits(Measure<Velocity<Distance>> speed) {
 		return speed.in(MetersPerSecond)
-			/ config.wheelCircumference
-			/ 10
-			* Constants.SwerveDrive.Swerve2024.gearRatio
-			* config.driveMotorTicksPerRotation;
+		/ config.wheelCircumference
+		/ Constants.SwerveDrive.Swerve2024.gearRatio;
 	}
 
 	@SuppressWarnings("unused")
@@ -173,10 +171,12 @@ public class SwerveModule extends BSwerveModule {
 		this.desiredState = state;
 	}
 
+	double encoderVel = 0.0;
+
 	@Override
 	public void driveForward(double speedFactor) {
 		var vel = MetersPerSecond.of(speedFactor * desiredState.speedMetersPerSecond);
-		var encoderVel = velocity2driveMotorEncoderVelocityUnits(vel);
+		encoderVel = velocity2driveMotorEncoderVelocityUnits(vel);
 		motors.rotation.setPosition(angleToRotationMotorEncoderTicks(desiredState.angle.getRadians()));
 		((FridoFalcon500v6) motors.drive).asTalonFX().setControl(new VelocityVoltage(encoderVel));
 	}
@@ -231,6 +231,8 @@ public class SwerveModule extends BSwerveModule {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
+		
+		builder.addDoubleProperty("Error   : ", () -> motors.drive.getEncoderVelocity() - encoderVel, null);
 		builder.addDoubleProperty("Desired speed", () -> desiredState.speedMetersPerSecond, null);
 		builder.addDoubleProperty("Desired angle", desiredState.angle::getDegrees, null);
 		builder.addDoubleProperty("Current speed", this::getWheelSpeed, null);
