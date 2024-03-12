@@ -48,6 +48,7 @@ public class Constants {
 
 	public static final class Joystick {
 		public static final IJoystickId primaryJoystickId = () -> 0;
+		public static final IJoystickId secondaryJoystickId = () -> 1;
 		public static final int idCounterStart = 1000;
 		public static final double lt_rt_reshold = 0.2;
 	}
@@ -292,7 +293,7 @@ public class Constants {
 			}
 
 			private static void addCommonModuleConfigurarions() {
-				commonConfigurations.driveMotorTicksPerRotation = 2048.0;
+				commonConfigurations.driveMotorTicksPerRotation = 1;
 				commonConfigurations.rotationMotorTicksPerRotation = 47.691;
 				commonConfigurations.drivePID = new PidValues(0.029, 0, 0);
 				commonConfigurations.driveFeedForward = new FeedForwardValues(0.179, 0.270);

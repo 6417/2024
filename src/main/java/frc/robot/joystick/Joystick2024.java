@@ -25,6 +25,11 @@ public class Joystick2024 implements Sendable {
 	}
 
 	public void setup(State state) {
+		// JoystickHandler.getInstance().setJoystickFactory(XBoxOneController::new);
+		JoystickHandler.getInstance().init();
+		JoystickHandler.getInstance().setupJoysticks(List.of(
+				Constants.Joystick.secondaryJoystickId));
+
 		JoystickHandler.getInstance().setJoystickFactory(XBoxOneController::new);
 		JoystickHandler.getInstance().init(); // Don't ask, it works ;)
 		JoystickHandler.getInstance().setupJoysticks(List.of(
@@ -36,6 +41,7 @@ public class Joystick2024 implements Sendable {
 
 		// Create bindings //
 		JoystickHandler.getInstance().bindAll(JoystickBindings2024.getBindingsSwerve2024());
+		JoystickHandler.getInstance().bindAll(JoystickBindings2024.getBindingsLogitechTest());
 		JoystickHandler.getInstance().init();
 	}
 

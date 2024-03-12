@@ -35,12 +35,14 @@ public class JoystickBindings2024 {
 	public static List<Binding> getBindingsSwerve2024() {
 		tmp_bindings.clear();
 
-		// Drive
+
+		/// ---- Drive ---- ///
+
 		if (Controls.getControlMode() == Controls.ControlMode.CONVENTIONAL) {
-			quickBindToggle(XboxOne.lt,
+			quickBindToggle(POV.Lt,
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.FAST),
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
-			quickBindToggle(XboxOne.rt,
+			quickBindToggle(POV.Rt,
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW),
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
 		};
@@ -52,22 +54,23 @@ public class JoystickBindings2024 {
 			System.out.println("<<<[ Zeroed ]>>>");
 		}));
 
-		// TODO: make better CONFIG
+
+		/// ---- Logitech ---- ///
+
 		Config.active.getShooter().ifPresent(s -> {
-			quickBind(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBind(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
-			quickBind(XboxOne.x, s::stopMotors);
-			quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
+			quickBindS(Logitech.a, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBindS(Logitech.b, () -> s.shoot(ShooterConfig.AMP));
+			quickBindS(Logitech.x, s::stopMotors);
+			quickBindS(Logitech.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
-		// quickBind(XboxOne.lb, () -> SwervedriveAuto.getInstance().startCommand());
 
 		Config.active.getClimber().ifPresent(climber -> {
-			// quickBind(XboxOne.x, climber::stop);
+			quickBindS(Logitech.x, climber::stop);
 
-			quickBind(POV.DPadRight, climber::release);
-			quickBind(POV.DPadLeft, ((ClimberSubsystem) climber)::lockServos);
-			quickBind(POV.DPadUp, () -> climber.oneStepUp(0.03));
-			quickBind(POV.DPadDown, () -> climber.oneStepUp(-0.03));
+			quickBindS(POV.DPadRight, climber::release);
+			quickBindS(POV.DPadLeft, ((ClimberSubsystem) climber)::lockServos);
+			quickBindS(POV.DPadUp, () -> climber.oneStepUp(0.03));
+			quickBindS(POV.DPadDown, () -> climber.oneStepUp(-0.03));
 		});
 
 		return tmp_bindings;
@@ -127,40 +130,6 @@ public class JoystickBindings2024 {
 		return tmp_bindings;
 	}
 
-	public static List<Binding> getBindingsTankdriveLogitech() {
-		tmp_bindings.clear();
-		quickBindWhileHeld(Logitech.lt, () -> Controls.setActiveSpeedFactor(SpeedFactor.FAST));
-		quickBindWhileHeld(Logitech.rt, () -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW));
-
-		quickBind(Logitech.back, new InstantCommand(() -> FridoNavx.getInstance().reset())
-				.andThen(() -> System.out.println("<<<[zeroing]>>>")));
-
-		// TODO: make better CONFIG
-		// Config.active.getShooter().ifPresent(s -> {
-		// quickBind(Logitech.a, State.DEFAULT, () -> s.shoot(ShooterConfig.INTAKE));
-		// quickBind(Logitech.b, State.DEFAULT, () -> s.shoot(ShooterConfig.AMP));
-		// quickBind(Logitech.y, State.DEFAULT, () -> s.shoot(ShooterConfig.SPEAKER));
-		// quickBind(Logitech.x, State.DEFAULT, () -> s.setSpeedPercent(0));
-		// });
-
-		// Config.active.getClimber().ifPresent(climber -> {
-		// quickBind(Logitech.y, State.ENDGAME, climber::oneStepUp);
-		// quickBind(Logitech.a, State.ENDGAME, climber::oneStepDown);
-		// quickBind(Logitech.x, State.ENDGAME, climber::release);
-		// quickBind(Logitech.b, State.ENDGAME, climber::retract);
-		// });
-		//
-		// quickBind(Logitech.b, () ->
-		// Config.active.getClimber().get().getServo().setSpeed(-0.1));
-		// quickBind(Logitech.a, () ->
-		// Config.active.getClimber().get().getServo().setSpeed(0.1));
-		Config.active.getClimber().ifPresent(climber -> {
-			quickBind(Logitech.x, State.ENDGAME, climber::release);
-		});
-
-		return tmp_bindings;
-	}
-
 	// On single press
 	public static void quickBind(IJoystickButtonId button, State state, Runnable fn) {
 		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, IdsWithState.from(button),
@@ -196,6 +165,45 @@ public class JoystickBindings2024 {
 		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onTrue,
 				new InstantCommand(on)));
 		tmp_bindings.add(new Binding(Constants.Joystick.primaryJoystickId, button, Trigger::onFalse,
+				new InstantCommand(off)));
+	}
+
+	///----- For secondary joystick -----///
+	// On single press
+	public static void quickBindS(IJoystickButtonId button, State state, Runnable fn) {
+		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, IdsWithState.from(button),
+				Trigger::onTrue, new InstantCommand(fn)));
+	}
+
+	public static void quickBindS(IJoystickButtonId button, Runnable fn) {
+		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button,
+				Trigger::onTrue, new InstantCommand(fn)));
+	}
+
+	public static void quickBindS(IJoystickButtonId button, Command cmd) {
+		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button, Trigger::onTrue, cmd));
+	}
+
+	// While held
+	public static void quickBindWhileHeldS(IJoystickButtonId button, State state, Runnable fn) {
+		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, IdsWithState.from(button),
+				Trigger::whileTrue, new InstantCommand(fn)));
+	}
+
+	public static void quickBindWhileHeldS(IJoystickButtonId button, Runnable fn) {
+		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button,
+				Trigger::whileTrue, new InstantCommand(fn)));
+	}
+
+	public static void quickBindWhileHeldS(IJoystickButtonId button, Command cmd) {
+		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button, Trigger::whileTrue, cmd));
+	}
+
+	// Toggle
+	public static void quickBindToggleS(IJoystickButtonId button, Runnable on, Runnable off) {
+		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button, Trigger::onTrue,
+				new InstantCommand(on)));
+		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button, Trigger::onFalse,
 				new InstantCommand(off)));
 	}
 
