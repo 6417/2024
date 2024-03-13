@@ -63,7 +63,7 @@ public class CustomSwerveDrivePoseEstimator extends SwerveDrivePoseEstimator {
 		int target = Visionprocessing.getInstance().validTarget();
 		
 
-		if (target == 1) {
+		if (target == 1 && false) {
 			double[] visionPosition = Visionprocessing.getInstance().getFieldPos();
 			Pose2d pos = new Pose2d(visionPosition[0], visionPosition[1], gyroAngle);
 			double dist = get_dist_to_apriltag();

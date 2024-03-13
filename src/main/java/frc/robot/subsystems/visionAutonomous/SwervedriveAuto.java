@@ -41,7 +41,7 @@ public class SwervedriveAuto extends BAutoHandler {
 
     // guest values with alsow the constraints in the constants for the trajectory
     // generation
-    PIDController pid = new PIDController(0.1, 0, 0);//0.8, 0.01
+    PIDController pid = new PIDController(0.8, 0, 0);//0.8, 0.01
     private HolonomicDriveController controller = new HolonomicDriveController(
             pid, pid,
             new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(6.28, 3.14)));
@@ -69,19 +69,21 @@ public class SwervedriveAuto extends BAutoHandler {
     @Override
     public ChassisSpeeds getVelocitiesAtTimepoint(Trajectory tra, double t, Rotation2d endRot) {
         Trajectory.State goal = tra.sample(t);
-        Pose2d rp = Config.drive().getPos();
-        Pose2d relativPose2d = new Pose2d(rp.getX()+ (goal.poseMeters.getY() - rp.getY()), 
-        rp.getY() + (goal.poseMeters.getX() - rp.getX()), new Rotation2d(0));
-        speeds = controller.calculate(rp, relativPose2d, goal.velocityMetersPerSecond,  endRot);
+        //Pose2d rp = Config.drive().getPos();
+        //Pose2d relativPose2d = new Pose2d(rp.getX()+ (goal.poseMeters.getY() - rp.getY()), 
+        //rp.getY() + (goal.poseMeters.getX() - rp.getX()), new Rotation2d(0));
+        //speeds = controller.calculate(rp, relativPose2d, goal.velocityMetersPerSecond,  endRot);
+        speeds = controller.calculate(Config.drive().getPos(), goal, endRot);
         return speeds;
     }
 
     // alsow called by the command
     public ChassisSpeeds getVelocitiesToPose(Pose2d pose, Rotation2d endRot) {
-        Pose2d rp = Config.drive().getPos();
-        Pose2d relativRobotPose2d = new Pose2d(rp.getX() + (pose.getY() - rp.getY()),
-                rp.getY() + (pose.getX() - rp.getX()), new Rotation2d(0));
-        speeds = controller.calculate(rp, relativRobotPose2d, 0.0, endRot);
+        //Pose2d rp = Config.drive().getPos();
+        //Pose2d relativRobotPose2d = new Pose2d(rp.getX() + (pose.getY() - rp.getY()),
+                //rp.getY() + (pose.getX() - rp.getX()), new Rotation2d(0));
+        //speeds = controller.calculate(rp, relativRobotPose2d, 0.0, endRot);
+        speeds = controller.calculate(Config.drive().getPos(), pose, 0, endRot);
         return speeds;
     }
 
@@ -113,19 +115,19 @@ public class SwervedriveAuto extends BAutoHandler {
     public Command getAutoCommand() {
 
         Pose2d firstApriltag = new Pose2d(15, 5.5, new Rotation2d(0));
-        Pose2d test = new Pose2d(2, 0, new Rotation2d(0));
+        Pose2d test = new Pose2d(-1, -1, new Rotation2d(0));
         ArrayList<Translation2d> points = new ArrayList<>();
         // points.add(new Translation2d(1,-1));
 
         // test trajectorys
         Trajectory tra2 = getSwerveAutonomousTrj.getInstance().createTrajectory(firstApriltag, Type.abs);
-        Trajectory testtra = getSwerveAutonomousTrj.getInstance().createTrajectory(Config.drive().getPos(),
-                test, points, Type.futur_abs_with_waypoints);
+        Trajectory testtra = getSwerveAutonomousTrj.getInstance().createTrajectory(
+                test, Type.abs);
 
         SwervedriveAutoCommand command = new SwervedriveAutoCommand(testtra, new Rotation2d(0));
-        // return command;
+        //return command;
 
-        return Autonomous.getInstance().blueSpeakerToEnd1();
+        return Autonomous.getInstance().testPointdrive();
     }
 
     @Override
