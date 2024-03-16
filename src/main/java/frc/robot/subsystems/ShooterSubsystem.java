@@ -31,7 +31,6 @@ public class ShooterSubsystem extends BShooter {
 	private FridolinsMotor motorLeft;
 	private FridolinsMotor motorRight;
 	private FridolinsMotor motorFeeder;
-	private FridolinsMotor motorBrushes;
 
 	private double speedRpm = 5000.0;
 	private double shooterTargetSpeedRpm = 0;
@@ -99,7 +98,6 @@ public class ShooterSubsystem extends BShooter {
 		motorLeft = new FridoCanSparkMax(getData().motorIds.get(0), MotorType.kBrushless);
 		motorRight = new FridoCanSparkMax(getData().motorIds.get(1), MotorType.kBrushless);
 		motorFeeder = new FridoCanSparkMax(getData().motorIds.get(2), MotorType.kBrushless);
-		motorBrushes = new FridoCanSparkMax(getData().motorIds.get(3), MotorType.kBrushless);
 
 		motorLeft.configEncoder(FridoFeedBackDevice.kBuildin, 1);
 
@@ -182,14 +180,9 @@ public class ShooterSubsystem extends BShooter {
 	public void stopMotors() {
 		pidShooterEnabled = false;
 		pidFeederEnabled = false;
-		motorBrushes.stopMotor();
 		motorFeeder.stopMotor();
 		motorLeft.stopMotor();
 		motorRight.stopMotor();
-	}
-
-	private Command setSpeedBrushes(ShooterConfig config) {
-		return new InstantCommand(() -> motorBrushes.set(speedsMapBrushes.get(config.asInt())));
 	}
 
 	private Command setSpeedFeeder(ShooterConfig config) {
@@ -210,7 +203,6 @@ public class ShooterSubsystem extends BShooter {
 							return !pidShooterEnabled;
 						}
 					},
-					setSpeedBrushes(ShooterConfig.INTAKE),
 					setSpeedFeeder(ShooterConfig.INTAKE));
 		}
 	}
@@ -236,7 +228,6 @@ public class ShooterSubsystem extends BShooter {
 						}
 					},
 					new SequentialCommandGroup(
-							setSpeedBrushes(config),
 							new Command() {
 								@Override
 								public boolean isFinished() {
@@ -263,7 +254,6 @@ public class ShooterSubsystem extends BShooter {
 						}
 					},
 					new SequentialCommandGroup(
-							setSpeedBrushes(config),
 							// Wait for shooter to get to full speed
 							new Command() {
 								@Override
