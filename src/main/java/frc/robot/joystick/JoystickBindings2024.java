@@ -61,21 +61,21 @@ public class JoystickBindings2024 {
 		/// ---- Logitech ---- ///
 
 		// Switch States
-		quickBindS(Logitech.start, new InstantCommand(() -> {
+		quickBindS(XboxOne.start, new InstantCommand(() -> {
 			Joystick2024.getInstance().setState(State.ENDGAME);
 			System.out.println("<<<[ Endgame Activated ]>>>");
 		}));
 
 		Config.active.getLED().ifPresent(led -> {
-			quickBindS(Logitech.lb, new InstantCommand(() -> {
+			quickBindS(XboxOne.lb, new InstantCommand(() -> {
 				System.out.println("WHITE");
 				led.toggleContinuous(RGB.WHITE);
 			}));
-			quickBindS(Logitech.rt, new InstantCommand(() -> {
+			quickBindS(XboxOne.rt, new InstantCommand(() -> {
 				System.out.println("BULUDI");
 				led.setColor(RGB.BLUE);
 			}));
-			quickBindS(Logitech.lt, new InstantCommand(() -> {
+			quickBindS(XboxOne.lt, new InstantCommand(() -> {
 				System.out.println("RED");
 				// led.setColorFluid(RGB.RED);
 				led.setColor(RGB.RED);
@@ -84,15 +84,15 @@ public class JoystickBindings2024 {
 
 		// Shooter
 		Config.active.getShooter().ifPresent(s -> {
-			quickBindS(Logitech.a, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBindS(Logitech.b, () -> s.shoot(ShooterConfig.AMP));
-			quickBindS(Logitech.x, s::stopMotors);
-			quickBindS(Logitech.y, () -> s.shoot(ShooterConfig.SPEAKER));
+			quickBindS(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBindS(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
+			quickBindS(XboxOne.x, s::stopMotors);
+			quickBindS(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
 
 		// Climber
 		Config.active.getClimber().ifPresent(climber -> {
-			quickBindS(Logitech.x, climber::stop);
+			quickBindS(XboxOne.x, climber::stop);
 
 			quickBindS(POV.DPadRight, climber::release);
 			quickBindS(POV.DPadLeft, ((ClimberSubsystem) climber)::releaseServos);
