@@ -26,7 +26,9 @@ import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BClimber;
 import frc.robot.commands.drive.commands_2024.DriveCommand2024;
 import frc.robot.commands.tankdrive.DriveCommand;
+import frc.robot.joystick.IdsWithState;
 import frc.robot.joystick.Joystick2024;
+import frc.robot.joystick.IdsWithState.State;
 
 public class ClimberSubsystem extends BClimber {
 	private FridolinsMotor seilMotorLinks = new FridoCanSparkMax(Constants.Climber.seilZiehMotorLinks,
@@ -179,6 +181,10 @@ public class ClimberSubsystem extends BClimber {
 	}
 
 	private void setSpeed(double speed) {
+		if (IdsWithState.activeState != State.ENDGAME) {
+			System.err.println("Can't use climber: Not in ENDGAME'");
+			return;
+		}
 		speed = Math.max(speed, Constants.Climber.minimumAusfahrBereich);
 		seilMotorLinks.set(speed);
 		seilMotorRechts.set(speed);
