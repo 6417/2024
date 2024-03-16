@@ -105,6 +105,10 @@ public class ClimberSubsystem extends BClimber {
 
 	@Override
 	public void release() {
+		if (IdsWithState.activeState != State.ENDGAME) {
+			System.err.println("Can't release climber: Not in State.ENDGAME'");
+			return;
+		}
 		new SequentialCommandGroup(
 				QuickCmd.withInit(this::releaseServos),
 				new WaitCommand(1),
@@ -161,7 +165,7 @@ public class ClimberSubsystem extends BClimber {
 	public void stopMotors() {
 		seilMotorLinks.stopMotor();
 		seilMotorRechts.stopMotor();
-		speed = 0;
+		currentSpeed = 0;
 	}
 
 	@Override
@@ -172,22 +176,22 @@ public class ClimberSubsystem extends BClimber {
 		return new ClimberData(List.of(motorLeft, motorRight, servo));
 	}
 
-	double speed = 0;
+	double currentSpeed = 0;
 
 	@Override
 	public void oneStepUp(double speedAdditon) {
-		setSpeed(speed + speedAdditon);
-		System.out.println(speed);
+		setSpeed(currentSpeed + speedAdditon);
+		System.out.println(currentSpeed);
 	}
 
 	private void setSpeed(double speed) {
 		if (IdsWithState.activeState != State.ENDGAME) {
-			System.err.println("Can't use climber: Not in ENDGAME'");
+			System.err.println("Can't use climber: Not in State.ENDGAME'");
 			return;
 		}
-		speed = Math.max(speed, Constants.Climber.minimumAusfahrBereich);
-		seilMotorLinks.set(speed);
-		seilMotorRechts.set(speed);
+		currentSpeed = Math.max(speed, Constants.Climber.minimumAusfahrBereich);
+		seilMotorLinks.set(currentSpeed);
+		seilMotorRechts.set(currentSpeed);
 	}
 
 	@Override

@@ -61,21 +61,21 @@ public class JoystickBindings2024 {
 		/// ---- Logitech ---- ///
 
 		// Switch States
-		quickBindS(XboxOne.start, new InstantCommand(() -> {
+		quickBindSecondary(XboxOne.start, new InstantCommand(() -> {
 			Joystick2024.getInstance().setState(State.ENDGAME);
 			System.out.println("<<<[ Endgame Activated ]>>>");
 		}));
 
 		Config.active.getLED().ifPresent(led -> {
-			quickBindS(XboxOne.lb, new InstantCommand(() -> {
+			quickBindSecondary(XboxOne.lb, new InstantCommand(() -> {
 				System.out.println("WHITE");
 				led.toggleContinuous(RGB.WHITE);
 			}));
-			quickBindS(XboxOne.rt, new InstantCommand(() -> {
+			quickBindSecondary(XboxOne.rt, new InstantCommand(() -> {
 				System.out.println("BULUDI");
 				led.setColor(RGB.BLUE);
 			}));
-			quickBindS(XboxOne.lt, new InstantCommand(() -> {
+			quickBindSecondary(XboxOne.lt, new InstantCommand(() -> {
 				System.out.println("RED");
 				// led.setColorFluid(RGB.RED);
 				led.setColor(RGB.RED);
@@ -84,20 +84,24 @@ public class JoystickBindings2024 {
 
 		// Shooter
 		Config.active.getShooter().ifPresent(s -> {
-			quickBindS(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBindS(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
-			quickBindS(XboxOne.x, s::stopMotors);
-			quickBindS(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
+			quickBindSecondary(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBindSecondary(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
+			quickBindSecondary(XboxOne.x, s::stopMotors);
+			quickBindSecondary(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
 
 		// Climber
 		Config.active.getClimber().ifPresent(climber -> {
-			quickBindS(XboxOne.x, climber::stopMotors);
+			quickBindSecondary(XboxOne.x, climber::stopMotors);
 
-			quickBindS(POV.DPadRight, climber::release);
-			quickBindS(POV.DPadLeft, ((ClimberSubsystem) climber)::releaseServos);
-			quickBindS(POV.DPadUp, () -> climber.oneStepUp(-0.03));
-			quickBindS(POV.DPadDown, () -> climber.oneStepUp(0.03));
+			quickBindSecondary(POV.DPadRight, climber::release);
+			quickBindSecondary(POV.DPadLeft, () -> {
+				if (IdsWithState.activeState == State.ENDGAME) {
+					((ClimberSubsystem) climber).releaseServos();
+				}
+			});
+			quickBindSecondary(POV.DPadUp, () -> climber.oneStepUp(-0.03));
+			quickBindSecondary(POV.DPadDown, () -> climber.oneStepUp(0.03));
 		});
 
 		return tmp_bindings;
@@ -197,37 +201,37 @@ public class JoystickBindings2024 {
 
 	/// ----- For secondary joystick -----///
 	// On single press
-	public static void quickBindS(IJoystickButtonId button, State state, Runnable fn) {
+	public static void quickBindSecondary(IJoystickButtonId button, State state, Runnable fn) {
 		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, IdsWithState.create(button, state),
 				Trigger::onTrue, new InstantCommand(fn)));
 	}
 
-	public static void quickBindS(IJoystickButtonId button, Runnable fn) {
+	public static void quickBindSecondary(IJoystickButtonId button, Runnable fn) {
 		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button,
 				Trigger::onTrue, new InstantCommand(fn)));
 	}
 
-	public static void quickBindS(IJoystickButtonId button, Command cmd) {
+	public static void quickBindSecondary(IJoystickButtonId button, Command cmd) {
 		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button, Trigger::onTrue, cmd));
 	}
 
 	// While held
-	public static void quickBindWhileHeldS(IJoystickButtonId button, State state, Runnable fn) {
+	public static void quickBindWhileHeldSecondary(IJoystickButtonId button, State state, Runnable fn) {
 		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, IdsWithState.create(button, state),
 				Trigger::whileTrue, new InstantCommand(fn)));
 	}
 
-	public static void quickBindWhileHeldS(IJoystickButtonId button, Runnable fn) {
+	public static void quickBindWhileHeldSecondary(IJoystickButtonId button, Runnable fn) {
 		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button,
 				Trigger::whileTrue, new InstantCommand(fn)));
 	}
 
-	public static void quickBindWhileHeldS(IJoystickButtonId button, Command cmd) {
+	public static void quickBindWhileHeldSecondary(IJoystickButtonId button, Command cmd) {
 		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button, Trigger::whileTrue, cmd));
 	}
 
 	// Toggle
-	public static void quickBindToggleS(IJoystickButtonId button, Runnable on, Runnable off) {
+	public static void quickBindToggleSecondary(IJoystickButtonId button, Runnable on, Runnable off) {
 		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button, Trigger::onTrue,
 				new InstantCommand(on)));
 		tmp_bindings.add(new Binding(Constants.Joystick.secondaryJoystickId, button, Trigger::onFalse,
