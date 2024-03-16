@@ -81,11 +81,11 @@ public class DriveCommand2024 extends FridoCommand {
 		System.out.println(xy.toString() + rot);
 	}
 
-	private Vector2 applyDeadband(Vector2 xy, double deadBand) {
+	public static Vector2 applyDeadband(Vector2 xy, double deadBand) {
 		return xy.normalized().scaled(applyDeadband(xy.magnitude(), deadBand));
 	}
 
-	private double applyDeadband(double x, double deadBand) {
+	public static double applyDeadband(double x, double deadBand) {
 		return abs(x) < deadBand ? 0 : (abs(x) - deadBand) / (1 - deadBand) * signum(x);
 	}
 

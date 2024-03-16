@@ -92,12 +92,12 @@ public class JoystickBindings2024 {
 
 		// Climber
 		Config.active.getClimber().ifPresent(climber -> {
-			quickBindS(XboxOne.x, climber::stop);
+			quickBindS(XboxOne.x, climber::stopMotors);
 
 			quickBindS(POV.DPadRight, climber::release);
 			quickBindS(POV.DPadLeft, ((ClimberSubsystem) climber)::releaseServos);
-			quickBindS(POV.DPadUp, () -> climber.oneStepUp(0.03));
-			quickBindS(POV.DPadDown, () -> climber.oneStepUp(-0.03));
+			quickBindS(POV.DPadUp, () -> climber.oneStepUp(-0.03));
+			quickBindS(POV.DPadDown, () -> climber.oneStepUp(0.03));
 		});
 
 		return tmp_bindings;

@@ -1,7 +1,11 @@
 package frc.robot.subsystems;
 
+import static java.lang.Math.abs;
+
 import java.util.List;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -9,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.fridolib.QuickCmd;
 import frc.fridowpi.command.FridoCommand;
 import frc.fridowpi.command.SequentialCommandGroup;
+import frc.fridowpi.joystick.JoystickHandler;
 import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridoServoMotor;
 import frc.fridowpi.motors.FridolinsMotor;
@@ -19,6 +24,9 @@ import frc.fridowpi.motors.FridolinsMotor.PidType;
 import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BClimber;
+import frc.robot.commands.drive.commands_2024.DriveCommand2024;
+import frc.robot.commands.tankdrive.DriveCommand;
+import frc.robot.joystick.Joystick2024;
 
 public class ClimberSubsystem extends BClimber {
 	private FridolinsMotor seilMotorLinks = new FridoCanSparkMax(Constants.Climber.seilZiehMotorLinks,
@@ -49,6 +57,12 @@ public class ClimberSubsystem extends BClimber {
 		seilMotorLinks.setEncoderPosition(0);
 		seilMotorRechts.setEncoderPosition(0);
 
+		((CANSparkMax) seilMotorLinks).enableSoftLimit(SoftLimitDirection.kForward, true);
+		((CANSparkMax) seilMotorRechts).enableSoftLimit(SoftLimitDirection.kForward, true);
+
+		((CANSparkMax) seilMotorLinks).setSoftLimit(SoftLimitDirection.kForward, (float)Constants.Climber.maxExtentionEncoderTicks);
+		((CANSparkMax) seilMotorRechts).setSoftLimit(SoftLimitDirection.kForward, (float)Constants.Climber.maxExtentionEncoderTicks);
+
 		// seilMotorLinks.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen,
 		// true);
 		// seilMotorRechts.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen,
@@ -71,13 +85,19 @@ public class ClimberSubsystem extends BClimber {
 	public void run() {
 	}
 
+	double joystickDeadBand = 0.15;
+	boolean hasJoystickJustBeenUsed = false;
+
 	@Override
 	public void periodic() {
-		if (seilMotorLinks.getEncoderTicks() >= Constants.Climber.maxExtentionEncoderTicks) {
-			seilMotorLinks.stopMotor();
-		}
-		if (seilMotorRechts.getEncoderTicks() >= Constants.Climber.maxExtentionEncoderTicks) {
-			seilMotorRechts.stopMotor();
+		var y = JoystickHandler.getInstance().getJoystick(Constants.Joystick.secondaryJoystickId)
+				.getY();
+		if (Math.abs(y) > joystickDeadBand) {
+			setSpeed(DriveCommand2024.applyDeadband(y, joystickDeadBand));
+			hasJoystickJustBeenUsed = true;
+		} else if (hasJoystickJustBeenUsed) {
+			hasJoystickJustBeenUsed = false;
+			stopMotors();
 		}
 	}
 
@@ -154,9 +174,12 @@ public class ClimberSubsystem extends BClimber {
 
 	@Override
 	public void oneStepUp(double speedAdditon) {
-		speed += speedAdditon;
-		speed = Math.max(speed, 0);
+		setSpeed(speed + speedAdditon);
 		System.out.println(speed);
+	}
+
+	private void setSpeed(double speed) {
+		speed = Math.max(speed, Constants.Climber.minimumAusfahrBereich);
 		seilMotorLinks.set(speed);
 		seilMotorRechts.set(speed);
 	}

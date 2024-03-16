@@ -25,7 +25,7 @@ public class Joystick2024 implements Sendable {
 	}
 
 	public void setup(State state) {
-		JoystickHandler.getInstance().setJoystickFactory(LogitechWithState::new);
+		JoystickHandler.getInstance().setJoystickFactory(XBoxOneController::new);
 		JoystickHandler.getInstance().setupJoysticks(List.of(
 				Constants.Joystick.secondaryJoystickId));
 		JoystickHandler.getInstance().init();

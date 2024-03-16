@@ -66,6 +66,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		// Config.drive().setIdleMode(IdleMode.kCoast);
-		Config.active.getClimber().ifPresent(c -> c.stop());
+		Config.active.getClimber().ifPresent(c -> c.stopMotors());
 	}
 }

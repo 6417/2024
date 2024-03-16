@@ -16,5 +16,5 @@ public interface IClimber extends IModule {
 
 	public void oneStepUp(double speed);
 
-	public void stop();
+	public void stopMotors();
 }
