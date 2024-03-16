@@ -299,7 +299,6 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public void end(boolean interrupted) {
-			log("<<ShooterSubsytem>> ShooterMotors on full speed");
 			stopMotors();
 			pidShooterEnabled = false;
 		}
@@ -335,7 +334,6 @@ public class ShooterSubsystem extends BShooter {
 
 		@Override
 		public void end(boolean interrupted) {
-			log("<<FeederSubsytem>> FeederMotors on full speed");
 			stopMotors();
 			pidShooterEnabled = false;
 		}
@@ -382,5 +380,8 @@ public class ShooterSubsystem extends BShooter {
 				() -> speedsMapFeeder.get(ShooterConfig.AMP.asInt()),
 				val -> speedsMapFeeder.set(ShooterConfig.AMP.asInt(), val));
 		builder.addDoubleProperty("Left Speed", motorLeft::getEncoderVelocity, null);
+
+		builder.addBooleanProperty("Invert shooter motor 20", () -> motorLeft.getInverted(),
+				val -> motorLeft.setInverted(motorLeft.getInverted()));
 	}
 }

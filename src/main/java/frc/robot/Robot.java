@@ -39,6 +39,7 @@ public class Robot extends TimedRobot {
         Config.active.getShooter().ifPresent(shooter -> Shuffleboard.getTab("Shooter").add(shooter));
 		Config.active.getAuto().ifPresent(auto -> Shuffleboard.getTab("Auto").add(auto));
         Shuffleboard.getTab("Debug").add(CommandScheduler.getInstance());
+        Config.active.getClimber().ifPresent(c -> Shuffleboard.getTab("Climber").add(c));
 
         SignalLogger.setPath("/home/lvuser/logs");
 

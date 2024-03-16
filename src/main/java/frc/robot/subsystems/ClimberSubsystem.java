@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.fridolib.QuickCmd;
 import frc.fridowpi.command.FridoCommand;
@@ -12,8 +13,8 @@ import frc.fridowpi.motors.FridoCanSparkMax;
 import frc.fridowpi.motors.FridoServoMotor;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
+import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
-import frc.fridowpi.motors.FridolinsMotor.LimitSwitchPolarity;
 import frc.fridowpi.motors.FridolinsMotor.PidType;
 import frc.robot.Config;
 import frc.robot.Constants;
@@ -42,6 +43,12 @@ public class ClimberSubsystem extends BClimber {
 		seilMotorLinks.setPID(Constants.Climber.pidValuesSlot0);
 		seilMotorRechts.setPID(Constants.Climber.pidValuesSlot0);
 
+		seilMotorLinks.configEncoder(FridoFeedBackDevice.kBuildin, 1);
+		seilMotorRechts.configEncoder(FridoFeedBackDevice.kBuildin, 1);
+
+		seilMotorLinks.setEncoderPosition(0);
+		seilMotorRechts.setEncoderPosition(0);
+
 		// seilMotorLinks.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen,
 		// true);
 		// seilMotorRechts.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen,
@@ -62,6 +69,16 @@ public class ClimberSubsystem extends BClimber {
 
 	@Override
 	public void run() {
+	}
+
+	@Override
+	public void periodic() {
+		if (seilMotorLinks.getEncoderTicks() >= Constants.Climber.maxExtentionEncoderTicks) {
+			seilMotorLinks.stopMotor();
+		}
+		if (seilMotorRechts.getEncoderTicks() >= Constants.Climber.maxExtentionEncoderTicks) {
+			seilMotorRechts.stopMotor();
+		}
 	}
 
 	@Override
@@ -92,8 +109,8 @@ public class ClimberSubsystem extends BClimber {
 		private double target;
 
 		public ClimberPid(ClimberSubsystem subsystem, double target) {
-			if (target > Constants.Climber.ausfahrBereich) {
-				target = Constants.Climber.ausfahrBereich;
+			if (target > Constants.Climber.maxExtentionEncoderTicks) {
+				target = Constants.Climber.maxExtentionEncoderTicks;
 				System.err.println("<ClimberSubsystem::ClimberPid> ausfahrBereich ueberschritten");
 			}
 			if (target < Constants.Climber.minimumAusfahrBereich) {
@@ -119,7 +136,7 @@ public class ClimberSubsystem extends BClimber {
 	}
 
 	@Override
-	public void stop() {
+	public void stopMotors() {
 		seilMotorLinks.stopMotor();
 		seilMotorRechts.stopMotor();
 		speed = 0;
@@ -152,5 +169,10 @@ public class ClimberSubsystem extends BClimber {
 	@Override
 	public FridoServoMotor getServoRight() {
 		return servoRechts;
+	}
+
+	@Override
+	public void initSendable(SendableBuilder builder) {
+		builder.addDoubleProperty("Encoder ticks", seilMotorRechts::getEncoderTicks, null);
 	}
 }
