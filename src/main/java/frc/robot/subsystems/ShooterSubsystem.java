@@ -10,6 +10,8 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -22,6 +24,7 @@ import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.DirectionType;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
+import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.abstraction.baseClasses.BShooter;
 
@@ -203,7 +206,37 @@ public class ShooterSubsystem extends BShooter {
 							return !pidShooterEnabled;
 						}
 					},
-					setSpeedFeeder(ShooterConfig.INTAKE));
+					setSpeedFeeder(ShooterConfig.INTAKE),
+					new Command() {
+						boolean ledAlreadyOn;
+
+						@Override
+						public void initialize() {
+							ledAlreadyOn = false;
+						}
+
+						@Override
+						public void execute() {
+							if (!ledAlreadyOn && shooterAtTargetSpeed()) {
+								ledAlreadyOn = true;
+								Config.active.getLED().ifPresent(
+										led -> led.setColor(LED.RGB.GREEN));
+							}
+						}
+
+						@Override
+						public void end(boolean interrupted) {
+							Config.active.getLED().ifPresent(
+									led -> led
+											.setColor(DriverStation.getAlliance().get() == Alliance.Blue ? LED.RGB.BLUE
+													: LED.RGB.RED));
+						}
+
+						@Override
+						public boolean isFinished() {
+							return !pidShooterEnabled;
+						}
+					});
 		}
 	}
 
@@ -382,6 +415,6 @@ public class ShooterSubsystem extends BShooter {
 		builder.addDoubleProperty("Left Speed", motorLeft::getEncoderVelocity, null);
 
 		builder.addBooleanProperty("Invert shooter motor 20", () -> motorLeft.getInverted(),
-				val -> motorLeft.setInverted(motorLeft.getInverted()));
+				val -> motorLeft.setInverted(!motorLeft.getInverted()));
 	}
 }
