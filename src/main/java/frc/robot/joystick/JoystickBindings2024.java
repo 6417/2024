@@ -69,10 +69,6 @@ public class JoystickBindings2024 {
 		}));
 
 		Config.active.getLED().ifPresent(led -> {
-			quickBindSecondary(XboxOne.lb, new InstantCommand(() -> {
-				System.out.println("WHITE");
-				led.toggleContinuous(RGB.WHITE);
-			}));
 			quickBindSecondary(XboxOne.rt, new InstantCommand(() -> {
 				System.out.println("BULUDI");
 				led.setColor(RGB.BLUE);

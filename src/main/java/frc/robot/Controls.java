@@ -11,6 +11,7 @@ import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
  * either to the entire program or get exported to the shuffleboard
  */
 public class Controls extends Module {
+	public static final Controls instance = new Controls();
 
 	public static enum ControlMode {
 		CONVENTIONAL,
@@ -22,6 +23,7 @@ public class Controls extends Module {
 			SpeedFactor.FAST, 1.0,
 			SpeedFactor.SLOW, 0.2);
 	private static SpeedFactor activeSpeedFactor = SpeedFactor.DEFAULT_SPEED;
+	private static double accelerationSensitivity = speedFactors.get(activeSpeedFactor);
 	private static double deadBandDrive = 0.08;
 	private static double deadBandTurn = 0.08;
 	private static boolean inputsSquared = false;
@@ -29,12 +31,12 @@ public class Controls extends Module {
 	private static boolean slewRateLimited = false;
 	private static double slewRateLimit = 0.08;
 
-	private static double accelerationSensitivity = speedFactors.get(activeSpeedFactor);
 	private static double turnSensitivity = 0.08;
 	private static ControlMode controlMode = ControlMode.CONVENTIONAL;
 
 	public static void setActiveSpeedFactor(SpeedFactor speedFactor) {
 		activeSpeedFactor = speedFactor;
+		accelerationSensitivity = speedFactors.get(speedFactor);
 	}
 
 	// Getters and setters
@@ -128,5 +130,8 @@ public class Controls extends Module {
 				val -> speedFactors.put(SpeedFactor.SLOW, val));
 		builder.addDoubleProperty("fastSpeedFactor", () -> speedFactors.get(SpeedFactor.FAST),
 				val -> speedFactors.put(SpeedFactor.FAST, val));
+
+		builder.addBooleanProperty("SlewRateLimiter", () -> Controls.isSlewRateLimited(), val -> Controls.setSlewRateLimited(val));
+		builder.addBooleanProperty("SquareInputs", () -> Controls.isInputsSquared(), val -> Controls.setInputsSquared(val));
 	}
 }

@@ -78,8 +78,9 @@ public class LED extends Module {
 			timerTmp.stop();
 		}
 		timerTmp = new Timer(100, e -> {
-			buffer.setRGB(iContinuous++, color.r, color.g, color.b);
+			buffer.setRGB(iTmp++, color.r, color.g, color.b);
 			led.setData(buffer);
+			// if (iTmp > )S
 		});
 		timerTmp.start();
 	}
@@ -91,7 +92,8 @@ public class LED extends Module {
 			iTmp %= buffer.getLength();
 		});
 		timerContinuous2 = new Timer(100, e -> {
-			buffer.setRGB(iContinuous++ - 5, color.r, color.g, color.b);
+			buffer.setRGB(iContinuous - 5, color.r, color.g, color.b);
+			iContinuous ++;
 			led.setData(buffer);
 			iContinuous %= buffer.getLength();
 		});

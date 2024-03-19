@@ -36,6 +36,7 @@ public class Robot extends TimedRobot {
 		Joystick2024.getInstance().setup(State.DEFAULT);
 
         // Shuffleboard //
+		Shuffleboard.getTab("Controls").add(Controls.instance);
         Shuffleboard.getTab("Drive").add(Config.drive());
         Shuffleboard.getTab("Drive").add(Config.drive().getDefaultCommand());
         Shuffleboard.getTab("Joystick").add("joystick", Joystick2024.getInstance());
@@ -63,7 +64,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-		((ShooterSubsystem) Config.active.getShooter().get()).shoot(ShooterConfig.SPEAKER);
+		((ShooterSubsystem) Config.active.getShooter().get()).shoot(ShooterConfig.AMP);
 		Config.drive().setIdleMode(IdleMode.kBrake);
 	}
 
