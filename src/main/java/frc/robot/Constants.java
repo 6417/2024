@@ -252,6 +252,8 @@ public class Constants {
 
 	public static final class SwerveDrive {
 
+		public static final double navxPitchOffset = 90;
+
 		public static final class Swerve2024 {
 
 			public static final double gearRatio = 1 / 5.192308;

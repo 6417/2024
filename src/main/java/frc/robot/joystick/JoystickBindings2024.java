@@ -41,24 +41,27 @@ public class JoystickBindings2024 {
 		if (Controls.getControlMode() == Controls.ControlMode.CONVENTIONAL) {
 			quickBindToggle(POV.Lt,
 					() -> {
-						System.out.println("Working");
+						System.out.println("FAST mode");
 						Controls.setActiveSpeedFactor(SpeedFactor.FAST);
 					},
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
 			quickBindToggle(POV.Rt,
-					() -> Controls.setActiveSpeedFactor(SpeedFactor.SLOW),
+					() -> {
+						System.out.println("SLOW mode");
+						Controls.setActiveSpeedFactor(SpeedFactor.SLOW);
+					},
 					() -> Controls.setActiveSpeedFactor(SpeedFactor.DEFAULT_SPEED));
-		}
-		;
+		};
 
 		quickBind(XboxOne.back, new InstantCommand(() -> {
 			FridoNavx.getInstance().reset();
-			FridoNavx.setPitchOffset(90);
+			// FridoNavx.setPitchOffset(Constants.SwerveDrive.navxPitchOffset);
 			Config.drive().resetOdometry();
 			System.out.println("<<<[ Zeroed ]>>>");
 		}));
 
-		/// ---- Logitech ---- ///
+
+		/// ---- Secondary Controller ---- ///
 
 		// Switch States
 		quickBindSecondary(XboxOne.start, new InstantCommand(() -> {
@@ -90,7 +93,7 @@ public class JoystickBindings2024 {
 			quickBindSecondary(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
 
-		// Climber
+		// Climber (Only works in State.ENDGAME)
 		Config.active.getClimber().ifPresent(climber -> {
 			quickBindSecondary(XboxOne.x, climber::stopMotors);
 

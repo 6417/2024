@@ -1,6 +1,9 @@
 package frc.robot.commands.drive.commands_2024;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.signum;
 
@@ -11,6 +14,7 @@ import frc.fridowpi.command.FridoCommand;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.fridowpi.utils.Vector2;
 import frc.robot.Config;
+import frc.robot.Constants;
 import frc.robot.Controls;
 import frc.robot.joystick.Joystick2024;
 
@@ -32,13 +36,16 @@ public class DriveCommand2024 extends FridoCommand {
 	@Override
 	public void execute() {
 		var speed = abs(Config.drive().getSwerveWheelSpeeds().in(MetersPerSecond));
-		if (speed > maxSpeed) {
+		if (speed > Constants.SwerveDrive.Swerve2024.maxVelocity.in(MetersPerSecond) && speed > maxSpeed) {
 			maxSpeed = speed;
 			System.out.println("MaxSpeed: " + speed);
 		}
 
+		var pitchOffsetRadians = Radians.convertFrom(Constants.SwerveDrive.navxPitchOffset, Degrees);
+
 		var joystick = Joystick2024.getInstance().getPrimaryJoystick();
 		var xy = new Vector2(joystick.getX(), joystick.getY());
+		xy = Vector2.fromRadians(xy.getAngleAsRadians() + pitchOffsetRadians).withLength(xy.magnitude()); // Turn
 		var rot = -joystick.getTwist();
 
 		if (Controls.getControlMode() == Controls.ControlMode.SEPARATE_ACCELERATION) {
