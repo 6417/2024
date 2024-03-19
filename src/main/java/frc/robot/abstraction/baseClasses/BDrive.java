@@ -70,6 +70,5 @@ public abstract class BDrive extends Module implements IDrive {
 	public Measure<Velocity<Distance>> percent2driveVelocity(double x) {
 		return Config.data().auto().maxVelocity().times(x);
 	}
-
 }
 

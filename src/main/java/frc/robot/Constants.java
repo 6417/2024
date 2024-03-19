@@ -252,7 +252,7 @@ public class Constants {
 
 	public static final class SwerveDrive {
 
-		public static final double navxPitchOffset = 90;
+		public static double navxPitchOffset = -180;
 
 		public static final class Swerve2024 {
 

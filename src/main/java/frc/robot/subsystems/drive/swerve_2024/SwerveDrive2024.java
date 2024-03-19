@@ -212,6 +212,13 @@ public class SwerveDrive2024 extends BSwerveDrive {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-		/* Controls in Controls */
+		builder.addBooleanProperty("Invert drive orientation",
+		() -> Constants.SwerveDrive.navxPitchOffset == 180, val -> {
+			if (Constants.SwerveDrive.navxPitchOffset == 180) {
+				Constants.SwerveDrive.navxPitchOffset = 0;
+			} else {
+				Constants.SwerveDrive.navxPitchOffset = 180;
+			}
+		});
 	}
 }
