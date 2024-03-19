@@ -7,3 +7,14 @@
 - [ ] Test Other RobotPresets
     - [ ] Empty
     - [ ] Without climber and shooter
+
+
+
+## Pre-Match checklist
+
+- Robot front is front??
+- Charged:
+    - Laptop
+    - Robot battery
+- Joysticks correctly plugged in?
+- Driverstation correct?

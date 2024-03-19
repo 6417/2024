@@ -43,7 +43,6 @@ public class DriveCommand2024 extends FridoCommand {
 
 		if (Controls.getControlMode() == Controls.ControlMode.SEPARATE_ACCELERATION) {
 			xy = xy.normalized().scaled(joystick.getZ());
-			System.out.println("Z: " + joystick.getZ());
 		}
 
 		// Brake if input is 0
@@ -78,7 +77,7 @@ public class DriveCommand2024 extends FridoCommand {
 		rot = Config.drive().percent2rotationVelocityDouble(rot);
 
 		setChassisSpeeds(xy, rot);
-		System.out.println(xy.toString() + rot);
+		// System.out.println(xy.toString() + rot);
 	}
 
 	public static Vector2 applyDeadband(Vector2 xy, double deadBand) {
