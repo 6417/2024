@@ -13,7 +13,10 @@ import frc.fridowpi.motors.FridolinsMotor.IdleMode;
 import frc.fridowpi.sensors.FridoNavx;
 import frc.robot.abstraction.baseClasses.BDrive.DriveOrientation;
 import frc.robot.joystick.IdsWithState.State;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.LED.RGB;
+import frc.robot.subsystems.ShooterSubsystem.ShooterConfig;
+import frc.robot.subsystems.visionAutonomous.SwervedriveAuto;
 import frc.robot.joystick.Joystick2024;
 
 public class Robot extends TimedRobot {
@@ -60,6 +63,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
+		((ShooterSubsystem) Config.active.getShooter().get()).shoot(ShooterConfig.SPEAKER);
 		Config.drive().setIdleMode(IdleMode.kBrake);
 	}
 
