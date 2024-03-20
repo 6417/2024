@@ -109,6 +109,7 @@ public class ShooterSubsystem extends BShooter {
 		motorFeeder.factoryDefault();
 
 		motorLeft.setInverted(true);
+		motorRight.setInverted(true);
 		motorRight.follow(motorLeft, DirectionType.invertMaster);
 
 		motorFeeder.setInverted(true);

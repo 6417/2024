@@ -69,14 +69,23 @@ public class JoystickBindings2024 {
 		}));
 
 		Config.active.getLED().ifPresent(led -> {
-			quickBindSecondary(XboxOne.rt, new InstantCommand(() -> {
+			quickBindSecondary(POV.Rt, new InstantCommand(() -> {
 				System.out.println("BULUDI");
 				led.setColor(RGB.BLUE);
 			}));
-			quickBindSecondary(XboxOne.lt, new InstantCommand(() -> {
+			quickBindSecondary(POV.Lt, new InstantCommand(() -> {
 				System.out.println("RED");
 				// led.setColorFluid(RGB.RED);
 				led.setColor(RGB.RED);
+			}));
+
+			quickBindSecondary(XboxOne.lb, new InstantCommand(() -> {
+				System.out.println("v1");
+				led.setColorFluid(RGB.YELLOW);
+			}));
+			quickBindSecondary(XboxOne.rb, new InstantCommand(() -> {
+				System.out.println("v2");
+				led.setColorContinuous(RGB.WHITE);
 			}));
 		});
 

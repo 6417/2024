@@ -352,7 +352,7 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontLeftConfig = commonConfigurations
 						.clone();
-				frontLeftConfig.absoluteEncoderZeroPosition = 0.839;
+				frontLeftConfig.absoluteEncoderZeroPosition = 0.2170 + 0.5;
 				// frontLeftConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[0];
 				frontLeftConfig.mountingPoint = new Translation2d(-xOffset, yOffset);
 				frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(1);
@@ -363,7 +363,7 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontRightConfig = commonConfigurations
 						.clone();
-				frontRightConfig.absoluteEncoderZeroPosition = 0.204;
+				frontRightConfig.absoluteEncoderZeroPosition = 0.1973;
 				// frontLeftConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[1];
 				frontRightConfig.mountingPoint = new Translation2d(-xOffset, -yOffset);
 				frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(2);
@@ -374,7 +374,7 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backLeftConfig = commonConfigurations
 						.clone();
-				backLeftConfig.absoluteEncoderZeroPosition = 0.457;
+				backLeftConfig.absoluteEncoderZeroPosition = 0.9594-0.5;
 				// frontLeftConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[2];
 				backLeftConfig.mountingPoint = new Translation2d(xOffset, yOffset);
 				backLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(3);
@@ -385,7 +385,7 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config backRightConfig = commonConfigurations
 						.clone();
-				backRightConfig.absoluteEncoderZeroPosition = 0.107;
+				backRightConfig.absoluteEncoderZeroPosition = 0.4776;
 				backRightConfig.mountingPoint = new Translation2d(xOffset, -yOffset);
 				backRightConfig.driveMotorInitializer = () -> driveMotorInitializer(4);
 				backRightConfig.rotationMotorInitializer = () -> angleMotorInitializer(14, MotorType.kBrushless);

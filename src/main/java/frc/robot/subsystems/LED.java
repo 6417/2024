@@ -86,10 +86,16 @@ public class LED extends Module {
 	}
 
 	public void setColorContinuous(RGB color) {
+		if (timerContinuous1 != null) {
+			timerContinuous1.stop();
+		}
+		if (timerContinuous2 != null) {
+			timerContinuous2.stop();
+		}
 		timerContinuous1 = new Timer(100, e -> {
-			buffer.setRGB(iTmp, color.r, color.g, color.b);
+			buffer.setRGB(iContinuous, color.r, color.g, color.b);
 			led.setData(buffer);
-			iTmp %= buffer.getLength();
+			iContinuous %= buffer.getLength();
 		});
 		timerContinuous2 = new Timer(100, e -> {
 			buffer.setRGB(iContinuous - 5, color.r, color.g, color.b);
