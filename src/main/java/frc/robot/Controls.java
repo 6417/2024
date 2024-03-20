@@ -29,7 +29,7 @@ public class Controls extends Module {
 	private static boolean inputsSquared = false;
 
 	private static boolean slewRateLimited = true;
-	private static double slewRateLimit = 0.1;
+	private static double slewRateLimit = 2.0;
 
 	private static double turnSensitivity = 0.08;
 	private static ControlMode controlMode = ControlMode.CONVENTIONAL;
@@ -130,6 +130,7 @@ public class Controls extends Module {
 				val -> speedFactors.put(SpeedFactor.SLOW, val));
 		builder.addDoubleProperty("fastSpeedFactor", () -> speedFactors.get(SpeedFactor.FAST),
 				val -> speedFactors.put(SpeedFactor.FAST, val));
+		builder.addDoubleProperty("Current Speed Factor", () -> accelerationSensitivity, null);
 
 		builder.addBooleanProperty("SlewRateLimiter", () -> Controls.isSlewRateLimited(), val -> Controls.setSlewRateLimited(val));
 		builder.addBooleanProperty("SquareInputs", () -> Controls.isInputsSquared(), val -> Controls.setInputsSquared(val));
