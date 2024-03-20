@@ -58,13 +58,12 @@ public class CustomSwerveDrivePoseEstimator extends SwerveDrivePoseEstimator {
 	public void update() {
 		Rotation2d gyroAngle = FridoNavx.getInstance().getRotation2d();
 		gyroAngle = new Rotation2d(-gyroAngle.getRadians());
-		SwerveModulePosition[] modules = Config.drive().getModulePositions();
-		SwerveModulePosition[] newmodules = {modules[1], modules[2], modules[3], modules[0]};
-		updateWithTime(timer.get(), gyroAngle, newmodules);
+		updateWithTime(timer.get(), gyroAngle, Config.drive().getModulePositions());
 
 		int target = Visionprocessing.getInstance().validTarget();
+		
 
-		if (target == 1) {
+		if (target == 1 && false) {
 			double[] visionPosition = Visionprocessing.getInstance().getFieldPos();
 			Pose2d pos = new Pose2d(visionPosition[0], visionPosition[1], gyroAngle);
 			double dist = get_dist_to_apriltag();
@@ -84,5 +83,6 @@ public class CustomSwerveDrivePoseEstimator extends SwerveDrivePoseEstimator {
 
 	public Pose2d getEstimatedPosition() {
 		return super.getEstimatedPosition();
+			//return new Pose2d(p.getX(), 8.21- p.getY(), p.getRotation());
 	}
 }

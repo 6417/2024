@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Config;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShootAmp;
 import frc.robot.subsystems.drive.getSwerveAutonomousTrj;
 import frc.robot.subsystems.drive.getSwerveAutonomousTrj.Type;
 
@@ -40,6 +42,13 @@ public class Autonomous extends SubsystemBase {
 
     ArrayList<Translation2d> emptylsit = new ArrayList<>();
 
+    private Command shootAmpCommand() {
+        return ((ShooterSubsystem) Config.active.getShooter().get()).new ShootAmp();
+    }
+
+    private Command shootSpeakerCommand() {
+        return ((ShooterSubsystem) Config.active.getShooter().get()).new ShootSpeaker();
+    }
 
     public Command followPath(Pose2d start, Pose2d end, ArrayList<Translation2d> list, Rotation2d endRot) {
         Trajectory first_trajectory = getSwerveAutonomousTrj.getInstance()
@@ -52,17 +61,17 @@ public class Autonomous extends SubsystemBase {
     }
 
     public Command testPointdrive(){
-        return driveToPoint(bluespeaker, blueend1, emptylsit, new Rotation2d(0));
+        return new SequentialCommandGroup(shootSpeakerCommand(),
+        driveToPoint(Config.drive().getPos(), new Pose2d(-2,1, new Rotation2d(0)), emptylsit, new Rotation2d(0)));
     }
     
     public Command blueSpeakerToEnd1() {
         return new SequentialCommandGroup(
-            //new ShootSpekerCommand(),
             followPath(bluespeaker, blueend1, emptylsit, blueend1.getRotation()));}
 
     public Command blueSpeakerToEnd2(){
         return new SequentialCommandGroup(
-            //new ShooterSpeakerCommand(),
+            
             followPath(bluespeaker, blueend2, emptylsit, blueend2.getRotation()));}
 
     public Command blueAmpToEnd1(){
