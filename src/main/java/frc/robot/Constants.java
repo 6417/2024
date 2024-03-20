@@ -70,8 +70,8 @@ public class Constants {
 		public static final double feedAmpSpeed = 0.078;
 		public static final double brushesAmpSpeed = 0.2;
 
-		public static final double shooterSpeakerSpeed = 0.7;
-		public static final double feedSpeakerSpeed = 0.7;
+		public static final double shooterSpeakerSpeed = 0.8;
+		public static final double feedSpeakerSpeed = 0.8;
 		public static final double brushesSpeakerSpeed = 0;
 
 		public static final PidValues velocityPidShooter = new PidValues(0.0005, 0.0, 0.0);
@@ -252,7 +252,7 @@ public class Constants {
 
 	public static final class SwerveDrive {
 
-		public static double navxPitchOffset = -180;
+		public static double navxPitchOffset = -90;
 
 		public static final class Swerve2024 {
 

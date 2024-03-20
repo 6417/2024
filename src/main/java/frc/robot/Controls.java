@@ -133,6 +133,7 @@ public class Controls extends Module {
 		builder.addDoubleProperty("Current Speed Factor", () -> accelerationSensitivity, null);
 
 		builder.addBooleanProperty("SlewRateLimiter", () -> Controls.isSlewRateLimited(), val -> Controls.setSlewRateLimited(val));
+		builder.addDoubleProperty("SlewRate Limit", ()-> slewRateLimit, null);
 		builder.addBooleanProperty("SquareInputs", () -> Controls.isInputsSquared(), val -> Controls.setInputsSquared(val));
 	}
 }

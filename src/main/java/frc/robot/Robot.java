@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 
 		FridoNavx.setup(SPI.Port.kMXP);
-		// FridoNavx.setPitchOffset(Constants.SwerveDrive.navxPitchOffset);
+		FridoNavx.setYawOffset(Constants.SwerveDrive.navxPitchOffset);
 
 		Config.active.initAll();
 
