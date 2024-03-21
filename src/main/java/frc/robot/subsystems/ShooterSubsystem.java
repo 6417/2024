@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +42,7 @@ public class ShooterSubsystem extends BShooter {
 	public List<Double> speedsMapShooter;
 	public List<Double> speedsMapFeeder;
 	public List<Double> speedsMapBrushes;
+	private DigitalInput ringSensor;
 
 	private final PIDController pid = new PIDController(0.0005, 0.0001, 0.0);
 	private final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.081, 0.0020075);
@@ -80,6 +82,8 @@ public class ShooterSubsystem extends BShooter {
 		speedsMapShooter = getData().speeds.subList(0, 3);
 		speedsMapFeeder = getData().speeds.subList(3, 6);
 		speedsMapBrushes = getData().speeds.subList(6, 9);
+
+		ringSensor = new DigitalInput(0);
 
 		assert speedsMapShooter == List.of(
 				Constants.Shooter.shooterIntakeSpeed,
@@ -417,5 +421,7 @@ public class ShooterSubsystem extends BShooter {
 
 		builder.addBooleanProperty("Invert shooter motor 20", () -> motorLeft.getInverted(),
 				val -> motorLeft.setInverted(!motorLeft.getInverted()));
+
+		builder.addBooleanProperty("Ring Sensor", () -> !ringSensor.get(), null);
 	}
 }
