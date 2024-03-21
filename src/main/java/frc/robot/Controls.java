@@ -29,7 +29,7 @@ public class Controls extends Module {
 	private static boolean inputsSquared = false;
 
 	private static boolean slewRateLimited = true;
-	private static double slewRateLimit = 2.0;
+	private static double slewRateLimit = 1.0;
 
 	private static double turnSensitivity = 0.08;
 	private static ControlMode controlMode = ControlMode.CONVENTIONAL;
