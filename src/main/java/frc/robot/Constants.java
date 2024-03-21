@@ -252,7 +252,7 @@ public class Constants {
 
 	public static final class SwerveDrive {
 
-		public static double navxPitchOffset = -90;
+		public static double navxPitchOffset = 90;
 
 		public static final class Swerve2024 {
 
@@ -352,7 +352,7 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontLeftConfig = commonConfigurations
 						.clone();
-				frontLeftConfig.absoluteEncoderZeroPosition = 0.2170 + 0.5;
+				frontLeftConfig.absoluteEncoderZeroPosition = 0.1532;
 				// frontLeftConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[0];
 				frontLeftConfig.mountingPoint = new Translation2d(-xOffset, yOffset);
 				frontLeftConfig.driveMotorInitializer = () -> driveMotorInitializer(1);

@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.fridowpi.motors.FridoFalcon500;
+import frc.fridowpi.motors.FridoFalcon500v6;
 import frc.fridowpi.motors.FridolinsMotor;
 import frc.fridowpi.motors.FridolinsMotor.FridoFeedBackDevice;
 import frc.fridowpi.motors.FridolinsMotor.IdleMode;
@@ -86,11 +88,17 @@ public class SwerveModule implements Sendable {
             this.rotation.enableForwardLimitSwitch(limitSwitchPolarity, true);
             this.drive.setIdleMode(IdleMode.kBrake);
             this.rotation.setIdleMode(IdleMode.kBrake);
-            ((FridoFalcon500) this.drive).configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 55, 0.1));
-            //((FridoFalcon500) this.rotation).configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 55, 0.1));
-            ((FridoFalcon500) this.drive).configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 50, 0.1));
-            //((FridoFalcon500) this.rotation).configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 50, 0.1));
-        }
+
+            var config = ((FridoFalcon500v6) this.drive).asTalonFX().getConfigurator();
+            var limit = new CurrentLimitsConfigs()
+                                    .withStatorCurrentLimit(55)
+                                    .withStatorCurrentLimitEnable(true)
+                                    .withSupplyCurrentLimit(50)
+                                    .withSupplyCurrentThreshold(50)
+                                    .withSupplyCurrentLimitEnable(true);
+
+            config.apply(limit);
+            }
     }
 
     private Motors motors;
