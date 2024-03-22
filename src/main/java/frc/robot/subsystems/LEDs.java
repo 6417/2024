@@ -94,25 +94,27 @@ public class LEDs extends Module {
 
     private int hueL = 0;
     private int hueR = 0;
-    private int round = 0;
+    private int roundL = 0;
+    private int roundR = 0;
+    private final int schrittweiteLinks = 360 / Constants.LEDs.bufferLengthLeft;
+    private final int schrittweiteRechts = 360 / Constants.LEDs.bufferLengthRight;
 
     private void regenbogen() {
         for (int i = 0; i < Constants.LEDs.bufferLengthLeft; i++) {
-            hueL += ((round + 1) * 360 / 15);
-            if (hueL >= 360) {
-                hueL -= 360;
-            }
+            hueL += ((roundL + 1) * schrittweiteLinks);
+            hueL %= 360;
             ledsBuffer.setHSV(i, hueL, 1, 1);
         }
 
         for (int i = 15; i < Constants.LEDs.bufferLengthRight; i++) {
-            hueR += ((round + 1) * 360 / 18);
-            if (hueR >= 360) {
-                hueR -= 360;
-            }
+            hueR += ((roundR + 1) * 360 / 18);
+            hueR %= 360;
             ledsBuffer.setHSV(i, hueR, 1, 1);
         }
-        round+=1;
+        roundL += 1;
+        roundR += 1;
+        roundR %= 18;
+        roundL %= 15;
         setData();
     }
 
