@@ -33,8 +33,10 @@ import frc.robot.joystick.IdsWithState.State;
 public class ClimberSubsystem extends BClimber {
 	private FridolinsMotor seilMotorLinks = new FridoCanSparkMax(Constants.Climber.seilZiehMotorLinks,
 			MotorType.kBrushless);
+
 	private FridolinsMotor seilMotorRechts = new FridoCanSparkMax(Constants.Climber.seilZiehMotorRechts,
 			MotorType.kBrushless);
+
 	private FridoServoMotor servoLinks = new FridoServoMotor(Constants.Climber.servoLinksId);
 	private FridoServoMotor servoRechts = new FridoServoMotor(Constants.Climber.servoRechtsId);
 
@@ -152,7 +154,6 @@ public class ClimberSubsystem extends BClimber {
 		public void initialize() {
 			subsystem.seilMotorLinks.setPidTarget(target, PidType.position);
 			subsystem.seilMotorRechts.setPidTarget(target, PidType.position);
-			Config.data().drive().motorIds();
 		}
 
 		@Override
@@ -179,7 +180,7 @@ public class ClimberSubsystem extends BClimber {
 	double currentSpeed = 0;
 
 	@Override
-	public void oneStepUp(double speedAdditon) {
+	public void oneStepDown(double speedAdditon) {
 		setSpeed(currentSpeed + speedAdditon);
 		System.out.println(currentSpeed);
 	}
@@ -202,6 +203,13 @@ public class ClimberSubsystem extends BClimber {
 	@Override
 	public FridoServoMotor getServoRight() {
 		return servoRechts;
+	}
+
+	public FridolinsMotor getSeilMotorLinks() {
+		return seilMotorLinks;
+	}
+	public FridolinsMotor getSeilMotorRechts() {
+		return seilMotorRechts;
 	}
 
 	@Override

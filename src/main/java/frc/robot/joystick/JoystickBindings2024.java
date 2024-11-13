@@ -17,6 +17,7 @@ import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.Controls;
 import frc.robot.abstraction.baseClasses.BDrive.SpeedFactor;
+import frc.robot.commands.climber.ClimberAutoClimb;
 import frc.robot.joystick.IdsWithState.State;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.LED.RGB;
@@ -107,10 +108,10 @@ public class JoystickBindings2024 {
 					((ClimberSubsystem) climber).releaseServos();
 				}
 			});
-			quickBind(POV.DPadUp, () -> climber.oneStepUp(-0.03));
-			quickBind(POV.DPadDown, () -> climber.oneStepUp(0.03));
+			quickBind(POV.DPadUp, () -> climber.oneStepDown(-0.03));
+			quickBind(POV.DPadDown, () -> climber.oneStepDown(0.03));
 
-			// quickBind(XboxOne.rb, null);
+			quickBind(XboxOne.rb, new ClimberAutoClimb());;
 
 		});
 
