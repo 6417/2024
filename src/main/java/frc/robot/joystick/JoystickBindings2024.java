@@ -61,54 +61,57 @@ public class JoystickBindings2024 {
 
 
 		/// ---- Secondary Controller ---- ///
-
+		// quickBindSecondary() is the original
 		// Switch States
-		quickBindSecondary(XboxOne.start, new InstantCommand(() -> {
+		quickBind(XboxOne.start, () -> {
 			Joystick2024.getInstance().setState(State.ENDGAME);
 			System.out.println("<<<[ Endgame Activated ]>>>");
-		}));
+		});
 
 		Config.active.getLED().ifPresent(led -> {
-			quickBindSecondary(POV.Rt, new InstantCommand(() -> {
+			quickBindSecondary(POV.Rt, () -> {
 				System.out.println("BULUDI");
 				led.setColor(RGB.BLUE);
-			}));
-			quickBindSecondary(POV.Lt, new InstantCommand(() -> {
+			});
+			quickBindSecondary(POV.Lt, () -> {
 				System.out.println("RED");
 				// led.setColorFluid(RGB.RED);
 				led.setColor(RGB.RED);
-			}));
+			});
 
-			quickBindSecondary(XboxOne.lb, new InstantCommand(() -> {
+			quickBind(XboxOne.lb, () -> {
 				System.out.println("v1");
 				led.setColorFluid(RGB.YELLOW);
-			}));
-			quickBindSecondary(XboxOne.rb, new InstantCommand(() -> {
-				System.out.println("v2");
-				led.setColorContinuous(RGB.WHITE);
-			}));
+			});
+			// quickBind(XboxOne.rb, new InstantCommand(() -> {
+			// 	System.out.println("v2");
+			// 	led.setColorContinuous(RGB.WHITE);
+			// }));
 		});
 
 		// Shooter
 		Config.active.getShooter().ifPresent(s -> {
-			quickBindSecondary(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
-			quickBindSecondary(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
-			quickBindSecondary(XboxOne.x, s::stopMotors);
-			quickBindSecondary(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
+			quickBind(XboxOne.a, () -> s.shoot(ShooterConfig.INTAKE));
+			quickBind(XboxOne.b, () -> s.shoot(ShooterConfig.AMP));
+			quickBind(XboxOne.x, s::stopMotors);
+			quickBind(XboxOne.y, () -> s.shoot(ShooterConfig.SPEAKER));
 		});
 
 		// Climber (Only works in State.ENDGAME)
 		Config.active.getClimber().ifPresent(climber -> {
-			quickBindSecondary(XboxOne.x, climber::stopMotors);
+			quickBind(XboxOne.x, climber::stopMotors);
 
-			quickBindSecondary(POV.DPadRight, climber::release);
-			quickBindSecondary(POV.DPadLeft, () -> {
+			quickBind(POV.DPadRight, climber::release);
+			quickBind(POV.DPadLeft, () -> {
 				if (IdsWithState.activeState == State.ENDGAME) {
 					((ClimberSubsystem) climber).releaseServos();
 				}
 			});
-			quickBindSecondary(POV.DPadUp, () -> climber.oneStepUp(-0.03));
-			quickBindSecondary(POV.DPadDown, () -> climber.oneStepUp(0.03));
+			quickBind(POV.DPadUp, () -> climber.oneStepUp(-0.03));
+			quickBind(POV.DPadDown, () -> climber.oneStepUp(0.03));
+
+			// quickBind(XboxOne.rb, null);
+
 		});
 
 		return tmp_bindings;
