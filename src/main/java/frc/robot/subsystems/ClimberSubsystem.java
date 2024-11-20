@@ -64,8 +64,10 @@ public class ClimberSubsystem extends BClimber {
 		((CANSparkMax) seilMotorLinks).enableSoftLimit(SoftLimitDirection.kForward, true);
 		((CANSparkMax) seilMotorRechts).enableSoftLimit(SoftLimitDirection.kForward, true);
 
-		((CANSparkMax) seilMotorLinks).setSoftLimit(SoftLimitDirection.kForward, (float)Constants.Climber.maxExtentionEncoderTicks);
-		((CANSparkMax) seilMotorRechts).setSoftLimit(SoftLimitDirection.kForward, (float)Constants.Climber.maxExtentionEncoderTicks);
+		((CANSparkMax) seilMotorLinks).setSoftLimit(SoftLimitDirection.kForward,
+				(float) Constants.Climber.maxExtentionEncoderTicks);
+		((CANSparkMax) seilMotorRechts).setSoftLimit(SoftLimitDirection.kForward,
+				(float) Constants.Climber.maxExtentionEncoderTicks);
 
 		// seilMotorLinks.enableForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen,
 		// true);
@@ -185,12 +187,12 @@ public class ClimberSubsystem extends BClimber {
 		System.out.println(currentSpeed);
 	}
 
-	private void setSpeed(double speed) {
+	public void setSpeed(double speed) {
 		if (IdsWithState.activeState != State.ENDGAME) {
 			System.err.println("Can't use climber: Not in State.ENDGAME'");
 			return;
 		}
-		currentSpeed = Math.max(speed, Constants.Climber.minimumAusfahrBereich);
+		currentSpeed = Math.min(Math.max(speed, 0), 0.61);
 		seilMotorLinks.set(currentSpeed);
 		seilMotorRechts.set(currentSpeed);
 	}
@@ -208,12 +210,13 @@ public class ClimberSubsystem extends BClimber {
 	public FridolinsMotor getSeilMotorLinks() {
 		return seilMotorLinks;
 	}
+
 	public FridolinsMotor getSeilMotorRechts() {
 		return seilMotorRechts;
 	}
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-		builder.addDoubleProperty("Encoder ticks", seilMotorRechts::getEncoderTicks, null);
+		builder.addDoubleProperty("Encoder ticks", seilMotorRechts::getEncoderTicks, (newPosition)->seilMotorRechts.setEncoderPosition(newPosition));
 	}
 }

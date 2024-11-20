@@ -7,16 +7,17 @@ import frc.robot.abstraction.baseClasses.BClimber;
 import frc.robot.subsystems.ClimberSubsystem;
 
 public class RetractClimber extends Command {
-    private ClimberSubsystem climberSubsystem = (ClimberSubsystem) Config.active.getClimber()
-            .orElse(new ClimberSubsystem());
+    private ClimberSubsystem climberSubsystem = (ClimberSubsystem) Config.active.getClimber().get();
 
     public RetractClimber() {
         addRequirements(climberSubsystem);
+        System.out.println("Retractclimber created ##########################################");
     }
 
     @Override
     public void initialize() {
-        climberSubsystem.oneStepDown(0.3);
+        System.out.println("Retract climber initialized %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        climberSubsystem.setSpeed(0.1);
     }
 
     @Override
