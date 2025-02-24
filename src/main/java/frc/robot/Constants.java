@@ -363,7 +363,7 @@ public class Constants {
 
 				frc.robot.subsystems.drive.swerve_2024.SwerveModule.Config frontRightConfig = commonConfigurations
 						.clone();
-				frontRightConfig.absoluteEncoderZeroPosition = 0.477;
+				frontRightConfig.absoluteEncoderZeroPosition = 1.0 - 0.221 - 0.05;
 				// frontLeftConfig.mountingPoint = SWERVE_MODULE_TRANSLATIONS[1];
 				frontRightConfig.mountingPoint = new Translation2d(-xOffset, -yOffset);
 				frontRightConfig.driveMotorInitializer = () -> driveMotorInitializer(2);
